@@ -65,7 +65,7 @@ import java.util.Set;
 
 public class ChatActivity extends Activity implements OnClickListener, ChatActivityEventListener {
   public static final String CONVID = "convid";
-  private static final int PAGE_SIZE = 8;
+  private static final int PAGE_SIZE = 15;
   private static final int TAKE_CAMERA_REQUEST = 2;
   private static final int GALLERY_REQUEST = 0;
   private static final int GALLERY_KITKAT_REQUEST = 3;
@@ -88,6 +88,7 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
   protected RecordButton recordBtn;
   protected String localCameraPath = PathUtils.getPicturePathByCurrentTime();
   protected View addCameraBtn;
+  protected boolean isLoadingMessages = false;
 
   public static ChatActivity getChatInstance() {
     return chatInstance;
@@ -520,8 +521,10 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
       if (messageEvent.getType() == MessageEvent.Type.Come) {
         new CacheMessagesTask(this, Arrays.asList(message)) {
           @Override
-          void onSucceed(List<AVIMTypedMessage> messages) {
-            addMessageAndScroll(message);
+          void onPostRun(List<AVIMTypedMessage> messages, Exception e) {
+            if (filterException(e)) {
+              addMessageAndScroll(message);
+            }
           }
         }.execute();
       } else if (messageEvent.getType() == MessageEvent.Type.Receipt) {
@@ -562,6 +565,10 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
   }
 
   public void loadMessagesWhenInit(int limit) {
+    if (isLoadingMessages) {
+      return;
+    }
+    isLoadingMessages = true;
     ChatManager.getInstance().queryMessages(conversation, null, 0, limit, new
         AVIMTypedMessagesArrayCallback() {
           @Override
@@ -569,12 +576,17 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
             if (filterException(e)) {
               new CacheMessagesTask(ChatActivity.this, typedMessages) {
                 @Override
-                void onSucceed(List<AVIMTypedMessage> messages) {
-                  adapter.setDatas(typedMessages);
-                  adapter.notifyDataSetChanged();
-                  scrollToLast();
+                void onPostRun(List<AVIMTypedMessage> messages, Exception e) {
+                  if (filterException(e)) {
+                    adapter.setDatas(typedMessages);
+                    adapter.notifyDataSetChanged();
+                    scrollToLast();
+                  }
+                  isLoadingMessages = false;
                 }
               }.execute();
+            } else {
+              isLoadingMessages = false;
             }
           }
         });
@@ -620,12 +632,10 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
 
     @Override
     protected void onPostExecute(Void aVoid) {
-      if (filterException(e)) {
-        onSucceed(messages);
-      }
+      onPostRun(messages, e);
     }
 
-    abstract void onSucceed(List<AVIMTypedMessage> messages);
+    abstract void onPostRun(List<AVIMTypedMessage> messages, Exception e);
   }
 
   public void loadOldMessages() {
@@ -633,6 +643,12 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
       refreshableView.finishRefreshing();
       return;
     } else {
+      if (isLoadingMessages) {
+        refreshableView.finishRefreshing();
+        LogUtils.i("It's loading messages, so ignore load again.");
+        return;
+      }
+      isLoadingMessages = true;
       AVIMTypedMessage firstMsg = adapter.getDatas().get(0);
       String msgId = firstMsg.getMessageId();
       long time = firstMsg.getTimestamp();
@@ -643,19 +659,24 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
           if (filterException(e)) {
             new CacheMessagesTask(ChatActivity.this, typedMessages) {
               @Override
-              void onSucceed(List<AVIMTypedMessage> typedMessages) {
-                List<AVIMTypedMessage> newMessages = new ArrayList<>(PAGE_SIZE);
-                newMessages.addAll(typedMessages);
-                newMessages.addAll(adapter.getDatas());
-                adapter.setDatas(newMessages);
-                adapter.notifyDataSetChanged();
-                if (typedMessages.size() > 0) {
-                  messageListView.setSelection(typedMessages.size() - 1);
-                } else {
-                  toast(R.string.chat_activity_loadMessagesFinish);
+              void onPostRun(List<AVIMTypedMessage> typedMessages, Exception e) {
+                if (filterException(e)) {
+                  List<AVIMTypedMessage> newMessages = new ArrayList<>(PAGE_SIZE);
+                  newMessages.addAll(typedMessages);
+                  newMessages.addAll(adapter.getDatas());
+                  adapter.setDatas(newMessages);
+                  adapter.notifyDataSetChanged();
+                  if (typedMessages.size() > 0) {
+                    messageListView.setSelection(typedMessages.size() - 1);
+                  } else {
+                    toast(R.string.chat_activity_loadMessagesFinish);
+                  }
                 }
+                isLoadingMessages = false;
               }
             }.execute();
+          } else {
+            isLoadingMessages = false;
           }
         }
       });
