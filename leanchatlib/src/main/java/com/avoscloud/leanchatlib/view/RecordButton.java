@@ -29,9 +29,9 @@ public class RecordButton extends Button {
   public static final int RELEASE_TO_CANCEL = 1;
   private static final int MIN_INTERVAL_TIME = 1000;// 2s
   private static int[] recordImageIds = {R.drawable.chat_icon_voice0,
-      R.drawable.chat_icon_voice1, R.drawable.chat_icon_voice2,
-      R.drawable.chat_icon_voice3, R.drawable.chat_icon_voice4,
-      R.drawable.chat_icon_voice5};
+    R.drawable.chat_icon_voice1, R.drawable.chat_icon_voice2,
+    R.drawable.chat_icon_voice3, R.drawable.chat_icon_voice4,
+    R.drawable.chat_icon_voice5};
   private TextView textView;
   private String outputPath = null;
   private RecordEventListener recordEventListener;
@@ -77,7 +77,6 @@ public class RecordButton extends Button {
   private void init() {
     volumeHandler = new ShowVolumeHandler();
     setBackgroundResource(BACK_IDLE);
-    initRecordDialog();
   }
 
   @Override
@@ -126,6 +125,7 @@ public class RecordButton extends Button {
   }
 
   private void startRecord() {
+    initRecordDialog();
     startTime = System.currentTimeMillis();
     setBackgroundResource(BACK_RECORDING);
     startRecording();
@@ -133,19 +133,21 @@ public class RecordButton extends Button {
   }
 
   private void initRecordDialog() {
-    recordIndicator = new Dialog(getContext(),
+    if (null == recordIndicator) {
+      recordIndicator = new Dialog(getContext(),
         R.style.chat_record_button_toast_dialog_style);
 
-    view = inflate(getContext(), R.layout.chat_record_layout, null);
-    imageView = (ImageView) view.findViewById(R.id.imageView);
-    textView = (TextView) view.findViewById(R.id.textView);
-    recordIndicator.setContentView(view, new LayoutParams(
-      ViewGroup.LayoutParams.WRAP_CONTENT,
-      ViewGroup.LayoutParams.WRAP_CONTENT));
-    recordIndicator.setOnDismissListener(onDismiss);
+      view = inflate(getContext(), R.layout.chat_record_layout, null);
+      imageView = (ImageView) view.findViewById(R.id.imageView);
+      textView = (TextView) view.findViewById(R.id.textView);
+      recordIndicator.setContentView(view, new LayoutParams(
+        ViewGroup.LayoutParams.WRAP_CONTENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT));
+      recordIndicator.setOnDismissListener(onDismiss);
 
-    LayoutParams lp = recordIndicator.getWindow().getAttributes();
-    lp.gravity = Gravity.CENTER;
+      LayoutParams lp = recordIndicator.getWindow().getAttributes();
+      lp.gravity = Gravity.CENTER;
+    }
   }
 
   private void removeFile() {
