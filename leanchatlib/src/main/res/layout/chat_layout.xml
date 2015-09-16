@@ -5,14 +5,14 @@
     android:background="#fff">
 
     <com.avoscloud.leanchatlib.view.RefreshableView
-        android:id="@+id/refreshableView"
+        android:id="@+id/chat_layout_refreshableview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/bottomLayout"
+        android:layout_above="@+id/chat_layout_inputbottombar"
         android:orientation="vertical">
 
         <ListView
-            android:id="@+id/messageListView"
+            android:id="@+id/chat_layout_lv_message"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#fff"
@@ -23,48 +23,10 @@
 
     </com.avoscloud.leanchatlib.view.RefreshableView>
 
-    <LinearLayout
-        android:id="@+id/bottomLayout"
+    <com.avoscloud.leanchatlib.activity.InputBottomBar
+        android:id="@+id/chat_layout_inputbottombar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/chat_layout_home_bg_bottombar"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/chat_BottomHeight"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/chatBottomLeftLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical">
-
-                <Button
-                    android:id="@+id/showAddBtn"
-                    android:layout_width="@dimen/chat_BottomBtnSize"
-                    android:layout_height="@dimen/chat_BottomBtnSize"
-                    android:layout_marginLeft="3dp"
-                    android:background="@drawable/chat_btn_add_selector" />
-
-                <Button
-                    android:id="@+id/showEmotionBtn"
-                    android:layout_width="@dimen/chat_BottomBtnSize"
-                    android:layout_height="@dimen/chat_BottomBtnSize"
-                    android:layout_marginLeft="3dp"
-                    android:background="@drawable/chat_btn_emo_selector"
-                    android:gravity="center" />
-
-            </LinearLayout>
-
-            <include layout="@layout/chat_bottom_text_layout" />
-
-            <include layout="@layout/chat_bottom_record_layout" />
-        </LinearLayout>
-
-        <include layout="@layout/chat_bottom_more_layout" />
-    </LinearLayout>
-
+        android:background="@drawable/chat_layout_home_bg_bottombar"/>
 </RelativeLayout>

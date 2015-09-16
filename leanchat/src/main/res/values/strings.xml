@@ -71,7 +71,8 @@
     <string name="conversation_kickTips">确认要踢走该成员吗</string>
     <string name="conversation_detail_invite">邀请</string>
     <string name="conversation_quitGroup">退群</string>
-
+    <string name="conversation_quit_group_tip">确定要退出该群组？</string>
+    
     <string name="utils_kilometres">公里</string>
     <string name="refreshable_view_pull_to_refresh">下拉可以刷新</string>
     <string name="refreshable_view_release_to_refresh">释放立即刷新</string>

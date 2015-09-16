@@ -16,7 +16,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
@@ -31,10 +30,10 @@ import com.avoscloud.chat.ui.contact.ContactPersonInfoActivity;
 import com.avoscloud.chat.ui.view.ExpandGridView;
 import com.avoscloud.chat.util.SimpleNetTask;
 import com.avoscloud.chat.util.Utils;
-import com.avoscloud.leanchatlib.activity.ChatActivity;
 import com.avoscloud.chat.ui.view.BaseListAdapter;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
+import com.avoscloud.leanchatlib.controller.RoomsTable;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.view.ViewHolder;
 
@@ -180,19 +179,30 @@ public class ConversationDetailActivity extends ConversationBaseActivity impleme
   }
 
   @OnClick(R.id.quit_layout)
-  void quit() {
+  void onQuitButtonClick() {
+    new AlertDialog.Builder(ctx).setMessage(R.string.conversation_quit_group_tip)
+      .setPositiveButton(R.string.common_sure, new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          quitGroup();
+        }
+      }).setNegativeButton(R.string.chat_common_cancel, null).show();
+  }
+
+  /**
+   * 退出群聊
+   */
+  private void quitGroup() {
     final String convid = conv().getConversationId();
     conv().quit(new AVIMConversationCallback() {
       @Override
       public void done(AVIMException e) {
         if (filterException(e)) {
-          ChatManager.getInstance().getRoomsTable().deleteRoom(convid);
+          RoomsTable roomsTable = ChatManager.getInstance().getRoomsTable();
+          roomsTable.deleteRoom(convid);
           Utils.toast(R.string.conversation_alreadyQuitConv);
-          ConversationDetailActivity.this.finish();
-
-          if (ChatActivity.getChatInstance() != null) {
-            ChatActivity.getChatInstance().finish();
-          }
+          setResult(RESULT_OK);
+          finish();
         }
       }
     });

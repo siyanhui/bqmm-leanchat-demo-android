@@ -5,18 +5,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
-import com.avos.avoscloud.im.v2.messages.AVIMImageMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMLocationMessage;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.entity.AVIMUserInfoMessage;
@@ -28,10 +24,8 @@ import com.avoscloud.chat.ui.conversation.ConversationDetailActivity;
 import com.avoscloud.chat.util.Logger;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.activity.ChatActivity;
-import com.avoscloud.leanchatlib.activity.ChatActivityEventListener;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
-import com.avoscloud.leanchatlib.controller.MessageHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,8 +33,9 @@ import java.util.Map;
 /**
  * Created by lzw on 15/4/24.
  */
-public class ChatRoomActivity extends ChatActivity implements ChatActivityEventListener {
+public class ChatRoomActivity extends ChatActivity {
   public static final int LOCATION_REQUEST = 100;
+  public static final int QUIT_GROUP_REQUEST = 200;
 
   public static void chatByConversation(Context from, AVIMConversation conv) {
     CacheService.registerConv(conv);
@@ -61,16 +56,6 @@ public class ChatRoomActivity extends ChatActivity implements ChatActivityEventL
         }
       }
     });
-  }
-
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    initLocation();
-  }
-
-  private void initLocation() {
-    addLocationBtn.setVisibility(View.VISIBLE);
   }
 
   @Override
@@ -104,7 +89,7 @@ public class ChatRoomActivity extends ChatActivity implements ChatActivityEventL
 
   public void onEvent(ConversationChangeEvent conversationChangeEvent) {
     if (conversation != null && conversation.getConversationId().
-        equals(conversationChangeEvent.getConv().getConversationId())) {
+      equals(conversationChangeEvent.getConv().getConversationId())) {
       this.conversation = conversationChangeEvent.getConv();
       ActionBar actionBar = getActionBar();
       actionBar.setTitle(ConversationHelper.titleOfConversation(this.conversation));
@@ -126,8 +111,7 @@ public class ChatRoomActivity extends ChatActivity implements ChatActivityEventL
   public boolean onMenuItemSelected(int featureId, MenuItem item) {
     int menuId = item.getItemId();
     if (menuId == R.id.people) {
-      Intent intent = new Intent(this, ConversationDetailActivity.class);
-      startActivity(intent);
+      startActivity(ConversationDetailActivity.class, QUIT_GROUP_REQUEST);
     }
     return super.onMenuItemSelected(featureId, item);
   }
@@ -144,29 +128,25 @@ public class ChatRoomActivity extends ChatActivity implements ChatActivityEventL
           if (!TextUtils.isEmpty(address)) {
             messageAgent.sendLocation(latitude, longitude, address);
           } else {
-            toast(R.string.chat_cannotGetYourAddressInfo);
+            showToast(R.string.chat_cannotGetYourAddressInfo);
           }
-          hideBottomLayout();
+          inputBottomBar.hideMoreLayout();
+          break;
+        case QUIT_GROUP_REQUEST:
+          finish();
           break;
       }
     }
   }
 
   @Override
-  public void onAddLocationButtonClicked(View v) {
+  protected void onAddLocationButtonClicked() {
     LocationActivity.startToSelectLocationForResult(this, LOCATION_REQUEST);
   }
 
   @Override
-  public void onLocationMessageViewClicked(AVIMLocationMessage locationMessage) {
+  protected void onLocationMessageViewClicked(AVIMLocationMessage locationMessage) {
     LocationActivity.startToSeeLocationDetail(this, locationMessage.getLocation().getLatitude(),
-        locationMessage.getLocation().getLongitude());
-  }
-
-
-  @Override
-  public void onImageMessageViewClicked(AVIMImageMessage imageMessage, String localImagePath) {
-    ImageBrowserActivity.go(ChatRoomActivity.this, MessageHelper.getFilePath(imageMessage),
-        imageMessage.getFileUrl());
+      locationMessage.getLocation().getLongitude());
   }
 }

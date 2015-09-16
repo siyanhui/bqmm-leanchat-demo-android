@@ -2,29 +2,17 @@ package com.avoscloud.leanchatlib.activity;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.text.Editable;
-import android.text.Selection;
-import android.text.Spannable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.Toast;
+
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
@@ -33,28 +21,25 @@ import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMImageMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMLocationMessage;
 import com.avoscloud.leanchatlib.R;
-import com.avoscloud.leanchatlib.adapter.ChatEmotionGridAdapter;
-import com.avoscloud.leanchatlib.adapter.ChatEmotionPagerAdapter;
 import com.avoscloud.leanchatlib.adapter.ChatMessageAdapter;
 import com.avoscloud.leanchatlib.controller.AVIMTypedMessagesArrayCallback;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
-import com.avoscloud.leanchatlib.controller.EmotionHelper;
 import com.avoscloud.leanchatlib.controller.MessageAgent;
 import com.avoscloud.leanchatlib.controller.MessageHelper;
 import com.avoscloud.leanchatlib.controller.RoomsTable;
+import com.avoscloud.leanchatlib.event.InputBottomBarEvent;
+import com.avoscloud.leanchatlib.event.InputBottomBarRecordEvent;
+import com.avoscloud.leanchatlib.event.InputBottomBarTextEvent;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.MessageEvent;
 import com.avoscloud.leanchatlib.utils.LogUtils;
 import com.avoscloud.leanchatlib.utils.PathUtils;
 import com.avoscloud.leanchatlib.utils.ProviderPathUtils;
 import com.avoscloud.leanchatlib.utils.Utils;
-import com.avoscloud.leanchatlib.view.EmotionEditText;
-import com.avoscloud.leanchatlib.view.RecordButton;
 import com.avoscloud.leanchatlib.view.RefreshableView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
-import de.greenrobot.event.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,82 +48,41 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ChatActivity extends Activity implements OnClickListener, ChatActivityEventListener {
+public class ChatActivity extends AVEventBaseActivity {
   public static final String CONVID = "convid";
   private static final int PAGE_SIZE = 15;
   private static final int TAKE_CAMERA_REQUEST = 2;
   private static final int GALLERY_REQUEST = 0;
   private static final int GALLERY_KITKAT_REQUEST = 3;
 
-  private volatile static ChatActivity chatInstance;
   protected ConversationType conversationType;
   protected AVIMConversation conversation;
   protected MessageAgent messageAgent;
   protected MessageAgent.SendCallback defaultSendCallback = new DefaultSendCallback();
-  protected EventBus eventBus;
   protected ChatManager chatManager = ChatManager.getInstance();
   protected ChatMessageAdapter adapter;
   protected RoomsTable roomsTable;
-  protected View chatTextLayout, chatAudioLayout, chatAddLayout, chatEmotionLayout;
-  protected View turnToTextBtn, turnToAudioBtn, sendBtn, addImageBtn, showAddBtn, addLocationBtn, showEmotionBtn;
-  protected ViewPager emotionPager;
-  protected EmotionEditText contentEdit;
   protected RefreshableView refreshableView;
   protected ListView messageListView;
-  protected RecordButton recordBtn;
+  protected InputBottomBar inputBottomBar;
   protected String localCameraPath = PathUtils.getPicturePathByCurrentTime();
-  protected View addCameraBtn;
   protected boolean isLoadingMessages = false;
 
-  public static ChatActivity getChatInstance() {
-    return chatInstance;
-  }
 
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.chat_layout);
     commonInit();
     findView();
-    initEmotionPager();
-    initRecordBtn();
-    setEditTextChangeListener();
     initListView();
 
     initByIntent(getIntent());
   }
 
   private void findView() {
-    refreshableView = (RefreshableView) findViewById(R.id.refreshableView);
-    messageListView = (ListView) findViewById(R.id.messageListView);
-    addImageBtn = findViewById(R.id.addImageBtn);
-
-    contentEdit = (EmotionEditText) findViewById(R.id.textEdit);
-    chatTextLayout = findViewById(R.id.chatTextLayout);
-    chatAudioLayout = findViewById(R.id.chatRecordLayout);
-    turnToAudioBtn = findViewById(R.id.turnToAudioBtn);
-    turnToTextBtn = findViewById(R.id.turnToTextBtn);
-    recordBtn = (RecordButton) findViewById(R.id.recordBtn);
-    chatTextLayout = findViewById(R.id.chatTextLayout);
-    chatAddLayout = findViewById(R.id.chatAddLayout);
-    addLocationBtn = findViewById(R.id.addLocationBtn);
-    chatEmotionLayout = findViewById(R.id.chatEmotionLayout);
-    showAddBtn = findViewById(R.id.showAddBtn);
-    showEmotionBtn = findViewById(R.id.showEmotionBtn);
-    sendBtn = findViewById(R.id.sendBtn);
-    emotionPager = (ViewPager) findViewById(R.id.emotionPager);
-    addCameraBtn = findViewById(R.id.addCameraBtn);
-
-    sendBtn.setOnClickListener(this);
-    contentEdit.setOnClickListener(this);
-    addImageBtn.setOnClickListener(this);
-    addLocationBtn.setOnClickListener(this);
-    turnToAudioBtn.setOnClickListener(this);
-    turnToTextBtn.setOnClickListener(this);
-    showAddBtn.setOnClickListener(this);
-    showEmotionBtn.setOnClickListener(this);
-    addCameraBtn.setOnClickListener(this);
-
-    addLocationBtn.setVisibility(View.GONE);
+    refreshableView = (RefreshableView) findViewById(R.id.chat_layout_refreshableview);
+    messageListView = (ListView) findViewById(R.id.chat_layout_lv_message);
+    inputBottomBar = (InputBottomBar) findViewById(R.id.chat_layout_inputbottombar);
   }
 
   private void initByIntent(Intent intent) {
@@ -162,105 +106,14 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
     messageListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, true));
   }
 
-  private void initEmotionPager() {
-    List<View> views = new ArrayList<View>();
-    for (int i = 0; i < EmotionHelper.emojiGroups.size(); i++) {
-      views.add(getEmotionGridView(i));
-    }
-    ChatEmotionPagerAdapter pagerAdapter = new ChatEmotionPagerAdapter(views);
-    emotionPager.setOffscreenPageLimit(3);
-    emotionPager.setAdapter(pagerAdapter);
-  }
-
-  private View getEmotionGridView(int pos) {
-    LayoutInflater inflater = LayoutInflater.from(this);
-    View emotionView = inflater.inflate(R.layout.chat_emotion_gridview, null, false);
-    GridView gridView = (GridView) emotionView.findViewById(R.id.gridview);
-    final ChatEmotionGridAdapter chatEmotionGridAdapter = new ChatEmotionGridAdapter(this);
-    List<String> pageEmotions = EmotionHelper.emojiGroups.get(pos);
-    chatEmotionGridAdapter.setDatas(pageEmotions);
-    gridView.setAdapter(chatEmotionGridAdapter);
-    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-      @Override
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String emotionText = (String) parent.getAdapter().getItem(position);
-        int start = contentEdit.getSelectionStart();
-        StringBuffer sb = new StringBuffer(contentEdit.getText());
-        sb.replace(contentEdit.getSelectionStart(), contentEdit.getSelectionEnd(), emotionText);
-        contentEdit.setText(sb.toString());
-
-        CharSequence info = contentEdit.getText();
-        if (info instanceof Spannable) {
-          Spannable spannable = (Spannable) info;
-          Selection.setSelection(spannable, start + emotionText.length());
-        }
-      }
-    });
-    return gridView;
-  }
-
-  public void initRecordBtn() {
-    recordBtn.setSavePath(PathUtils.getRecordPathByCurrentTime());
-    recordBtn.setRecordEventListener(new RecordButton.RecordEventListener() {
-      @Override
-      public void onFinishedRecord(final String audioPath, int secs) {
-//        LogUtils.d("audioPath = ", audioPath);
-        messageAgent.sendAudio(audioPath);
-      }
-
-      @Override
-      public void onStartRecord() {
-
-      }
-    });
-  }
-
-  public void setEditTextChangeListener() {
-    contentEdit.addTextChangedListener(new TextWatcher() {
-      @Override
-      public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-      }
-
-      @Override
-      public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        if (charSequence.length() > 0) {
-          sendBtn.setEnabled(true);
-          showSendBtn();
-        } else {
-          sendBtn.setEnabled(false);
-          showTurnToRecordBtn();
-        }
-      }
-
-      @Override
-      public void afterTextChanged(Editable editable) {
-
-      }
-    });
-  }
-
-  private void showTurnToRecordBtn() {
-    sendBtn.setVisibility(View.GONE);
-    turnToAudioBtn.setVisibility(View.VISIBLE);
-  }
-
-  private void showSendBtn() {
-    sendBtn.setVisibility(View.VISIBLE);
-    turnToAudioBtn.setVisibility(View.GONE);
-  }
-
   void commonInit() {
-    chatInstance = this;
     roomsTable = ChatManager.getInstance().getRoomsTable();
-    eventBus = EventBus.getDefault();
-    eventBus.register(this);
     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
   }
 
   private boolean isConversationEmpty(AVIMConversation conversation) {
     if (conversation == null) {
-      toast("未找到对话，请退出重试。请检查是否调用了 ChatManager.registerConversation()");
+      showToast("未找到对话，请退出重试。请检查是否调用了 ChatManager.registerConversation()");
       this.finish();
       return true;
     }
@@ -334,94 +187,6 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
     messageListView.setAdapter(adapter);
   }
 
-  @Override
-  public void onClick(View v) {
-    //之所以不用 switch 是因为在Library中 R.id.btn 不是常量，不能用在switch case中。
-    // 如果主项目有重名，Library 的会被重命名。，所以不能是常量。
-    if (v.getId() == R.id.sendBtn) {
-      sendText();
-    } else if (v.getId() == R.id.addImageBtn) {
-      selectImageFromLocal();
-    } else if (v.getId() == R.id.turnToAudioBtn) {
-      showAudioLayout();
-    } else if (v.getId() == R.id.turnToTextBtn) {
-      showTextLayout();
-    } else if (v.getId() == R.id.showAddBtn) {
-      toggleBottomAddLayout();
-    } else if (v.getId() == R.id.showEmotionBtn) {
-      toggleEmotionLayout();
-    } else if (v.getId() == R.id.addLocationBtn) {
-      onAddLocationButtonClicked(v);
-    } else if (v.getId() == R.id.textEdit) {
-      hideBottomLayoutAndScrollToLast();
-    } else if (v.getId() == R.id.addCameraBtn) {
-      selectImageFromCamera();
-    }
-  }
-
-  private void hideBottomLayoutAndScrollToLast() {
-    hideBottomLayout();
-    scrollToLast();
-  }
-
-  protected void hideBottomLayout() {
-    hideAddLayout();
-    chatEmotionLayout.setVisibility(View.GONE);
-  }
-
-  private void toggleEmotionLayout() {
-    if (chatEmotionLayout.getVisibility() == View.VISIBLE) {
-      chatEmotionLayout.setVisibility(View.GONE);
-    } else {
-      chatEmotionLayout.setVisibility(View.VISIBLE);
-      hideAddLayout();
-      showTextLayout();
-      hideSoftInputView();
-    }
-  }
-
-  protected void hideSoftInputView() {
-    if (getWindow().getAttributes().softInputMode !=
-        WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
-      InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-      View currentFocus = getCurrentFocus();
-      if (currentFocus != null) {
-        manager.hideSoftInputFromWindow(currentFocus.getWindowToken(),
-            InputMethodManager.HIDE_NOT_ALWAYS);
-      }
-    }
-  }
-
-  private void toggleBottomAddLayout() {
-    if (chatAddLayout.getVisibility() == View.VISIBLE) {
-      hideAddLayout();
-    } else {
-      chatEmotionLayout.setVisibility(View.GONE);
-      hideSoftInputView();
-      showAddLayout();
-    }
-  }
-
-  private void hideAddLayout() {
-    chatAddLayout.setVisibility(View.GONE);
-  }
-
-  private void showAddLayout() {
-    chatAddLayout.setVisibility(View.VISIBLE);
-  }
-
-  private void showTextLayout() {
-    chatTextLayout.setVisibility(View.VISIBLE);
-    chatAudioLayout.setVisibility(View.GONE);
-  }
-
-  private void showAudioLayout() {
-    chatTextLayout.setVisibility(View.GONE);
-    chatAudioLayout.setVisibility(View.VISIBLE);
-    chatEmotionLayout.setVisibility(View.GONE);
-    hideSoftInputView();
-  }
-
   public void selectImageFromLocal() {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
       Intent intent = new Intent();
@@ -446,14 +211,6 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
     }
   }
 
-  private void sendText() {
-    final String content = contentEdit.getText().toString();
-    if (!TextUtils.isEmpty(content)) {
-      messageAgent.sendText(content);
-      contentEdit.setText("");
-    }
-  }
-
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
@@ -473,7 +230,7 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
         case GALLERY_REQUEST:
         case GALLERY_KITKAT_REQUEST:
           if (intent == null) {
-            toast("return intent is null");
+            showToast("return intent is null");
             return;
           }
           Uri uri;
@@ -488,11 +245,11 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
           }
           String localSelectPath = ProviderPathUtils.getPath(this, uri);
           messageAgent.sendImage(localSelectPath);
-          hideBottomLayout();
+          inputBottomBar.hideMoreLayout();
           break;
         case TAKE_CAMERA_REQUEST:
           messageAgent.sendImage(localCameraPath);
-          hideBottomLayout();
+          inputBottomBar.hideMoreLayout();
           break;
       }
     }
@@ -509,34 +266,7 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
 
   @Override
   protected void onDestroy() {
-    chatInstance = null;
-    eventBus.unregister(this);
     super.onDestroy();
-  }
-
-  public void onEvent(MessageEvent messageEvent) {
-    final AVIMTypedMessage message = messageEvent.getMessage();
-    if (message.getConversationId().equals(conversation
-        .getConversationId())) {
-      if (messageEvent.getType() == MessageEvent.Type.Come) {
-        new CacheMessagesTask(this, Arrays.asList(message)) {
-          @Override
-          void onPostRun(List<AVIMTypedMessage> messages, Exception e) {
-            if (filterException(e)) {
-              addMessageAndScroll(message);
-            }
-          }
-        }.execute();
-      } else if (messageEvent.getType() == MessageEvent.Type.Receipt) {
-        //Utils.i("receipt");
-        AVIMTypedMessage originMessage = findMessage(message.getMessageId());
-        if (originMessage != null) {
-          originMessage.setMessageStatus(message.getMessageStatus());
-          originMessage.setReceiptTimestamp(message.getReceiptTimestamp());
-          adapter.notifyDataSetChanged();
-        }
-      }
-    }
   }
 
   private AVIMTypedMessage findMessage(String messageId) {
@@ -669,7 +399,7 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
                   if (typedMessages.size() > 0) {
                     messageListView.setSelection(typedMessages.size() - 1);
                   } else {
-                    toast(R.string.chat_activity_loadMessagesFinish);
+                    showToast(R.string.chat_activity_loadMessagesFinish);
                   }
                 }
                 isLoadingMessages = false;
@@ -715,40 +445,66 @@ public class ChatActivity extends Activity implements OnClickListener, ChatActiv
   protected boolean filterException(Exception e) {
     if (e != null) {
       LogUtils.logException(e);
-      toast(e.getMessage());
+      showToast(e.getMessage());
       return false;
     } else {
       return true;
     }
   }
 
-  protected void toast(String str) {
-    Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
-  }
 
-  protected void toast(Exception e) {
-    if (e != null) {
-      toast("发生错误：" + e.getMessage());
+  protected void onAddLocationButtonClicked() {}
+
+  protected void onLocationMessageViewClicked(AVIMLocationMessage locationMessage) {}
+
+  protected void onImageMessageViewClicked(AVIMImageMessage imageMessage, String localImagePath) {}
+
+  public void onEvent(MessageEvent messageEvent) {
+    final AVIMTypedMessage message = messageEvent.getMessage();
+    if (message.getConversationId().equals(conversation
+      .getConversationId())) {
+      if (messageEvent.getType() == MessageEvent.Type.Come) {
+        new CacheMessagesTask(this, Arrays.asList(message)) {
+          @Override
+          void onPostRun(List<AVIMTypedMessage> messages, Exception e) {
+            if (filterException(e)) {
+              addMessageAndScroll(message);
+            }
+          }
+        }.execute();
+      } else if (messageEvent.getType() == MessageEvent.Type.Receipt) {
+        //Utils.i("receipt");
+        AVIMTypedMessage originMessage = findMessage(message.getMessageId());
+        if (originMessage != null) {
+          originMessage.setMessageStatus(message.getMessageStatus());
+          originMessage.setReceiptTimestamp(message.getReceiptTimestamp());
+          adapter.notifyDataSetChanged();
+        }
+      }
     }
   }
 
-  protected void toast(int id) {
-    Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+  public void onEvent(InputBottomBarEvent event) {
+    switch (event.eventAction) {
+      case InputBottomBarEvent.INPUTBOTTOMBAR_IMAGE_ACTION:
+        selectImageFromLocal();
+        break;
+      case InputBottomBarEvent.INPUTBOTTOMBAR_CAMERA_ACTION:
+        selectImageFromCamera();
+        break;
+      case InputBottomBarEvent.INPUTBOTTOMBAR_LOCATION_ACTION:
+        onAddLocationButtonClicked();
+        break;
+    }
   }
 
-
-  @Override
-  public void onAddLocationButtonClicked(View v) {
-
+  public void onEvent(InputBottomBarRecordEvent recordEvent) {
+    messageAgent.sendAudio(recordEvent.audioPath);
   }
 
-  @Override
-  public void onLocationMessageViewClicked(AVIMLocationMessage locationMessage) {
-
-  }
-
-  @Override
-  public void onImageMessageViewClicked(AVIMImageMessage imageMessage, String localImagePath) {
-
+  public void onEvent(InputBottomBarTextEvent textEvent) {
+    if (!TextUtils.isEmpty(textEvent.sendContent)) {
+      messageAgent.sendText(textEvent.sendContent);
+    }
   }
 }
