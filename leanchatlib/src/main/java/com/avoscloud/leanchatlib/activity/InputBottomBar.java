@@ -184,28 +184,29 @@ public class InputBottomBar extends LinearLayout {
       @Override
       public void onClick(View v) {
         EventBus.getDefault().post(
-          new InputBottomBarTextEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_TEXT_ACTION, contentEditText.getText().toString()));
+          new InputBottomBarTextEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_TEXT_ACTION, contentEditText.getText().toString(), getTag()));
+        contentEditText.setText("");
       }
     });
 
     pictureBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        EventBus.getDefault().post(new InputBottomBarEvent(InputBottomBarEvent.INPUTBOTTOMBAR_IMAGE_ACTION));
+        EventBus.getDefault().post(new InputBottomBarEvent(InputBottomBarEvent.INPUTBOTTOMBAR_IMAGE_ACTION, getTag()));
       }
     });
 
     cameraBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        EventBus.getDefault().post(new InputBottomBarEvent(InputBottomBarEvent.INPUTBOTTOMBAR_CAMERA_ACTION));
+        EventBus.getDefault().post(new InputBottomBarEvent(InputBottomBarEvent.INPUTBOTTOMBAR_CAMERA_ACTION, getTag()));
       }
     });
 
     locationBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        EventBus.getDefault().post(new InputBottomBarEvent(InputBottomBarEvent.INPUTBOTTOMBAR_LOCATION_ACTION));
+        EventBus.getDefault().post(new InputBottomBarEvent(InputBottomBarEvent.INPUTBOTTOMBAR_LOCATION_ACTION, getTag()));
       }
     });
   }
@@ -259,7 +260,7 @@ public class InputBottomBar extends LinearLayout {
       @Override
       public void onFinishedRecord(final String audioPath, int secs) {
         EventBus.getDefault().post(
-          new InputBottomBarRecordEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_AUDIO_ACTION, audioPath, secs));
+          new InputBottomBarRecordEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_AUDIO_ACTION, audioPath, secs, ""));
       }
 
       @Override
