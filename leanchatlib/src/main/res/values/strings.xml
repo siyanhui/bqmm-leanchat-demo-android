@@ -25,6 +25,8 @@
     <string name="chat_audio">语音</string>
     <string name="chat_position">位置</string>
 
+    <string name="unspport_message_type">暂不支持此消息类型</string>
+
 
     <string name="chat_cannotFindResult">抱歉，未能找到结果</string>
     <string name="chat_bottom_picture">照片</string>

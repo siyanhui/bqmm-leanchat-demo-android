@@ -7,12 +7,15 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -100,6 +103,17 @@ public class Utils {
     try {
       closeable.close();
     } catch (Exception e) {
+    }
+  }
+
+  public static String millisecsToDateString(long timestamp) {
+    long gap = System.currentTimeMillis() - timestamp;
+    if (gap < 1000 * 60 * 60 * 24) {
+      String s = (new PrettyTime()).format(new Date(timestamp));
+      return s;
+    } else {
+      SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
+      return format.format(new Date(timestamp));
     }
   }
 }
