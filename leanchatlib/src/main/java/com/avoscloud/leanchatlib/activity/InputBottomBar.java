@@ -1,10 +1,12 @@
 package com.avoscloud.leanchatlib.activity;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.Spannable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.adapter.ChatEmotionGridAdapter;
@@ -91,6 +94,11 @@ public class InputBottomBar extends LinearLayout {
   private View cameraBtn;
   private View locationBtn;
   private View pictureBtn;
+
+  /**
+   * 最小间隔时间为 1 秒，避免多次点击
+   */
+  private final int MIN_INTERVAL_SEND_MESSAGE = 1000;
 
   public InputBottomBar(Context context) {
     super(context);
@@ -183,9 +191,22 @@ public class InputBottomBar extends LinearLayout {
     sendTextBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        EventBus.getDefault().post(
-          new InputBottomBarTextEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_TEXT_ACTION, contentEditText.getText().toString(), getTag()));
+        String content = contentEditText.getText().toString();
+        if (TextUtils.isEmpty(content)) {
+          Toast.makeText(getContext(), R.string.message_is_null, Toast.LENGTH_SHORT).show();
+          return;
+        }
+
         contentEditText.setText("");
+        new Handler().postDelayed(new Runnable() {
+          @Override
+          public void run() {
+            sendTextBtn.setEnabled(true);
+          }
+        }, MIN_INTERVAL_SEND_MESSAGE);
+
+        EventBus.getDefault().post(
+          new InputBottomBarTextEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_TEXT_ACTION, content, getTag()));
       }
     });
 
