@@ -9,7 +9,10 @@ import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMImageMessage;
 import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.controller.MessageHelper;
+import com.avoscloud.leanchatlib.event.ImageItemClickEvent;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by wli on 15/9/17.
@@ -32,6 +35,15 @@ public class ChatItemImageHolder extends ChatItemHolder {
       conventLayout.addView(View.inflate(getContext(), R.layout.chat_item_left_image_layout, null));
       contentView = (ImageView)itemView.findViewById(R.id.chat_item_left_image_view);
     }
+
+    contentView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        ImageItemClickEvent clickEvent = new ImageItemClickEvent();
+        clickEvent.message = message;
+        EventBus.getDefault().post(clickEvent);
+      }
+    });
   }
 
   @Override

@@ -11,6 +11,7 @@ import com.avoscloud.leanchatlib.viewholder.AVCommonViewHolder;
 import com.avoscloud.leanchatlib.viewholder.ChatItemAudioHolder;
 import com.avoscloud.leanchatlib.viewholder.ChatItemHolder;
 import com.avoscloud.leanchatlib.viewholder.ChatItemImageHolder;
+import com.avoscloud.leanchatlib.viewholder.ChatItemLocationHolder;
 import com.avoscloud.leanchatlib.viewholder.ChatItemTextHolder;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -28,11 +29,13 @@ public class MultipleItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
   private final int ITEM_LEFT_TEXT = 101;
   private final int ITEM_LEFT_IMAGE = 102;
   private final int ITEM_LEFT_AUDIO = 103;
+  private final int ITEM_LEFT_LOCATION = 104;
 
   private final int ITEM_RIGHT = 200;
   private final int ITEM_RIGHT_TEXT = 201;
   private final int ITEM_RIGHT_IMAGE = 202;
   private final int ITEM_RIGHT_AUDIO = 203;
+  private final int ITEM_RIGHT_LOCATION = 204;
 
   // 时间间隔最小为十分钟
   private final static long TIME_INTERVAL = 1000 * 60 * 3;
@@ -76,12 +79,16 @@ public class MultipleItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return new ChatItemImageHolder(parent.getContext(), parent, true);
       case ITEM_LEFT_AUDIO:
         return new ChatItemAudioHolder(parent.getContext(), parent, true);
+      case ITEM_LEFT_LOCATION:
+        return new ChatItemLocationHolder(parent.getContext(), parent, true);
       case ITEM_RIGHT_TEXT:
         return new ChatItemTextHolder(parent.getContext(), parent, false);
       case ITEM_RIGHT_IMAGE:
         return new ChatItemImageHolder(parent.getContext(), parent, false);
       case ITEM_RIGHT_AUDIO:
         return new ChatItemAudioHolder(parent.getContext(), parent, false);
+      case ITEM_RIGHT_LOCATION:
+        return new ChatItemLocationHolder(parent.getContext(), parent, false);
       default:
         //TODO 此处还要判断左右
         return new ChatItemTextHolder(parent.getContext(), parent, true);
@@ -110,6 +117,8 @@ public class MultipleItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return isMe ? ITEM_RIGHT_AUDIO : ITEM_LEFT_AUDIO;
       } else if (typedMessage.getMessageType() == AVIMReservedMessageType.ImageMessageType.getType()) {
         return isMe ? ITEM_RIGHT_IMAGE : ITEM_LEFT_IMAGE;
+      } else if (typedMessage.getMessageType() == AVIMReservedMessageType.LocationMessageType.getType()) {
+        return isMe ? ITEM_LEFT_LOCATION : ITEM_RIGHT_LOCATION;
       } else {
         return isMe ? ITEM_RIGHT : ITEM_LEFT;
       }

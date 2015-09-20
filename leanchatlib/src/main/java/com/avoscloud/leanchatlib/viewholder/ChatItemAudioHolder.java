@@ -5,10 +5,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.avos.avoscloud.im.v2.AVIMMessage;
-import com.avos.avoscloud.im.v2.AVIMTypedMessage;
+import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.controller.MessageHelper;
+import com.avoscloud.leanchatlib.utils.Utils;
 import com.avoscloud.leanchatlib.view.PlayButton;
+
+import java.io.File;
 
 /**
  * Created by wli on 15/9/17.
@@ -33,10 +36,17 @@ public class ChatItemAudioHolder extends ChatItemHolder {
     super.bindData(o);
     AVIMMessage message = (AVIMMessage)o;
     String content =  getContext().getString(R.string.unspport_message_type);
-    if (message instanceof AVIMTypedMessage) {
-      AVIMTypedMessage typedMessage = (AVIMTypedMessage)message;
-      playButton.setLeftSide(!MessageHelper.fromMe(typedMessage));
-      playButton.setPath(MessageHelper.getFilePath(typedMessage));
+    if (message instanceof AVIMAudioMessage) {
+      AVIMAudioMessage audioMessage = (AVIMAudioMessage)message;
+      playButton.setLeftSide(!MessageHelper.fromMe(audioMessage));
+      playButton.setPath(MessageHelper.getFilePath(audioMessage));
+
+      //TODO 应该是点击再加载
+      File file = new File(MessageHelper.getFilePath(audioMessage));
+      if (!file.exists()) {
+        String url = audioMessage.getFileUrl();
+        Utils.downloadFileIfNotExists(url, file);
+      }
     }
   }
 }

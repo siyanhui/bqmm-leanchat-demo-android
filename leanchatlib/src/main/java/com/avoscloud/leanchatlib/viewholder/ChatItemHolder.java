@@ -20,6 +20,10 @@ import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import de.greenrobot.event.EventBus;
 
 /**
@@ -76,6 +80,14 @@ public class ChatItemHolder extends AVCommonViewHolder {
     if (null != user) {
       nameView.setText(user.getUsername());
       ImageLoader.getInstance().displayImage(user.getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
+    } else {
+      try {
+
+        //TODO 加载完应该回调刷新 UI
+        ChatManager.getInstance().getChatManagerAdapter().cacheUserInfoByIdsInBackground(Arrays.asList(message.getFrom()));
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
 
     switch (message.getMessageStatus()) {

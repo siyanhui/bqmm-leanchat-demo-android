@@ -236,10 +236,6 @@ public class ChatFragment extends Fragment {
         case InputBottomBarEvent.INPUTBOTTOMBAR_CAMERA_ACTION:
           selectImageFromCamera();
           break;
-        case InputBottomBarEvent.INPUTBOTTOMBAR_LOCATION_ACTION:
-          //TODO
-//        onAddLocationButtonClicked();
-          break;
       }
     }
   }
@@ -354,7 +350,7 @@ public class ChatFragment extends Fragment {
     }
   }
 
-  private void sendMessage(AVIMTypedMessage message) {
+  public void sendMessage(AVIMTypedMessage message) {
     itemAdapter.addMessage(message);
     itemAdapter.notifyDataSetChanged();
     scrollToBottom();
