@@ -41,6 +41,7 @@
             android:id="@+id/chat_left_layout_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_alignRight="@+id/chat_left_layout_content">
 
             <ProgressBar
@@ -71,5 +72,7 @@
         android:layout_width="@dimen/chat_style_avatar_userHead"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="3dp"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:gravity="left"/>
 </LinearLayout>
