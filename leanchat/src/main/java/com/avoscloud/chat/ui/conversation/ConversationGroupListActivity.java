@@ -1,6 +1,7 @@
 package com.avoscloud.chat.ui.conversation;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,12 @@ import com.avoscloud.chat.base.App;
 import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.chat.service.ConversationChangeEvent;
 import com.avoscloud.chat.service.ConversationManager;
-import com.avoscloud.chat.service.event.FinishEvent;
 import com.avoscloud.chat.ui.chat.ChatRoomActivity;
 import com.avoscloud.chat.ui.view.BaseListAdapter;
 import com.avoscloud.chat.ui.view.BaseListView;
+import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
+import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.view.ViewHolder;
 
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ import java.util.concurrent.CountDownLatch;
 /**
  * Created by lzw on 14-10-7.
  */
-public class ConversationGroupListActivity extends ConversationEventBaseActivity {
+public class ConversationGroupListActivity extends AVBaseActivity {
   @InjectView(R.id.groupList)
   BaseListView<AVIMConversation> groupListView;
 
@@ -50,18 +52,12 @@ public class ConversationGroupListActivity extends ConversationEventBaseActivity
     groupListView.onRefresh();
   }
 
-  @Override
-  public void onEvent(ConversationChangeEvent conversationChangeEvent) {
+  public void onEvent(ConversationChangeEvent event) {
     groupListView.onRefresh();
   }
 
-  @Override
-  public void onEvent(FinishEvent finishEvent) {
-
-  }
-
   private void initList() {
-    conversationGroupListAdapter = new ConversationGroupListAdapter(ctx, convs);
+    conversationGroupListAdapter = new ConversationGroupListAdapter(this, convs);
     groupListView.init(new BaseListView.DataFactory<AVIMConversation>() {
       AVException exception;
       List<AVIMConversation> convs;
@@ -89,7 +85,9 @@ public class ConversationGroupListActivity extends ConversationEventBaseActivity
     groupListView.setItemListener(new BaseListView.ItemListener<AVIMConversation>() {
       @Override
       public void onItemSelected(AVIMConversation item) {
-        ChatRoomActivity.chatByConversation(ConversationGroupListActivity.this, item);
+        Intent intent = new Intent(ConversationGroupListActivity.this, ChatRoomActivity.class);
+        intent.putExtra(Constants.CONVERSATION_ID, item.getConversationId());
+        startActivity(intent);
       }
     });
   }
