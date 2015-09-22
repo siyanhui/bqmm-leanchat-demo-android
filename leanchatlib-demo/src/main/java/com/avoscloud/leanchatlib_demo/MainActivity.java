@@ -15,8 +15,8 @@ import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
-import com.avoscloud.leanchatlib.activity.ChatActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
+import com.avoscloud.leanchatlib.utils.Constants;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -65,9 +65,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
           if (e != null) {
             Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
           } else {
-            chatManager.registerConversation(conversation);
             Intent intent = new Intent(MainActivity.this, ChatRoomActivity.class);
-            intent.putExtra(ChatActivity.CONVID, conversation.getConversationId());
+            intent.putExtra(Constants.CONVERSATION_ID, conversation.getConversationId());
             startActivity(intent);
           }
         }

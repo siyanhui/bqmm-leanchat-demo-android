@@ -14,6 +14,7 @@ import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.chat.service.UserService;
 import com.avoscloud.chat.ui.chat.ChatRoomActivity;
 import com.avoscloud.chat.ui.base_activity.BaseActivity;
+import com.avoscloud.leanchatlib.utils.Constants;
 
 import java.util.List;
 
@@ -108,7 +109,9 @@ public class ContactPersonInfoActivity extends BaseActivity implements OnClickLi
     // TODO Auto-generated method stub
     switch (v.getId()) {
       case R.id.chatBtn:// 发起聊天
-        ChatRoomActivity.chatByUserId(this, user.getObjectId());
+        Intent intent = new Intent(ContactPersonInfoActivity.this, ChatRoomActivity.class);
+        intent.putExtra(Constants.MEMBER_ID, userId);
+        startActivity(intent);
         finish();
         break;
       case R.id.addFriendBtn:// 添加好友

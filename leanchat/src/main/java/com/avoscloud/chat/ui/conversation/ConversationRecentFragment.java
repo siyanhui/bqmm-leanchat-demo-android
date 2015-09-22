@@ -1,6 +1,7 @@
 package com.avoscloud.chat.ui.conversation;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.avoscloud.leanchatlib.controller.MessageHelper;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.MessageEvent;
 import com.avoscloud.leanchatlib.model.Room;
+import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.view.ViewHolder;
 import de.greenrobot.event.EventBus;
 
@@ -76,7 +78,9 @@ public class ConversationRecentFragment extends BaseFragment implements ChatMana
     listView.setItemListener(new BaseListView.ItemListener<Room>() {
       @Override
       public void onItemSelected(Room item) {
-        ChatRoomActivity.chatByConversation(getActivity(), item.getConversation());
+        Intent intent = new Intent(getActivity(), ChatRoomActivity.class);
+        intent.putExtra(Constants.CONVERSATION_ID, item.getConversationId());
+        startActivity(intent);
       }
     });
     listView.setToastIfEmpty(false);

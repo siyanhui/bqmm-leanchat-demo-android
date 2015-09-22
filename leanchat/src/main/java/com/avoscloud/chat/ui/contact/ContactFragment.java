@@ -38,6 +38,8 @@ import com.avoscloud.chat.ui.conversation.ConversationGroupListActivity;
 import com.avoscloud.chat.ui.view.BaseListView;
 import com.avoscloud.chat.ui.view.EnLetterView;
 import com.avoscloud.chat.util.CharacterParser;
+import com.avoscloud.leanchatlib.utils.Constants;
+
 import de.greenrobot.event.EventBus;
 
 import java.util.ArrayList;
@@ -170,7 +172,9 @@ public class ContactFragment extends BaseFragment {
     friendsList.setItemListener(new BaseListView.ItemListener<SortUser>() {
       @Override
       public void onItemSelected(SortUser item) {
-        ChatRoomActivity.chatByUserId(getActivity(), item.getInnerUser().getObjectId());
+        Intent intent = new Intent(getActivity(), ChatRoomActivity.class);
+        intent.putExtra(Constants.MEMBER_ID, item.getInnerUser().getObjectId());
+        startActivity(intent);
       }
 
       @Override
