@@ -14,9 +14,15 @@ public class Constants {
   public static final String ACTIVITY_TITLE = getPrefixConstant("activity_title");
 
 
+  //Notification
+  public static final String NOTOFICATION_TAG = getPrefixConstant("notification_tag");
+  public static final String NOTIFICATION_SINGLE_CHAT = Constants.getPrefixConstant("notification_single_chat");
+  public static final String NOTIFICATION_GROUP_CHAT = Constants.getPrefixConstant("notification_group_chat");
+  public static final String NOTIFICATION_SYSTEM = Constants.getPrefixConstant("notification_system_chat");
+
   public static final String SQUARE_CONVERSATION_ID = "55cd829e60b2b52cda834469";
 
-  private static String getPrefixConstant(String str) {
+  public static String getPrefixConstant(String str) {
     return LEANMESSAGE_CONSTANTS_PREFIX + str;
   }
 }
