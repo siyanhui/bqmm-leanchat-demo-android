@@ -22,14 +22,15 @@ import com.avoscloud.chat.ui.view.BaseListView;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.controller.MessageHelper;
+import com.avoscloud.leanchatlib.event.MessageReceiptEvent;
 import com.avoscloud.leanchatlib.model.ConversationType;
-import com.avoscloud.leanchatlib.model.MessageEvent;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.view.ViewHolder;
 import de.greenrobot.event.EventBus;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -112,7 +113,7 @@ public class ConversationRecentFragment extends BaseFragment implements ChatMana
     eventBus.unregister(this);
   }
 
-  public void onEvent(MessageEvent event) {
+  public void onEvent(MessageReceiptEvent event) {
     if (!hidden) {
       listView.onRefresh();
     }

@@ -1,11 +1,12 @@
-package com.avoscloud.leanchatlib.model;
+package com.avoscloud.leanchatlib.event;
 
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 
 /**
- * Created by lzw on 15/3/4.
+ * Created by wli on 15/9/23.
+ * 此处仅仅在 ConversationRecentFragment 使用，其他地方的更细都走回调
  */
-public class MessageEvent {
+public class MessageReceiptEvent {
   public enum Type {
     Come, Receipt
   }
@@ -13,7 +14,7 @@ public class MessageEvent {
   private AVIMTypedMessage message;
   private Type type;
 
-  public MessageEvent(AVIMTypedMessage message, Type type) {
+  public MessageReceiptEvent(AVIMTypedMessage message, Type type) {
     this.message = message;
     this.type = type;
   }

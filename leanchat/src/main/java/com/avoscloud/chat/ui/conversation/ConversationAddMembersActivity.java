@@ -34,7 +34,6 @@ import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.view.ViewHolder;
-import de.greenrobot.event.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +124,7 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
             dialog.dismiss();
             if (filterException(e)) {
               Utils.toast(R.string.conversation_inviteSucceed);
-              conversationManager.postConvChanged(conversation);
+              setResult(RESULT_OK);
               finish();
             }
           }

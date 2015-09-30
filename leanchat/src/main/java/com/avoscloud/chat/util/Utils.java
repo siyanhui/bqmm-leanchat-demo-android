@@ -2,9 +2,6 @@ package com.avoscloud.chat.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -109,10 +106,6 @@ public class Utils {
     showInfoDialog(cxt, cxt.getString(msgId), cxt.getString(titleId));
   }
 
-  public static void notifyMsg(Context cxt, Class<?> toClz, int titleId, int msgId, int notifyId) {
-    notifyMsg(cxt, toClz, cxt.getString(titleId), null, cxt.getString(msgId), notifyId);
-  }
-
   public static String getTodayDayStr() {
     String dateStr;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -150,25 +143,6 @@ public class Utils {
 
   public static String formatString(Context cxt, int id, Object... args) {
     return String.format(cxt.getString(id), args);
-  }
-
-  public static void notifyMsg(Context context, Class<?> clz, String title, String ticker, String msg, int notifyId) {
-    int icon = context.getApplicationInfo().icon;
-    PendingIntent pend = PendingIntent.getActivity(context, 0,
-        new Intent(context, clz), 0);
-    Notification.Builder builder = new Notification.Builder(context);
-    if (ticker == null) {
-      ticker = msg;
-    }
-    builder.setContentIntent(pend)
-        .setSmallIcon(icon)
-        .setWhen(System.currentTimeMillis())
-        .setTicker(ticker)
-        .setContentTitle(title)
-        .setContentText(msg)
-        .setAutoCancel(true);
-    NotificationManager man = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-    man.notify(notifyId, builder.getNotification());
   }
 
   public static void sleep(int partMilli) {

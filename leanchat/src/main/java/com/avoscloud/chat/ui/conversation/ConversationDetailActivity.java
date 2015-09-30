@@ -24,7 +24,6 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.base.App;
 import com.avoscloud.chat.service.CacheService;
-import com.avoscloud.chat.service.ConversationChangeEvent;
 import com.avoscloud.chat.service.ConversationManager;
 import com.avoscloud.chat.service.UserService;
 import com.avoscloud.chat.ui.base_activity.UpdateContentActivity;
@@ -51,7 +50,7 @@ import java.util.List;
 public class ConversationDetailActivity extends AVBaseActivity implements AdapterView.OnItemClickListener,
     AdapterView.OnItemLongClickListener {
   private static final int ADD_MEMBERS = 0;
-  private static final int INTENT_NAME = 0;
+  private static final int INTENT_NAME = 1;
   private static List<AVUser> members = new ArrayList<AVUser>();
   @InjectView(R.id.usersGrid)
   ExpandGridView usersGrid;
@@ -92,10 +91,6 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
     }
   }
 
-  public void onEvent(ConversationChangeEvent event) {
-    refresh();
-  }
-
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuItem invite = menu.add(0, ADD_MEMBERS, 0, R.string.conversation_detail_invite);
@@ -108,7 +103,7 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
     int menuId = item.getItemId();
     if (menuId == ADD_MEMBERS) {
       Intent intent = new Intent(this, ConversationAddMembersActivity.class);
-      startActivity(intent);
+      startActivityForResult(intent, ADD_MEMBERS);
     }
     return super.onMenuItemSelected(featureId, item);
   }
@@ -223,10 +218,12 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
           @Override
           public void done(AVIMException e) {
             if (filterException(e)) {
-              ConversationDetailActivity.this.refresh();
+              refresh();
             }
           }
         });
+      } else if (requestCode == ADD_MEMBERS) {
+        refresh();
       }
     }
     super.onActivityResult(requestCode, resultCode, data);

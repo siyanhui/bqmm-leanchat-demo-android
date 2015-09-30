@@ -1,15 +1,11 @@
 package com.avoscloud.chat.entity.avobject;
 
 import com.avos.avoscloud.AVFile;
-import com.avos.avoscloud.AVInstallation;
 import com.avos.avoscloud.AVUser;
-import com.avoscloud.leanchatlib.utils.LogUtils;
 
 public class User {
   public static final String USERNAME = "username";
-  public static final String PASSWORD = "password";
   public static final String AVATAR = "avatar";
-  public static final String FRIENDS = "friends";
   public static final String LOCATION = "location";
   public static final String INSTALLATION = "installation";
 

@@ -16,7 +16,6 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.base.App;
 import com.avoscloud.chat.service.CacheService;
-import com.avoscloud.chat.service.ConversationChangeEvent;
 import com.avoscloud.chat.service.ConversationManager;
 import com.avoscloud.chat.ui.chat.ChatRoomActivity;
 import com.avoscloud.chat.ui.view.BaseListAdapter;
@@ -52,7 +51,9 @@ public class ConversationGroupListActivity extends AVBaseActivity {
     groupListView.onRefresh();
   }
 
-  public void onEvent(ConversationChangeEvent event) {
+  @Override
+  protected void onResume() {
+    super.onResume();
     groupListView.onRefresh();
   }
 
@@ -77,7 +78,6 @@ public class ConversationGroupListActivity extends AVBaseActivity {
         if (exception != null) {
           throw exception;
         }
-        CacheService.registerConvs(convs);
         return convs;
       }
     }, conversationGroupListAdapter);

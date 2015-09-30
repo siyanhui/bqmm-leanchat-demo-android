@@ -40,9 +40,7 @@ public class AVChatActivity extends AVBaseActivity {
     Bundle extras = intent.getExtras();
     if (null != extras) {
       if (extras.containsKey(Constants.MEMBER_ID)) {
-        String memberId = extras.getString(Constants.MEMBER_ID);
-        setTitle(memberId);
-        getConversation(memberId);
+        getConversation(extras.getString(Constants.MEMBER_ID));
       } else if (extras.containsKey(Constants.CONVERSATION_ID)) {
         String conversationId = extras.getString(Constants.CONVERSATION_ID);
         updateConversation(AVIMClient.getInstance(ChatManager.getInstance().getSelfId()).getConversation(conversationId));

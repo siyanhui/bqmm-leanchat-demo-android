@@ -53,8 +53,8 @@ public class ConversationManager {
     }
 
     private void refreshCacheAndNotify(AVIMConversation conversation) {
-      CacheService.registerConv(conversation);
-      getInstance().postConvChanged(conversation);
+      ConversationChangeEvent conversationChangeEvent = new ConversationChangeEvent(conversation);
+      EventBus.getDefault().post(conversationChangeEvent);
     }
 
     @Override
@@ -95,24 +95,10 @@ public class ConversationManager {
     for (Room room : rooms) {
       convids.add(room.getConversationId());
     }
-    final AVException[] es = new AVException[1];
-    final CountDownLatch latch = new CountDownLatch(1);
-    CacheService.cacheConvs(convids, new AVIMConversationCallback() {
-      @Override
-      public void done(AVIMException e) {
-        es[0] = e;
-        latch.countDown();
-      }
-    });
-    latch.await();
-    if (es[0] != null) {
-      throw es[0];
-    }
     final List<Room> validRooms = new ArrayList<>();
     for (Room room : rooms) {
-      AVIMConversation conversation = CacheService.lookupConv(room.getConversationId());
+      AVIMConversation conversation = ChatManager.getInstance().getConversation(room.getConversationId());
       if (ConversationHelper.isValidConversation(conversation)) {
-        validRooms.add(room);
       } else {
         LogUtils.e("conversation is invalid, please check", getConversationInfo(conversation));
       }
@@ -120,7 +106,7 @@ public class ConversationManager {
 
     List<String> userIds = new ArrayList<>();
     for (Room room : validRooms) {
-      AVIMConversation conversation = CacheService.lookupConv(room.getConversationId());
+      AVIMConversation conversation = ChatManager.getInstance().getConversation(room.getConversationId());
       room.setConversation(conversation);
       room.setLastMessage(ChatManager.getInstance().queryLatestMessage(conversation));
       if (ConversationHelper.typeOfConversation(conversation) == ConversationType.Single) {
@@ -166,21 +152,12 @@ public class ConversationManager {
             callback.done(e);
           }
         } else {
-          postConvChanged(conv);
           if (callback != null) {
             callback.done(null);
           }
         }
       }
     });
-  }
-
-  public void postConvChanged(AVIMConversation conv) {
-    if (CacheService.getCurrentConversation() != null && CacheService.getCurrentConversation().getConversationId().equals(conv.getConversationId())) {
-      CacheService.setCurrentConversation(conv);
-    }
-    ConversationChangeEvent conversationChangeEvent = new ConversationChangeEvent(conv);
-    EventBus.getDefault().post(conversationChangeEvent);
   }
 
   public void findGroupConversationsIncludeMe(AVIMConversationQueryCallback callback) {
