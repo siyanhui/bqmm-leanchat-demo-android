@@ -118,7 +118,7 @@ public class MultipleItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       } else if (typedMessage.getMessageType() == AVIMReservedMessageType.ImageMessageType.getType()) {
         return isMe ? ITEM_RIGHT_IMAGE : ITEM_LEFT_IMAGE;
       } else if (typedMessage.getMessageType() == AVIMReservedMessageType.LocationMessageType.getType()) {
-        return isMe ? ITEM_LEFT_LOCATION : ITEM_RIGHT_LOCATION;
+        return isMe ? ITEM_RIGHT_LOCATION : ITEM_LEFT_LOCATION;
       } else {
         return isMe ? ITEM_RIGHT : ITEM_LEFT;
       }

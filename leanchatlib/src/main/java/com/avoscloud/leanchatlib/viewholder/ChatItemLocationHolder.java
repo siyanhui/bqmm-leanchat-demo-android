@@ -3,6 +3,7 @@ package com.avoscloud.leanchatlib.viewholder;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.avos.avoscloud.im.v2.AVIMMessage;
@@ -28,6 +29,7 @@ public class ChatItemLocationHolder extends ChatItemHolder {
     super.initView();
     conventLayout.addView(View.inflate(getContext(), R.layout.chat_item_location, null));
     contentView = (TextView)itemView.findViewById(R.id.locationView);
+    conventLayout.setBackgroundResource(isLeft ? R.drawable.chat_left_qp : R.drawable.chat_right_qp);
     contentView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
