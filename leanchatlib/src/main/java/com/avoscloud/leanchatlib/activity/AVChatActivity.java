@@ -3,6 +3,8 @@ package com.avoscloud.leanchatlib.activity;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
+
 import com.avoscloud.leanchatlib.R;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
@@ -47,7 +49,6 @@ public class AVChatActivity extends AVBaseActivity {
       } else {}
     }
   }
-
 
   protected void initActionBar(String title) {
     ActionBar actionBar = getActionBar();
