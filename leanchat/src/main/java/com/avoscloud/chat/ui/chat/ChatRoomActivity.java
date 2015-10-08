@@ -20,6 +20,7 @@ import com.avoscloud.leanchatlib.event.ImageItemClickEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarLocationClickEvent;
 import com.avoscloud.leanchatlib.event.LocationItemClickEvent;
 import com.avoscloud.leanchatlib.utils.Constants;
+import com.avoscloud.leanchatlib.utils.NotificationUtils;
 
 /**
  * Created by lzw on 15/4/24.
@@ -35,8 +36,7 @@ public class ChatRoomActivity extends AVChatActivity {
 
   @Override
   protected void onResume() {
-    ChatManagerAdapterImpl chatManagerAdapter = (ChatManagerAdapterImpl) ChatManager.getInstance().getChatManagerAdapter();
-    chatManagerAdapter.cancelNotification();
+    NotificationUtils.cancelNotification(this);
     super.onResume();
   }
 

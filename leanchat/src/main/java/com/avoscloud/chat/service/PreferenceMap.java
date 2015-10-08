@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import com.avos.avoscloud.AVGeoPoint;
-import com.avos.avoscloud.AVUser;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.base.App;
-import com.avoscloud.chat.entity.avobject.User;
 import com.avoscloud.chat.util.Logger;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.Constants;
 
 /**
  * Created by lzw on 14-6-19.
@@ -44,13 +44,13 @@ public class PreferenceMap {
 
   public static PreferenceMap getCurUserPrefDao(Context ctx) {
     if (currentUserPreferenceMap == null) {
-      currentUserPreferenceMap = new PreferenceMap(ctx, User.getCurrentUserId());
+      currentUserPreferenceMap = new PreferenceMap(ctx, LeanchatUser.getCurrentUser().getObjectId());
     }
     return currentUserPreferenceMap;
   }
 
   public static PreferenceMap getMyPrefDao(Context ctx) {
-    AVUser user = AVUser.getCurrentUser();
+    LeanchatUser user = LeanchatUser.getCurrentUser();
     if (user == null) {
       return new PreferenceMap(ctx, "default_pref");
     }
@@ -130,7 +130,7 @@ public class PreferenceMap {
 
 
   public int getNearbyOrder() {
-    return pref.getInt(NEARBY_ORDER, UserService.ORDER_UPDATED_AT);
+    return pref.getInt(NEARBY_ORDER, Constants.ORDER_UPDATED_AT);
   }
 
   public void setNearbyOrder(int nearbyOrder) {

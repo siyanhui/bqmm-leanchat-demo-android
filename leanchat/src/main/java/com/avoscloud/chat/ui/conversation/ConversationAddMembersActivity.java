@@ -24,7 +24,6 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.chat.service.ConversationManager;
-import com.avoscloud.chat.service.UserService;
 import com.avoscloud.chat.ui.chat.ChatRoomActivity;
 import com.avoscloud.chat.ui.view.BaseCheckListAdapter;
 import com.avoscloud.chat.util.Utils;
@@ -32,8 +31,11 @@ import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.model.ConversationType;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
+import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.view.ViewHolder;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,9 +66,9 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
   }
 
   private void setListData() {
-    UserService.findFriendsWithCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK, new FindCallback<AVUser>() {
+    AVUser.getCurrentUser(LeanchatUser.class).findFriendsWithCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK, new FindCallback<LeanchatUser>() {
       @Override
-      public void done(List<AVUser> users, AVException e) {
+      public void done(List<LeanchatUser> users, AVException e) {
         if (filterException(e)) {
           List<String> userIds = new ArrayList<String>();
           for (AVUser user : users) {
@@ -157,7 +159,7 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
       AVUser user = CacheService.lookupUser(userId);
       ImageView avatarView = ViewHolder.findViewById(conView, R.id.avatar);
       TextView nameView = ViewHolder.findViewById(conView, R.id.username);
-      UserService.displayAvatar(user, avatarView);
+      ImageLoader.getInstance().displayImage(((LeanchatUser)user).getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
       nameView.setText(user.getUsername());
       CheckBox checkBox = ViewHolder.findViewById(conView, R.id.checkbox);
       setCheckBox(checkBox, position);

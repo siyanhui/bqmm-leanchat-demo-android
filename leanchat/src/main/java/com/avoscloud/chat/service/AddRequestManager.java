@@ -4,15 +4,15 @@ import android.content.Context;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.CountCallback;
+import com.avos.avoscloud.FollowCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.base.App;
-import com.avoscloud.chat.base.Constant;
 import com.avoscloud.chat.entity.avobject.AddRequest;
 import com.avoscloud.chat.util.SimpleNetTask;
 import com.avoscloud.chat.util.Utils;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.LogUtils;
 
 import java.util.List;
@@ -57,7 +57,7 @@ public class AddRequestManager {
   public void countUnreadRequests(final CountCallback countCallback) {
     AVQuery<AddRequest> addRequestAVQuery = AVObject.getQuery(AddRequest.class);
     addRequestAVQuery.setCachePolicy(AVQuery.CachePolicy.NETWORK_ONLY);
-    addRequestAVQuery.whereEqualTo(AddRequest.TO_USER, AVUser.getCurrentUser());
+    addRequestAVQuery.whereEqualTo(AddRequest.TO_USER, LeanchatUser.getCurrentUser());
     addRequestAVQuery.whereEqualTo(AddRequest.IS_READ, false);
     addRequestAVQuery.countInBackground(new CountCallback() {
       @Override
@@ -90,19 +90,19 @@ public class AddRequestManager {
   }
 
   public List<AddRequest> findAddRequests(int skip, int limit) throws AVException {
-    AVUser user = AVUser.getCurrentUser();
+    LeanchatUser user = LeanchatUser.getCurrentUser();
     AVQuery<AddRequest> q = AVObject.getQuery(AddRequest.class);
     q.include(AddRequest.FROM_USER);
     q.skip(skip);
     q.limit(limit);
     q.whereEqualTo(AddRequest.TO_USER, user);
-    q.orderByDescending(Constant.CREATED_AT);
+    q.orderByDescending(AVObject.CREATED_AT);
     q.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     return q.find();
   }
 
   public void agreeAddRequest(final AddRequest addRequest, final SaveCallback saveCallback) {
-    UserService.addFriend(addRequest.getFromUser().getObjectId(), new SaveCallback() {
+    addFriend(addRequest.getFromUser().getObjectId(), new SaveCallback() {
       @Override
       public void done(AVException e) {
         if (e != null) {
@@ -120,8 +120,20 @@ public class AddRequestManager {
     });
   }
 
-  private void createAddRequest(AVUser toUser) throws Exception {
-    AVUser curUser = AVUser.getCurrentUser();
+    public static void addFriend(String friendId, final SaveCallback saveCallback) {
+      LeanchatUser user = LeanchatUser.getCurrentUser();
+    user.followInBackground(friendId, new FollowCallback() {
+      @Override
+      public void done(AVObject object, AVException e) {
+        if (saveCallback != null) {
+          saveCallback.done(e);
+        }
+      }
+    });
+  }
+
+  private void createAddRequest(LeanchatUser toUser) throws Exception {
+    LeanchatUser curUser = LeanchatUser.getCurrentUser();
     AVQuery<AddRequest> q = AVObject.getQuery(AddRequest.class);
     q.whereEqualTo(AddRequest.FROM_USER, curUser);
     q.whereEqualTo(AddRequest.TO_USER, toUser);
@@ -150,7 +162,7 @@ public class AddRequestManager {
     }
   }
 
-  public void createAddRequestInBackground(Context ctx, final AVUser user) {
+  public void createAddRequestInBackground(Context ctx, final LeanchatUser user) {
     new SimpleNetTask(ctx) {
       @Override
       protected void doInBack() throws Exception {

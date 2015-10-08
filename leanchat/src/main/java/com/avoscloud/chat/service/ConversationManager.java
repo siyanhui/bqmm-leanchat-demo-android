@@ -13,7 +13,6 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.base.App;
-import com.avoscloud.chat.base.Constant;
 import com.avoscloud.chat.util.Logger;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
@@ -21,6 +20,7 @@ import com.avoscloud.leanchatlib.controller.MessageAgent;
 import com.avoscloud.leanchatlib.controller.MessageHelper;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.Room;
+import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.LogUtils;
 import de.greenrobot.event.EventBus;
 
@@ -31,7 +31,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by lzw on 15/2/11.
@@ -165,7 +164,7 @@ public class ConversationManager {
     if (null != conversationQuery) {
       conversationQuery.containsMembers(Arrays.asList(ChatManager.getInstance().getSelfId()));
       conversationQuery.whereEqualTo(ConversationType.ATTR_TYPE_KEY, ConversationType.Group.getValue());
-      conversationQuery.orderByDescending(Constant.UPDATED_AT);
+      conversationQuery.orderByDescending(Constants.UPDATED_AT);
       conversationQuery.limit(1000);
       conversationQuery.findInBackground(callback);
     } else if (null != callback) {
@@ -176,7 +175,7 @@ public class ConversationManager {
   public void findConversationsByConversationIds(List<String> ids, AVIMConversationQueryCallback callback) {
     AVIMConversationQuery conversationQuery = ChatManager.getInstance().getConversationQuery();
     if (ids.size() > 0 && null != conversationQuery) {
-      conversationQuery.whereContainsIn(Constant.OBJECT_ID, ids);
+      conversationQuery.whereContainsIn(Constants.OBJECT_ID, ids);
       conversationQuery.setLimit(1000);
       conversationQuery.findInBackground(callback);
     } else if (null != callback) {

@@ -10,9 +10,10 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.entity.SortUser;
-import com.avoscloud.chat.service.UserService;
 import com.avoscloud.chat.ui.view.BaseListAdapter;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.view.ViewHolder;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 @SuppressLint("DefaultLocale")
 public class ContactFragmentAdapter extends BaseListAdapter<SortUser> implements SectionIndexer {
@@ -34,7 +35,8 @@ public class ContactFragmentAdapter extends BaseListAdapter<SortUser> implements
     SortUser friend = datas.get(position);
     final String name = friend.getInnerUser().getUsername();
 
-    UserService.displayAvatar(friend.getInnerUser(), avatarView);
+    ImageLoader.getInstance().displayImage(friend.getInnerUser().getAvatarUrl(),
+      avatarView, com.avoscloud.leanchatlib.utils.PhotoUtils.avatarImageOptions);
     nameView.setText(name);
 
     int section = getSectionForPosition(position);

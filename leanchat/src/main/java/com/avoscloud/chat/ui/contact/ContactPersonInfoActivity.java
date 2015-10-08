@@ -11,10 +11,12 @@ import com.avos.avoscloud.AVUser;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.service.AddRequestManager;
 import com.avoscloud.chat.service.CacheService;
-import com.avoscloud.chat.service.UserService;
 import com.avoscloud.chat.ui.chat.ChatRoomActivity;
 import com.avoscloud.chat.ui.base_activity.BaseActivity;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
+import com.avoscloud.leanchatlib.utils.PhotoUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class ContactPersonInfoActivity extends BaseActivity implements OnClickLi
   RelativeLayout avatarLayout, genderLayout;
 
   String userId = "";
-  AVUser user;
+  LeanchatUser user;
 
   public static void goPersonInfo(Context ctx, String userId) {
     Intent intent = new Intent(ctx, ContactPersonInfoActivity.class);
@@ -100,7 +102,7 @@ public class ContactPersonInfoActivity extends BaseActivity implements OnClickLi
   }
 
   private void updateView(AVUser user) {
-    UserService.displayAvatar(user, avatarView);
+    ImageLoader.getInstance().displayImage(((LeanchatUser)user).getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
     usernameView.setText(user.getUsername());
   }
 

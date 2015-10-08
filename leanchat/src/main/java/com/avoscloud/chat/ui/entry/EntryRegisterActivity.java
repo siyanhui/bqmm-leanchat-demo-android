@@ -5,13 +5,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
-import com.avos.avoscloud.AVUser;
+
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.SignUpCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.base.App;
-import com.avoscloud.chat.service.UserService;
 import com.avoscloud.chat.ui.MainActivity;
 import com.avoscloud.chat.util.Utils;
-import com.avoscloud.chat.util.NetAsyncTask;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
 
 public class EntryRegisterActivity extends EntryBaseActivity {
   View registerButton;
@@ -59,24 +60,16 @@ public class EntryRegisterActivity extends EntryBaseActivity {
       return;
     }
 
-    new NetAsyncTask(ctx) {
+    LeanchatUser.signUpByNameAndPwd(name, password, new SignUpCallback() {
       @Override
-      protected void doInBack() throws Exception {
-        AVUser user = UserService.signUp(name, password);
-        user.setFetchWhenSave(true);
-        user.save();
-      }
-
-      @Override
-      protected void onPost(Exception e) {
+      public void done(AVException e) {
         if (e != null) {
           Utils.toast(App.ctx.getString(R.string.registerFailed) + e.getMessage());
         } else {
           Utils.toast(R.string.registerSucceed);
-          UserService.updateUserLocation();
           MainActivity.goMainActivityFromActivity(EntryRegisterActivity.this);
         }
       }
-    }.execute();
+    });
   }
 }

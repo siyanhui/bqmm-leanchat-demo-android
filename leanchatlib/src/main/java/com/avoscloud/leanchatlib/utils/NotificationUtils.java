@@ -17,6 +17,8 @@ import java.util.Random;
  */
 public class NotificationUtils {
 
+  private static final int REPLY_NOTIFY_ID = 1;
+
   /**
    * tag list，用来标记是否应该展示 Notification
    * 比如已经在聊天页面了，实际就不应该再弹出 notification
@@ -58,8 +60,8 @@ public class NotificationUtils {
 
   public static void showNotification(Context context, String title, String content, String sound, Intent intent) {
     intent.setFlags(0);
-    int notificationId = (new Random()).nextInt();
-    PendingIntent contentIntent = PendingIntent.getBroadcast(context, notificationId, intent, 0);
+//    int notificationId = (new Random()).nextInt();
+    PendingIntent contentIntent = PendingIntent.getBroadcast(context, REPLY_NOTIFY_ID, intent, 0);
     NotificationCompat.Builder mBuilder =
       new NotificationCompat.Builder(context)
         .setSmallIcon(context.getApplicationInfo().icon)
@@ -72,6 +74,11 @@ public class NotificationUtils {
     if (sound != null && sound.trim().length() > 0) {
       notification.sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + sound);
     }
-    manager.notify(notificationId, notification);
+    manager.notify(REPLY_NOTIFY_ID, notification);
+  }
+
+  public static void cancelNotification(Context context) {
+    NotificationManager nMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    nMgr.cancel(REPLY_NOTIFY_ID);
   }
 }

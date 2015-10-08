@@ -13,22 +13,23 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SaveCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.entity.avobject.AddRequest;
-import com.avoscloud.chat.entity.avobject.User;
 import com.avoscloud.chat.service.AddRequestManager;
 import com.avoscloud.chat.service.ConversationManager;
 import com.avoscloud.chat.service.PreferenceMap;
-import com.avoscloud.chat.service.UserService;
 import com.avoscloud.chat.service.event.ContactRefreshEvent;
 import com.avoscloud.chat.ui.base_activity.BaseActivity;
 import com.avoscloud.chat.ui.view.BaseListAdapter;
 import com.avoscloud.chat.ui.view.BaseListView;
 import com.avoscloud.chat.util.RefreshTask;
 import com.avoscloud.chat.util.Refreshable;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.view.ViewHolder;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import de.greenrobot.event.EventBus;
 
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class ContactNewFriendActivity extends BaseActivity implements
           }
         }
         addRequests = filters;
-        PreferenceMap preferenceMap = new PreferenceMap(ctx, User.getCurrentUserId());
+        PreferenceMap preferenceMap = new PreferenceMap(ctx, LeanchatUser.getCurrentUser().getObjectId());
         preferenceMap.setAddRequestN(addRequests.size());
         return addRequests;
       }
@@ -150,8 +151,8 @@ public class ContactNewFriendActivity extends BaseActivity implements
       final Button addBtn = ViewHolder.findViewById(conView, R.id.add);
       View agreedView = ViewHolder.findViewById(conView, R.id.agreedView);
 
-      AVUser from = addRequest.getFromUser();
-      UserService.displayAvatar(from, avatarView);
+      LeanchatUser from = (LeanchatUser)addRequest.getFromUser();
+      ImageLoader.getInstance().displayImage(from.getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
       if (from != null) {
         nameView.setText(from.getUsername());
       }

@@ -9,13 +9,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.event.ImTypeMessageResendEvent;
 import com.avoscloud.leanchatlib.event.LeftChatItemClickEvent;
-import com.avoscloud.leanchatlib.model.ConversationType;
-import com.avoscloud.leanchatlib.model.UserInfo;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -76,7 +77,7 @@ public class ChatItemHolder extends AVCommonViewHolder {
     message = (AVIMMessage)o;
     timeView.setText(Utils.millisecsToDateString(message.getTimestamp()));
 
-    UserInfo user = ChatManager.getInstance().getChatManagerAdapter().getUserInfoById(message.getFrom());
+    LeanchatUser user = AVUserCacheUtils.getCachedUser(message.getFrom());
     if (null != user) {
       nameView.setText(user.getUsername());
       ImageLoader.getInstance().displayImage(user.getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);

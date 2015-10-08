@@ -6,6 +6,15 @@ package com.avoscloud.leanchatlib.utils;
  */
 public class Constants {
 
+  public static final String OBJECT_ID = "objectId";
+  public static final int PAGE_SIZE = 10;
+  public static final String CREATED_AT = "createdAt";
+  public static final String UPDATED_AT = "updatedAt";
+
+  //TODO 还不知道这俩货是干嘛的
+  public static final int ORDER_UPDATED_AT = 1;
+  public static final int ORDER_DISTANCE = 0;
+
   private static final String LEANMESSAGE_CONSTANTS_PREFIX = "com.avoscloud.leanchatlib.";
 
   public static final String MEMBER_ID = getPrefixConstant("member_id");
@@ -19,8 +28,6 @@ public class Constants {
   public static final String NOTIFICATION_SINGLE_CHAT = Constants.getPrefixConstant("notification_single_chat");
   public static final String NOTIFICATION_GROUP_CHAT = Constants.getPrefixConstant("notification_group_chat");
   public static final String NOTIFICATION_SYSTEM = Constants.getPrefixConstant("notification_system_chat");
-
-  public static final String SQUARE_CONVERSATION_ID = "55cd829e60b2b52cda834469";
 
   public static String getPrefixConstant(String str) {
     return LEANMESSAGE_CONSTANTS_PREFIX + str;

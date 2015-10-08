@@ -38,7 +38,6 @@ public class ChatItemTextHolder extends ChatItemHolder {
   public void bindData(Object o) {
     super.bindData(o);
     AVIMMessage message = (AVIMMessage)o;
-    String content =  getContext().getString(R.string.unspport_message_type);
     if (message instanceof AVIMTextMessage) {
       AVIMTextMessage textMessage = (AVIMTextMessage) message;
       contentView.setText(EmotionHelper.replace(ChatManager.getContext(), textMessage.getText()));

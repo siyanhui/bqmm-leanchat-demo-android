@@ -10,11 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.avos.avoscloud.AVUser;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.chat.service.ConversationManager;
-import com.avoscloud.chat.service.UserService;
 import com.avoscloud.chat.ui.base_activity.BaseFragment;
 import com.avoscloud.chat.ui.chat.ChatRoomActivity;
 import com.avoscloud.chat.ui.view.BaseListAdapter;
@@ -24,13 +22,15 @@ import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.controller.MessageHelper;
 import com.avoscloud.leanchatlib.event.MessageReceiptEvent;
 import com.avoscloud.leanchatlib.model.ConversationType;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.view.ViewHolder;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import de.greenrobot.event.EventBus;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -144,8 +144,8 @@ public class ConversationRecentFragment extends BaseFragment implements ChatMana
       TextView recentUnreadView = ViewHolder.findViewById(convertView, R.id.recent_unread);
 
       if (ConversationHelper.typeOfConversation(room.getConversation()) == ConversationType.Single) {
-        AVUser user = CacheService.lookupUser(ConversationHelper.otherIdOfConversation(room.getConversation()));
-        UserService.displayAvatar(user, recentAvatarView);
+        LeanchatUser user = (LeanchatUser)CacheService.lookupUser(ConversationHelper.otherIdOfConversation(room.getConversation()));
+        ImageLoader.getInstance().displayImage(user.getAvatarUrl(), recentAvatarView, com.avoscloud.leanchatlib.utils.PhotoUtils.avatarImageOptions);
       } else {
         recentAvatarView.setImageBitmap(ConversationManager.getConversationIcon(room.getConversation()));
       }

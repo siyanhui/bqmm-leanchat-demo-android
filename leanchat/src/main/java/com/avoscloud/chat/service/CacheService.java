@@ -3,8 +3,8 @@ package com.avoscloud.chat.service;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
-import com.avoscloud.chat.base.Constant;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,21 +16,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by lzw on 14/12/19.
+ * TODO 此类需要与 AVUserCacheUtils 合并
  */
 public class CacheService {
-  private static Map<String, AVUser> cachedUsers = new ConcurrentHashMap<>();
+  private static Map<String, LeanchatUser> cachedUsers = new ConcurrentHashMap<>();
   private static volatile List<String> friendIds = new ArrayList<String>();
 
-  public static AVUser lookupUser(String userId) {
+  public static LeanchatUser lookupUser(String userId) {
     return cachedUsers.get(userId);
   }
 
-  public static void registerUser(AVUser user) {
+  public static void registerUser(LeanchatUser user) {
     cachedUsers.put(user.getObjectId(), user);
   }
 
-  public static void registerUsers(List<AVUser> users) {
-    for (AVUser user : users) {
+  public static void registerUsers(List<LeanchatUser> users) {
+    for (LeanchatUser user : users) {
       registerUser(user);
     }
   }
@@ -47,24 +48,18 @@ public class CacheService {
         uncachedIds.add(id);
       }
     }
-    List<AVUser> foundUsers = findUsers(new ArrayList<String>(uncachedIds));
+    List<LeanchatUser> foundUsers = findUsers(new ArrayList<String>(uncachedIds));
     registerUsers(foundUsers);
   }
 
-  public static List<AVUser> findUsers(List<String> userIds) throws AVException {
+  public static List<LeanchatUser> findUsers(List<String> userIds) throws AVException {
     if (userIds.size() <= 0) {
       return Collections.EMPTY_LIST;
     }
-    AVQuery<AVUser> q = AVUser.getQuery();
-    q.whereContainedIn(Constant.OBJECT_ID, userIds);
+    AVQuery<LeanchatUser> q = AVUser.getQuery(LeanchatUser.class);
+    q.whereContainedIn(Constants.OBJECT_ID, userIds);
     q.setLimit(1000);
     q.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     return q.find();
-  }
-
-  public static void cacheUserIfNone(String userId) throws AVException {
-    if (lookupUser(userId) == null) {
-      registerUser(UserService.findUser(userId));
-    }
   }
 }

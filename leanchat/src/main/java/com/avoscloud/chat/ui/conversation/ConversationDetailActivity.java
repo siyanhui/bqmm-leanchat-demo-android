@@ -25,7 +25,6 @@ import com.avoscloud.chat.R;
 import com.avoscloud.chat.base.App;
 import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.chat.service.ConversationManager;
-import com.avoscloud.chat.service.UserService;
 import com.avoscloud.chat.ui.base_activity.UpdateContentActivity;
 import com.avoscloud.chat.ui.contact.ContactPersonInfoActivity;
 import com.avoscloud.chat.ui.view.ExpandGridView;
@@ -37,8 +36,13 @@ import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.controller.RoomsTable;
 import com.avoscloud.leanchatlib.model.ConversationType;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
+import com.avoscloud.leanchatlib.utils.AVUserCacheUtils.CacheUserCallback;
 import com.avoscloud.leanchatlib.utils.Constants;
+import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.view.ViewHolder;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +55,7 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
     AdapterView.OnItemLongClickListener {
   private static final int ADD_MEMBERS = 0;
   private static final int INTENT_NAME = 1;
-  private static List<AVUser> members = new ArrayList<AVUser>();
+  private static List<LeanchatUser> members = new ArrayList<LeanchatUser>();
   @InjectView(R.id.usersGrid)
   ExpandGridView usersGrid;
 
@@ -109,22 +113,13 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
   }
 
   private void refresh() {
-    new SimpleNetTask(this) {
-      List<AVUser> subMembers = new ArrayList<AVUser>();
-
+    AVUserCacheUtils.cacheUsers(conversation.getMembers(), new CacheUserCallback() {
       @Override
-      protected void doInBack() throws Exception {
-        List<AVUser> users = CacheService.findUsers(conversation.getMembers());
-        CacheService.registerUsers(users);
-        subMembers = users;
-      }
-
-      @Override
-      protected void onSucceed() {
+      public void done(Exception e) {
         usersAdapter.clear();
-        usersAdapter.addAll(subMembers);
+        usersAdapter.addAll(AVUserCacheUtils.getUsersFromCache(conversation.getMembers()));
       }
-    }.execute();
+    });
   }
 
   private void initGrid() {
@@ -229,8 +224,8 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
     super.onActivityResult(requestCode, resultCode, data);
   }
 
-  public static class UserListAdapter extends BaseListAdapter<AVUser> {
-    public UserListAdapter(Context ctx, List<AVUser> datas) {
+  public static class UserListAdapter extends BaseListAdapter<LeanchatUser> {
+    public UserListAdapter(Context ctx, List<LeanchatUser> datas) {
       super(ctx, datas);
     }
 
@@ -242,7 +237,7 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
       AVUser user = datas.get(position);
       ImageView avatarView = ViewHolder.findViewById(conView, R.id.avatar);
       TextView nameView = ViewHolder.findViewById(conView, R.id.username);
-      UserService.displayAvatar(user, avatarView);
+      ImageLoader.getInstance().displayImage(((LeanchatUser)user).getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
       nameView.setText(user.getUsername());
       return conView;
     }

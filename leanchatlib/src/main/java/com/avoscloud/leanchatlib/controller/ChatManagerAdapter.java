@@ -1,19 +1,12 @@
 package com.avoscloud.leanchatlib.controller;
 
-import com.avoscloud.leanchatlib.model.UserInfo;
-
 import java.util.List;
 
 /**
  * 配置用户信息和通知处理
+ * TODO 此类稍后会去掉
  */
 public interface ChatManagerAdapter {
-  /**
-   * 同步获取用户信息，用在聊天页面的 MessageAdapter
-   * @param userId
-   * @return
-   */
-  UserInfo getUserInfoById(String userId);
 
   /**
    * 为了支持能够同步获取用户信息，请先缓存用户信息，会在后台线程调用此函数
