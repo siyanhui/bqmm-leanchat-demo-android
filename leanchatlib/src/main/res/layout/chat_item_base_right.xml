@@ -30,15 +30,11 @@
                 android:maxWidth="@dimen/chat_ContentMaxWidth"
                 android:orientation="vertical"
                 android:textColor="#fff">
-
             </LinearLayout>
-
 
             <ImageView
                 android:id="@+id/avatar"
                 style="@style/chat_avatar" />
-
         </LinearLayout>
-
     </LinearLayout>
 </LinearLayout>
