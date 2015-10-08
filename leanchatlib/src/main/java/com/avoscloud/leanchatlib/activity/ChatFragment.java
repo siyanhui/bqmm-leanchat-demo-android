@@ -89,20 +89,24 @@ public class ChatFragment extends Fragment {
       @Override
       public void onRefresh() {
         AVIMMessage message = itemAdapter.getFirstMessage();
-        imConversation.queryMessages(message.getMessageId(), message.getTimestamp(), 20, new AVIMMessagesQueryCallback() {
-          @Override
-          public void done(List<AVIMMessage> list, AVIMException e) {
-            refreshLayout.setRefreshing(false);
-            if (filterException(e)) {
-              if (null != list && list.size() > 0) {
-                itemAdapter.addMessageList(list);
-                itemAdapter.notifyDataSetChanged();
+        if (null == message) {
+          refreshLayout.setRefreshing(false);
+        } else {
+          imConversation.queryMessages(message.getMessageId(), message.getTimestamp(), 20, new AVIMMessagesQueryCallback() {
+            @Override
+            public void done(List<AVIMMessage> list, AVIMException e) {
+              refreshLayout.setRefreshing(false);
+              if (filterException(e)) {
+                if (null != list && list.size() > 0) {
+                  itemAdapter.addMessageList(list);
+                  itemAdapter.notifyDataSetChanged();
 
-                layoutManager.scrollToPositionWithOffset(list.size() - 1, 0);
+                  layoutManager.scrollToPositionWithOffset(list.size() - 1, 0);
+                }
               }
             }
-          }
-        });
+          });
+        }
       }
     });
   }
