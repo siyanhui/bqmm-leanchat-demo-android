@@ -7,13 +7,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.InjectView;
+
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVGeoPoint;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avoscloud.chat.R;
+import com.avoscloud.chat.base.App;
+import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.chat.service.PreferenceMap;
-import com.avoscloud.chat.service.UserService;
 import com.avoscloud.chat.ui.base_activity.BaseFragment;
 import com.avoscloud.chat.ui.contact.ContactPersonInfoActivity;
 import com.avoscloud.chat.ui.view.BaseListView;
+import com.avoscloud.chat.util.Logger;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.Constants;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
@@ -25,12 +34,12 @@ import java.util.List;
  */
 public class DiscoverFragment extends BaseFragment {
 
-  private final SortDialogListener distanceListener = new SortDialogListener(UserService.ORDER_DISTANCE);
-  private final SortDialogListener updatedAtListener = new SortDialogListener(UserService.ORDER_UPDATED_AT);
+  private final SortDialogListener distanceListener = new SortDialogListener(Constants.ORDER_DISTANCE);
+  private final SortDialogListener updatedAtListener = new SortDialogListener(Constants.ORDER_UPDATED_AT);
   @InjectView(R.id.list_near)
-  BaseListView<AVUser> listView;
+  BaseListView<LeanchatUser> listView;
   DiscoverFragmentUserAdapter adapter;
-  List<AVUser> nears = new ArrayList<AVUser>();
+  List<LeanchatUser> nears = new ArrayList<LeanchatUser>();
   int orderType;
   PreferenceMap preferenceMap;
 
@@ -59,17 +68,17 @@ public class DiscoverFragment extends BaseFragment {
 
   private void initXListView() {
     adapter = new DiscoverFragmentUserAdapter(ctx, nears);
-    listView = (BaseListView<AVUser>) getView().findViewById(R.id.list_near);
-    listView.init(new BaseListView.DataFactory<AVUser>() {
+    listView = (BaseListView<LeanchatUser>) getView().findViewById(R.id.list_near);
+    listView.init(new BaseListView.DataFactory<LeanchatUser>() {
       @Override
-      public List<AVUser> getDatasInBackground(int skip, int limit, List<AVUser> currentDatas) throws Exception {
-        return UserService.findNearbyPeople(orderType, skip, limit);
+      public List<LeanchatUser> getDatasInBackground(int skip, int limit, List<LeanchatUser> currentDatas) throws Exception {
+        return findNearbyPeople(orderType, skip, limit);
       }
     }, adapter);
 
-    listView.setItemListener(new BaseListView.ItemListener<AVUser>() {
+    listView.setItemListener(new BaseListView.ItemListener<LeanchatUser>() {
       @Override
-      public void onItemSelected(AVUser item) {
+      public void onItemSelected(LeanchatUser item) {
         ContactPersonInfoActivity.goPersonInfo(ctx, item.getObjectId());
       }
     });
@@ -83,6 +92,29 @@ public class DiscoverFragment extends BaseFragment {
   public void onDestroy() {
     super.onDestroy();
     preferenceMap.setNearbyOrder(orderType);
+  }
+
+  public List<LeanchatUser> findNearbyPeople(int orderType, int skip, int limit) throws AVException {
+    PreferenceMap preferenceMap = PreferenceMap.getCurUserPrefDao(App.ctx);
+    AVGeoPoint geoPoint = preferenceMap.getLocation();
+    if (geoPoint == null) {
+      Logger.i("geo point is null");
+      return new ArrayList<>();
+    }
+    AVQuery<LeanchatUser> q = LeanchatUser.getQuery(LeanchatUser.class);
+    AVUser user = AVUser.getCurrentUser();
+    q.whereNotEqualTo(Constants.OBJECT_ID, user.getObjectId());
+    if (orderType == Constants.ORDER_DISTANCE) {
+      q.whereNear(LeanchatUser.LOCATION, geoPoint);
+    } else {
+      q.orderByDescending(Constants.UPDATED_AT);
+    }
+    q.skip(skip);
+    q.limit(limit);
+    q.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
+    List<LeanchatUser> users = q.find();
+    CacheService.registerUsers(users);
+    return users;
   }
 
   public class SortDialogListener implements DialogInterface.OnClickListener {

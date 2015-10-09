@@ -9,12 +9,12 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.avoscloud.chat.entity.avobject.AddRequest;
 import com.avoscloud.chat.entity.avobject.UpdateInfo;
-import com.avoscloud.chat.service.ChatManagerAdapterImpl;
 import com.avoscloud.chat.service.ConversationManager;
 import com.avoscloud.chat.service.PushManager;
 import com.avoscloud.chat.util.Logger;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.controller.ChatManager;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.baidu.mapapi.SDKInitializer;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -42,6 +42,7 @@ public class App extends Application {
     String appId = "x3o016bxnkpyee7e9pa5pre6efx2dadyerdlcez0wbzhw25g";
     String appKey = "057x24cfdzhffnl3dzk14jh9xo2rq6w1hy1fdzt5tv46ym78";
 
+    AVUser.alwaysUseSubUserClass(LeanchatUser.class);
     AVOSCloud.initialize(this, appId, appKey);
     //AVOSCloud.initialize(this, publicId,publicKey);
     //AVOSCloud.initialize(this, testAppId, testAppKey);
@@ -72,12 +73,10 @@ public class App extends Application {
   private void initChatManager() {
     final ChatManager chatManager = ChatManager.getInstance();
     chatManager.init(this);
-    if (AVUser.getCurrentUser() != null) {
-      chatManager.setupManagerWithUserId(AVUser.getCurrentUser().getObjectId());
+    if (LeanchatUser.getCurrentUser() != null) {
+      chatManager.setupManagerWithUserId(LeanchatUser.getCurrentUser().getObjectId());
     }
     chatManager.setConversationEventHandler(ConversationManager.getEventHandler());
-    ChatManagerAdapterImpl chatManagerAdapter = new ChatManagerAdapterImpl(App.ctx);
-    chatManager.setChatManagerAdapter(chatManagerAdapter);
     ChatManager.setDebugEnabled(App.debug);
   }
 

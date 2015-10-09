@@ -46,7 +46,8 @@
         <activity
             android:name=".ui.chat.ChatRoomActivity"
             android:launchMode="singleTask"
-            android:theme="@style/ChatMainTheme" />
+            android:theme="@style/ChatMainTheme"
+            android:label="" />
 
         <receiver android:name="com.avoscloud.chat.service.LeanchatReceiver">
             <intent-filter>
@@ -63,6 +64,12 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".service.NotificationBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.avoscloud.chat.intent.client_notification" />
             </intent-filter>
         </receiver>
 

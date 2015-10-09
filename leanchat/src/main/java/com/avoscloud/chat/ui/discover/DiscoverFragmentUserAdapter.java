@@ -6,21 +6,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.avos.avoscloud.AVGeoPoint;
-import com.avos.avoscloud.AVUser;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.base.App;
-import com.avoscloud.chat.entity.avobject.User;
 import com.avoscloud.chat.service.PreferenceMap;
-import com.avoscloud.chat.service.UserService;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.chat.ui.view.BaseListAdapter;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.view.ViewHolder;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.Date;
 import java.util.List;
 
-public class DiscoverFragmentUserAdapter extends BaseListAdapter<AVUser> {
+public class DiscoverFragmentUserAdapter extends BaseListAdapter<LeanchatUser> {
   private static final double EARTH_RADIUS = 6378137;
   PrettyTime prettyTime;
   AVGeoPoint location;
@@ -30,7 +30,7 @@ public class DiscoverFragmentUserAdapter extends BaseListAdapter<AVUser> {
     init();
   }
 
-  public DiscoverFragmentUserAdapter(Context ctx, List<AVUser> datas) {
+  public DiscoverFragmentUserAdapter(Context ctx, List<LeanchatUser> datas) {
     super(ctx, datas);
     init();
   }
@@ -73,21 +73,21 @@ public class DiscoverFragmentUserAdapter extends BaseListAdapter<AVUser> {
     if (convertView == null) {
       convertView = inflater.inflate(R.layout.discover_near_people_item, null, false);
     }
-    final AVUser user = datas.get(position);
+    final LeanchatUser user = (LeanchatUser)datas.get(position);
     TextView nameView = ViewHolder.findViewById(convertView, R.id.name_text);
     TextView distanceView = ViewHolder.findViewById(convertView, R.id.distance_text);
     TextView loginTimeView = ViewHolder.findViewById(convertView, R.id.login_time_text);
     ImageView avatarView = ViewHolder.findViewById(convertView, R.id.avatar_view);
 
-    UserService.displayAvatar(user, avatarView);
+    ImageLoader.getInstance().displayImage(user.getAvatarUrl(), avatarView, com.avoscloud.leanchatlib.utils.PhotoUtils.avatarImageOptions);
 
-    AVGeoPoint geoPoint = user.getAVGeoPoint(User.LOCATION);
+    AVGeoPoint geoPoint = user.getAVGeoPoint(LeanchatUser.LOCATION);
     String currentLat = String.valueOf(location.getLatitude());
     String currentLong = String.valueOf(location.getLongitude());
     if (geoPoint != null && !currentLat.equals("") && !currentLong.equals("")) {
       double distance = DistanceOfTwoPoints(Double.parseDouble(currentLat), Double.parseDouble(currentLong),
-          user.getAVGeoPoint(User.LOCATION).getLatitude(),
-          user.getAVGeoPoint(User.LOCATION).getLongitude());
+          user.getAVGeoPoint(LeanchatUser.LOCATION).getLatitude(),
+          user.getAVGeoPoint(LeanchatUser.LOCATION).getLongitude());
       distanceView.setText(Utils.getPrettyDistance(distance));
     } else {
       distanceView.setText(App.ctx.getString(R.string.discover_unknown));

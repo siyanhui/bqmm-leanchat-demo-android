@@ -10,13 +10,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
+import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
-import com.avoscloud.leanchatlib.activity.ChatActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
+import com.avoscloud.leanchatlib.utils.Constants;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -45,7 +45,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     if (id == R.id.action_settings) {
       ChatManager.getInstance().closeWithCallback(new AVIMClientCallback() {
         @Override
-        public void done(AVIMClient avimClient, AVException e) {
+        public void done(AVIMClient avimClient, AVIMException e) {
           finish();
         }
       });
@@ -61,13 +61,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
       final ChatManager chatManager = ChatManager.getInstance();
       chatManager.fetchConversationWithUserId(otherId, new AVIMConversationCreatedCallback() {
         @Override
-        public void done(AVIMConversation conversation, AVException e) {
+        public void done(AVIMConversation conversation, AVIMException e) {
           if (e != null) {
             Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
           } else {
-            chatManager.registerConversation(conversation);
             Intent intent = new Intent(MainActivity.this, ChatRoomActivity.class);
-            intent.putExtra(ChatActivity.CONVID, conversation.getConversationId());
+            intent.putExtra(Constants.CONVERSATION_ID, conversation.getConversationId());
             startActivity(intent);
           }
         }

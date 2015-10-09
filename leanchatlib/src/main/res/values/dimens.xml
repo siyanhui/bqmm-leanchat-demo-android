@@ -12,4 +12,8 @@
     <dimen name="chat_BottomBtnSize">30dp</dimen>
     <dimen name="chat_avatarSize">50dp</dimen>
     <dimen name="chat_playBtnWidth">30dp</dimen>
+
+    <dimen name="chat_horizontal_margin">15dp</dimen>
+    <dimen name="chat_horizontal_big_margin">40dp</dimen>
+
 </resources>

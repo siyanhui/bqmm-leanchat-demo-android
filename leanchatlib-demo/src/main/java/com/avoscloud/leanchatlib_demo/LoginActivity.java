@@ -7,8 +7,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.im.v2.AVIMClient;
+import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.utils.LogUtils;
@@ -35,7 +35,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
       chatManager.setupManagerWithUserId(selfId);
       chatManager.openClient(new AVIMClientCallback() {
         @Override
-        public void done(AVIMClient avimClient, AVException e) {
+        public void done(AVIMClient avimClient, AVIMException e) {
           if (e != null) {
             LogUtils.logException(e);
           }

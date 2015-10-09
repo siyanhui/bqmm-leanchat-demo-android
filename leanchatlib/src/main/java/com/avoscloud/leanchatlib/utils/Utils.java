@@ -1,18 +1,24 @@
 package com.avoscloud.leanchatlib.utils;
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
+
 import com.avoscloud.leanchatlib.R;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -54,52 +60,14 @@ public class Utils {
     }
   }
 
-  private static DefaultHttpClient httpClient;
-
-  private synchronized static DefaultHttpClient getDefaultHttpClient() {
-    if (httpClient == null) {
-      httpClient = new DefaultHttpClient();
-    }
-    return httpClient;
-  }
-
-  /**
-   * 下载文件，若失败会将文件删除，以便下次重新下载
-   * 暂时不校验 size，万一 size 跟实际文件的大小不一样，会导致每次重新下载
-   *
-   * @param url
-   * @param toFile
-   */
-  public static void downloadFileIfNotExists(String url, File toFile) {
-    if (!toFile.exists()) {
-      FileOutputStream outputStream = null;
-      InputStream inputStream = null;
-      try {
-        outputStream = new FileOutputStream(toFile);
-        HttpGet get = new HttpGet(url);
-        HttpResponse response = getDefaultHttpClient().execute(get);
-        HttpEntity entity = response.getEntity();
-        inputStream = entity.getContent();
-        byte[] buffer = new byte[4096];
-        int len;
-        while ((len = inputStream.read(buffer)) != -1) {
-          outputStream.write(buffer, 0, len);
-        }
-      } catch (IOException e) {
-        if (toFile.exists()) {
-          toFile.delete();
-        }
-      } finally {
-        closeQuietly(inputStream);
-        closeQuietly(outputStream);
-      }
-    }
-  }
-
-  public static void closeQuietly(Closeable closeable) {
-    try {
-      closeable.close();
-    } catch (Exception e) {
+  public static String millisecsToDateString(long timestamp) {
+    long gap = System.currentTimeMillis() - timestamp;
+    if (gap < 1000 * 60 * 60 * 24) {
+      String s = (new PrettyTime()).format(new Date(timestamp));
+      return s;
+    } else {
+      SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
+      return format.format(new Date(timestamp));
     }
   }
 }

@@ -12,6 +12,7 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Created by lzw on 15/4/24.
@@ -93,7 +94,11 @@ public class PhotoUtils {
     } catch (FileNotFoundException e) {
       LogUtils.logException(e);
     } finally {
-      Utils.closeQuietly(outputStream);
+      try {
+        outputStream.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
     recycle(newBitmap);
     recycle(bitmap);

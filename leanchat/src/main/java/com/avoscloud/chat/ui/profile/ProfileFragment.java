@@ -14,7 +14,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMException;
@@ -22,13 +21,13 @@ import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.service.PushManager;
 import com.avoscloud.chat.service.UpdateService;
-import com.avoscloud.chat.service.UserService;
 import com.avoscloud.chat.ui.base_activity.BaseFragment;
 import com.avoscloud.chat.ui.entry.EntryLoginActivity;
 import com.avoscloud.chat.util.PathUtils;
 import com.avoscloud.chat.util.PhotoUtils;
-import com.avoscloud.chat.util.SimpleNetTask;
 import com.avoscloud.leanchatlib.controller.ChatManager;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 
@@ -68,9 +67,9 @@ public class ProfileFragment extends BaseFragment {
   }
 
   private void refresh() {
-    AVUser curUser = AVUser.getCurrentUser();
+    LeanchatUser curUser = (LeanchatUser)AVUser.getCurrentUser();
     userNameView.setText(curUser.getUsername());
-    UserService.displayAvatar(curUser, avatarView);
+    ImageLoader.getInstance().displayImage(curUser.getAvatarUrl(), avatarView, com.avoscloud.leanchatlib.utils.PhotoUtils.avatarImageOptions);
   }
 
   @OnClick(R.id.profile_checkupdate_view)
@@ -115,18 +114,8 @@ public class ProfileFragment extends BaseFragment {
         startImageCrop(uri, 200, 200, CROP_REQUEST);
       } else if (requestCode == CROP_REQUEST) {
         final String path = saveCropAvatar(data);
-        new SimpleNetTask(ctx) {
-          @Override
-          protected void doInBack() throws Exception {
-            UserService.saveAvatar(path);
-          }
-
-          @Override
-          protected void onSucceed() {
-            refresh();
-          }
-        }.execute();
-
+        LeanchatUser user = (LeanchatUser)AVUser.getCurrentUser();
+        user.saveAvatar(path, null);
       }
     }
   }

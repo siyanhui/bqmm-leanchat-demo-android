@@ -1,19 +1,19 @@
 package com.avoscloud.chat.entity;
 
-import com.avos.avoscloud.AVUser;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
 
 /**
  * Created by lzw on 15/1/9.
  */
 public class SortUser {
-  private AVUser innerUser;
+  private LeanchatUser innerUser;
   private String sortLetters;
 
-  public AVUser getInnerUser() {
+  public LeanchatUser getInnerUser() {
     return innerUser;
   }
 
-  public void setInnerUser(AVUser innerUser) {
+  public void setInnerUser(LeanchatUser innerUser) {
     this.innerUser = innerUser;
   }
 

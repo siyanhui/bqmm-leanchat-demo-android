@@ -16,8 +16,8 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
@@ -25,18 +25,24 @@ import com.avoscloud.chat.R;
 import com.avoscloud.chat.base.App;
 import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.chat.service.ConversationManager;
-import com.avoscloud.chat.service.UserService;
 import com.avoscloud.chat.ui.base_activity.UpdateContentActivity;
 import com.avoscloud.chat.ui.contact.ContactPersonInfoActivity;
 import com.avoscloud.chat.ui.view.ExpandGridView;
 import com.avoscloud.chat.util.SimpleNetTask;
 import com.avoscloud.chat.util.Utils;
-import com.avoscloud.leanchatlib.activity.ChatActivity;
 import com.avoscloud.chat.ui.view.BaseListAdapter;
+import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
+import com.avoscloud.leanchatlib.controller.RoomsTable;
 import com.avoscloud.leanchatlib.model.ConversationType;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
+import com.avoscloud.leanchatlib.utils.AVUserCacheUtils.CacheUserCallback;
+import com.avoscloud.leanchatlib.utils.Constants;
+import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.view.ViewHolder;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,11 +51,11 @@ import java.util.List;
 /**
  * Created by lzw on 14-10-11.
  */
-public class ConversationDetailActivity extends ConversationBaseActivity implements AdapterView.OnItemClickListener,
+public class ConversationDetailActivity extends AVBaseActivity implements AdapterView.OnItemClickListener,
     AdapterView.OnItemLongClickListener {
   private static final int ADD_MEMBERS = 0;
-  private static final int INTENT_NAME = 0;
-  private static List<AVUser> members = new ArrayList<AVUser>();
+  private static final int INTENT_NAME = 1;
+  private static List<LeanchatUser> members = new ArrayList<LeanchatUser>();
   @InjectView(R.id.usersGrid)
   ExpandGridView usersGrid;
 
@@ -59,6 +65,7 @@ public class ConversationDetailActivity extends ConversationBaseActivity impleme
   @InjectView(R.id.quit_layout)
   View quitLayout;
 
+  private AVIMConversation conversation;
   private ConversationType conversationType;
   private ConversationManager conversationManager;
   private UserListAdapter usersAdapter;
@@ -68,6 +75,8 @@ public class ConversationDetailActivity extends ConversationBaseActivity impleme
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.conversation_detail_activity);
+    String conversationId = getIntent().getStringExtra(Constants.CONVERSATION_ID);
+    conversation = AVIMClient.getInstance(ChatManager.getInstance().getSelfId()).getConversation(conversationId);
     ButterKnife.inject(this);
     initData();
     initGrid();
@@ -87,11 +96,6 @@ public class ConversationDetailActivity extends ConversationBaseActivity impleme
   }
 
   @Override
-  protected void onConvChanged(AVIMConversation conv) {
-    refresh();
-  }
-
-  @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuItem invite = menu.add(0, ADD_MEMBERS, 0, R.string.conversation_detail_invite);
     alwaysShowMenuItem(invite);
@@ -102,33 +106,24 @@ public class ConversationDetailActivity extends ConversationBaseActivity impleme
   public boolean onMenuItemSelected(int featureId, MenuItem item) {
     int menuId = item.getItemId();
     if (menuId == ADD_MEMBERS) {
-      Intent intent = new Intent(ctx, ConversationAddMembersActivity.class);
-      ctx.startActivity(intent);
+      Intent intent = new Intent(this, ConversationAddMembersActivity.class);
+      startActivityForResult(intent, ADD_MEMBERS);
     }
     return super.onMenuItemSelected(featureId, item);
   }
 
   private void refresh() {
-    new SimpleNetTask(ctx) {
-      List<AVUser> subMembers = new ArrayList<AVUser>();
-
+    AVUserCacheUtils.cacheUsers(conversation.getMembers(), new CacheUserCallback() {
       @Override
-      protected void doInBack() throws Exception {
-        List<AVUser> users = CacheService.findUsers(conv().getMembers());
-        CacheService.registerUsers(users);
-        subMembers = users;
-      }
-
-      @Override
-      protected void onSucceed() {
+      public void done(Exception e) {
         usersAdapter.clear();
-        usersAdapter.addAll(subMembers);
+        usersAdapter.addAll(AVUserCacheUtils.getUsersFromCache(conversation.getMembers()));
       }
-    }.execute();
+    });
   }
 
   private void initGrid() {
-    usersAdapter = new UserListAdapter(ctx, members);
+    usersAdapter = new UserListAdapter(this, members);
     usersGrid.setAdapter(usersAdapter);
     usersGrid.setOnItemClickListener(this);
     usersGrid.setOnItemLongClickListener(this);
@@ -136,14 +131,14 @@ public class ConversationDetailActivity extends ConversationBaseActivity impleme
 
   private void initData() {
     conversationManager = ConversationManager.getInstance();
-    isOwner = conv().getCreator().equals(AVUser.getCurrentUser().getObjectId());
-    conversationType = ConversationHelper.typeOfConversation(conv());
+    isOwner = conversation.getCreator().equals(AVUser.getCurrentUser().getObjectId());
+    conversationType = ConversationHelper.typeOfConversation(conversation);
   }
 
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     AVUser user = (AVUser) parent.getAdapter().getItem(position);
-    ContactPersonInfoActivity.goPersonInfo(ctx, user.getObjectId());
+    ContactPersonInfoActivity.goPersonInfo(this, user.getObjectId());
   }
 
   @Override
@@ -152,14 +147,14 @@ public class ConversationDetailActivity extends ConversationBaseActivity impleme
       return true;
     }
     final AVUser user = (AVUser) parent.getAdapter().getItem(position);
-    boolean isTheOwner = conv().getCreator().equals(user.getObjectId());
+    boolean isTheOwner = conversation.getCreator().equals(user.getObjectId());
     if (!isTheOwner) {
-      new AlertDialog.Builder(ctx).setMessage(R.string.conversation_kickTips)
+      new AlertDialog.Builder(this).setMessage(R.string.conversation_kickTips)
           .setPositiveButton(R.string.common_sure, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
               final ProgressDialog progress = showSpinnerDialog();
-              conv().kickMembers(Arrays.asList(user.getObjectId()), new AVIMConversationCallback() {
+              conversation.kickMembers(Arrays.asList(user.getObjectId()), new AVIMConversationCallback() {
                 @Override
                 public void done(AVIMException e) {
                   progress.dismiss();
@@ -180,19 +175,30 @@ public class ConversationDetailActivity extends ConversationBaseActivity impleme
   }
 
   @OnClick(R.id.quit_layout)
-  void quit() {
-    final String convid = conv().getConversationId();
-    conv().quit(new AVIMConversationCallback() {
+  void onQuitButtonClick() {
+    new AlertDialog.Builder(this).setMessage(R.string.conversation_quit_group_tip)
+      .setPositiveButton(R.string.common_sure, new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          quitGroup();
+        }
+      }).setNegativeButton(R.string.chat_common_cancel, null).show();
+  }
+
+  /**
+   * 退出群聊
+   */
+  private void quitGroup() {
+    final String convid = conversation.getConversationId();
+    conversation.quit(new AVIMConversationCallback() {
       @Override
       public void done(AVIMException e) {
         if (filterException(e)) {
-          ChatManager.getInstance().getRoomsTable().deleteRoom(convid);
+          RoomsTable roomsTable = ChatManager.getInstance().getRoomsTable();
+          roomsTable.deleteRoom(convid);
           Utils.toast(R.string.conversation_alreadyQuitConv);
-          ConversationDetailActivity.this.finish();
-
-          if (ChatActivity.getChatInstance() != null) {
-            ChatActivity.getChatInstance().finish();
-          }
+          setResult(RESULT_OK);
+          finish();
         }
       }
     });
@@ -203,21 +209,23 @@ public class ConversationDetailActivity extends ConversationBaseActivity impleme
     if (resultCode == RESULT_OK) {
       if (requestCode == INTENT_NAME) {
         String newName = UpdateContentActivity.getResultValue(data);
-        conversationManager.updateName(conv(), newName, new AVIMConversationCallback() {
+        conversationManager.updateName(conversation, newName, new AVIMConversationCallback() {
           @Override
           public void done(AVIMException e) {
             if (filterException(e)) {
-              ConversationDetailActivity.this.refresh();
+              refresh();
             }
           }
         });
+      } else if (requestCode == ADD_MEMBERS) {
+        refresh();
       }
     }
     super.onActivityResult(requestCode, resultCode, data);
   }
 
-  public static class UserListAdapter extends BaseListAdapter<AVUser> {
-    public UserListAdapter(Context ctx, List<AVUser> datas) {
+  public static class UserListAdapter extends BaseListAdapter<LeanchatUser> {
+    public UserListAdapter(Context ctx, List<LeanchatUser> datas) {
       super(ctx, datas);
     }
 
@@ -229,7 +237,7 @@ public class ConversationDetailActivity extends ConversationBaseActivity impleme
       AVUser user = datas.get(position);
       ImageView avatarView = ViewHolder.findViewById(conView, R.id.avatar);
       TextView nameView = ViewHolder.findViewById(conView, R.id.username);
-      UserService.displayAvatar(user, avatarView);
+      ImageLoader.getInstance().displayImage(((LeanchatUser)user).getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
       nameView.setText(user.getUsername());
       return conView;
     }

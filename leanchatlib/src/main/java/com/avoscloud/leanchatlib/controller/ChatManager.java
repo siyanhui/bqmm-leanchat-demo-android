@@ -1,6 +1,7 @@
 package com.avoscloud.leanchatlib.controller;
 
 import android.content.Context;
+
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMClientEventHandler;
 import com.avos.avoscloud.im.v2.AVIMConversation;
@@ -10,18 +11,16 @@ import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMMessageManager;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
-import com.avos.avoscloud.im.v2.AVIMTypedMessageHandler;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMMessagesQueryCallback;
 import com.avoscloud.leanchatlib.model.ConversationType;
-import com.avoscloud.leanchatlib.model.MessageEvent;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.LogUtils;
-import de.greenrobot.event.EventBus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -46,18 +45,12 @@ public class ChatManager extends AVIMClientEventHandler {
     public void onConnectionChanged(boolean connect) {
     }
   };
-  //用来判断是否弹出通知
-  public static String currentChattingConvid;
 
   private ConnectionListener connectionListener = defaultConnectListener;
-  private Map<String, AVIMConversation> cachedConversations = new ConcurrentHashMap<String, AVIMConversation>();
   private volatile AVIMClient imClient;
   private volatile String selfId;
   private volatile boolean connect = false;
-  private MessageHandler messageHandler;
   private RoomsTable roomsTable;
-  private EventBus eventBus = EventBus.getDefault();
-  private ChatManagerAdapter chatManagerAdapter;
 
   private ChatManager() {
   }
@@ -88,14 +81,6 @@ public class ChatManager extends AVIMClientEventHandler {
     LogUtils.debugEnabled = debugEnabled;
   }
 
-  public static String getCurrentChattingConvid() {
-    return currentChattingConvid;
-  }
-
-  public static void setCurrentChattingConvid(String currentChattingConvid) {
-    ChatManager.currentChattingConvid = currentChattingConvid;
-  }
-
   /**
    * 请在应用一启动(Application onCreate)的时候就调用，因为 SDK 一启动，就会去连接聊天服务器
    * 如果没有调用此函数设置 messageHandler ，就可能丢失一些消息
@@ -104,13 +89,7 @@ public class ChatManager extends AVIMClientEventHandler {
    */
   public void init(Context context) {
     this.context = context;
-    messageHandler = new MessageHandler();
-    AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, messageHandler);
-//    try {
-//      AVIMMessageManager.registerAVIMMessageType(AVIMUserInfoMessage.class);
-//    } catch (AVException e) {
-//      e.printStackTrace();
-//    }
+    AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, new MessageHandler(context));
     AVIMClient.setClientEventHandler(this);
     //签名
     //AVIMClient.setSignatureFactory(new SignatureFactory());
@@ -153,6 +132,10 @@ public class ChatManager extends AVIMClientEventHandler {
     return roomsTable;
   }
 
+  public AVIMClient getImClient() {
+    return imClient;
+  }
+
   /**
    * 连接聊天服务器，用 userId 登录，在进入MainActivity 前调用
    *
@@ -176,33 +159,6 @@ public class ChatManager extends AVIMClientEventHandler {
         }
       }
     });
-  }
-
-  private void onMessageReceipt(AVIMTypedMessage message) {
-    MessageEvent messageEvent = new MessageEvent(message, MessageEvent.Type.Receipt);
-    eventBus.post(messageEvent);
-  }
-
-  private void onMessage(final AVIMTypedMessage message, final AVIMConversation conversation, AVIMClient imClient) {
-    if (message == null || message.getMessageId() == null) {
-      LogUtils.d("may be SDK Bug, message or message id is null");
-      return;
-    }
-    if (!ConversationHelper.isValidConversation(conversation)) {
-      LogUtils.d("receive msg from invalid conversation");
-    }
-    if (lookUpConversationById(conversation.getConversationId()) == null) {
-      registerConversation(conversation);
-    }
-    LogUtils.d("receive message, content :", message.getContent());
-    roomsTable.insertRoom(message.getConversationId());
-    roomsTable.increaseUnreadCount(message.getConversationId());
-    MessageEvent messageEvent = new MessageEvent(message, MessageEvent.Type.Come);
-    eventBus.post(messageEvent);
-    if (currentChattingConvid == null
-        || !currentChattingConvid.equals(message.getConversationId())) {
-      chatManagerAdapter.shouldShowNotification(context, selfId, conversation, message);
-    }
   }
 
   /**
@@ -233,12 +189,9 @@ public class ChatManager extends AVIMClientEventHandler {
    * @param userId
    * @param callback
    */
-  public void fetchConversationWithUserId(String userId, final AVIMConversationCreatedCallback callback) {
-    final List<String> members = new ArrayList<>();
-    members.add(userId);
-    members.add(selfId);
+  public void fetchConversationWithUserId(final String userId, final AVIMConversationCreatedCallback callback) {
     AVIMConversationQuery query = imClient.getQuery();
-    query.withMembers(members);
+    query.withMembers(Arrays.asList(userId, selfId));
     query.whereEqualTo(ConversationType.ATTR_TYPE_KEY, ConversationType.Single.getValue());
     query.orderByDescending(KEY_UPDATED_AT);
     query.limit(1);
@@ -253,7 +206,7 @@ public class ChatManager extends AVIMClientEventHandler {
           } else {
             Map<String, Object> attrs = new HashMap<>();
             attrs.put(ConversationType.TYPE_KEY, ConversationType.Single.getValue());
-            imClient.createConversation(members, attrs, callback);
+            imClient.createConversation(Arrays.asList(userId, selfId), attrs, callback);
           }
         }
       }
@@ -281,6 +234,10 @@ public class ChatManager extends AVIMClientEventHandler {
     imClient.createConversation(members, attributes, callback);
   }
 
+  public AVIMConversation getConversation(String conversationId) {
+    return imClient.getConversation(conversationId);
+  }
+
   @Override
   public void onConnectionPaused(AVIMClient client) {
     setConnectAndNotify(false);
@@ -291,7 +248,7 @@ public class ChatManager extends AVIMClientEventHandler {
     setConnectAndNotify(true);
   }
 
-  private void setConnectAndNotify(boolean connect) {
+  public void setConnectAndNotify(boolean connect) {
     this.connect = connect;
     connectionListener.onConnectionChanged(connect);
   }
@@ -305,33 +262,6 @@ public class ChatManager extends AVIMClientEventHandler {
     return connect;
   }
 
-  /**
-   * 在进入 ChatActivity 之前需要先注册一下该 Conversation
-   *
-   * @param conversation
-   */
-  public void registerConversation(AVIMConversation conversation) {
-    cachedConversations.put(conversation.getConversationId(), conversation);
-  }
-
-  /**
-   * 用在 ChatActivity 中，因为 AVIMConversation 还没支持序列化
-   *
-   * @param conversationId
-   * @return
-   */
-  public AVIMConversation lookUpConversationById(String conversationId) {
-    return cachedConversations.get(conversationId);
-  }
-
-  public ChatManagerAdapter getChatManagerAdapter() {
-    return chatManagerAdapter;
-  }
-
-  public void setChatManagerAdapter(ChatManagerAdapter chatManagerAdapter) {
-    this.chatManagerAdapter = chatManagerAdapter;
-  }
-
   //ChatUser
   public List<Room> findRecentRooms() {
     return ChatManager.getInstance().getRoomsTable().selectRooms();
@@ -339,33 +269,6 @@ public class ChatManager extends AVIMClientEventHandler {
 
   public interface ConnectionListener {
     void onConnectionChanged(boolean connect);
-  }
-
-  private static class MessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
-
-    @Override
-    public void onMessage(AVIMTypedMessage message, AVIMConversation conversation,
-                          AVIMClient client) {
-      if (chatManager.getSelfId() == null) {
-        LogUtils.d("selfId is null, please call setupManagerWithUserId ");
-      }
-      if (client.getClientId().equals(chatManager.getSelfId())) {
-        chatManager.onMessage(message, conversation, client);
-      } else {
-        // 收到其它的client的消息，可能是上一次别的client登录未正确关闭，这里关边掉。
-        client.close(null);
-      }
-    }
-
-    @Override
-    public void onMessageReceipt(AVIMTypedMessage message, AVIMConversation conversation,
-                                 AVIMClient client) {
-      if (client.getClientId().equals(chatManager.getSelfId())) {
-        chatManager.onMessageReceipt(message);
-      } else {
-        client.close(null);
-      }
-    }
   }
 
   /**

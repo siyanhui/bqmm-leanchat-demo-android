@@ -1,6 +1,8 @@
 package com.avoscloud.leanchatlib.utils;
 
 import android.os.Environment;
+import android.text.TextUtils;
+
 import com.avoscloud.leanchatlib.controller.ChatManager;
 
 import java.io.File;
@@ -43,9 +45,7 @@ public class PathUtils {
    * @return
    */
   public static String getChatFilePath(String id) {
-    String path = new File(getAvailableCacheDir(), id).getAbsolutePath();
-//    LogUtils.d("path = ", path);
-    return path;
+    return (TextUtils.isEmpty(id) ? null : new File(getAvailableCacheDir(), id).getAbsolutePath());
   }
 
   /**

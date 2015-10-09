@@ -24,12 +24,13 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.CountCallback;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.base.App;
 import com.avoscloud.chat.entity.SortUser;
 import com.avoscloud.chat.service.AddRequestManager;
-import com.avoscloud.chat.service.UserService;
+import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.chat.service.event.ContactRefreshEvent;
 import com.avoscloud.chat.service.event.InvitationEvent;
 import com.avoscloud.chat.ui.base_activity.BaseFragment;
@@ -38,12 +39,17 @@ import com.avoscloud.chat.ui.conversation.ConversationGroupListActivity;
 import com.avoscloud.chat.ui.view.BaseListView;
 import com.avoscloud.chat.ui.view.EnLetterView;
 import com.avoscloud.chat.util.CharacterParser;
+import com.avoscloud.chat.util.Logger;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.Constants;
+
 import de.greenrobot.event.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * 联系人列表
@@ -121,7 +127,7 @@ public class ContactFragment extends BaseFragment {
     for (int i = 0; i < total; i++) {
       AVUser avUser = datas.get(i);
       SortUser sortUser = new SortUser();
-      sortUser.setInnerUser(avUser);
+      sortUser.setInnerUser((LeanchatUser)avUser);
       String username = avUser.getUsername();
       if (!TextUtils.isEmpty(username)) {
         String pinyin = characterParser.getSelling(username);
@@ -145,7 +151,7 @@ public class ContactFragment extends BaseFragment {
     friendsList.init(new BaseListView.DataFactory<SortUser>() {
       @Override
       public List<SortUser> getDatasInBackground(int skip, int limit, List<SortUser> currentDatas) throws Exception {
-        return convertAVUser(UserService.findFriends());
+        return convertAVUser(findFriends());
       }
     }, userAdapter);
 
@@ -170,7 +176,9 @@ public class ContactFragment extends BaseFragment {
     friendsList.setItemListener(new BaseListView.ItemListener<SortUser>() {
       @Override
       public void onItemSelected(SortUser item) {
-        ChatRoomActivity.chatByUserId(getActivity(), item.getInnerUser().getObjectId());
+        Intent intent = new Intent(getActivity(), ChatRoomActivity.class);
+        intent.putExtra(Constants.MEMBER_ID, item.getInnerUser().getObjectId());
+        startActivity(intent);
       }
 
       @Override
@@ -210,7 +218,7 @@ public class ContactFragment extends BaseFragment {
           @Override
           public void onClick(DialogInterface dialog, int which) {
             final ProgressDialog dialog1 = showSpinnerDialog();
-            UserService.removeFriend(user.getInnerUser().getObjectId(), new SaveCallback() {
+            AVUser.getCurrentUser(LeanchatUser.class).removeFriend(user.getInnerUser().getObjectId(), new SaveCallback() {
               @Override
               public void done(AVException e) {
                 dialog1.dismiss();
@@ -271,9 +279,50 @@ public class ContactFragment extends BaseFragment {
   }
 
   public void forceRefresh() {
-    AVQuery<AVUser> q = UserService.getFriendQuery();
+    AVUser curUser = AVUser.getCurrentUser();
+    AVQuery<LeanchatUser> q = null;
+    try {
+      q = curUser.followeeQuery(LeanchatUser.class);
+    } catch (Exception e) {
+      //在 currentUser.objectId 为 null 的时候抛出的，不做处理
+      Logger.e(e.getMessage());
+    }
+
     q.clearCachedResult();
     friendsList.onRefresh();
+  }
+
+    public static List<AVUser> findFriends() throws Exception {
+    final List<AVUser> friends = new ArrayList<AVUser>();
+    final AVException[] es = new AVException[1];
+    final CountDownLatch latch = new CountDownLatch(1);
+      LeanchatUser.getCurrentUser(LeanchatUser.class).findFriendsWithCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK, new FindCallback<LeanchatUser>() {
+        @Override
+        public void done(List<LeanchatUser> avUsers, AVException e) {
+          if (e != null) {
+            es[0] = e;
+          } else {
+            friends.addAll(avUsers);
+          }
+          latch.countDown();
+        }
+      });
+    latch.await();
+    if (es[0] != null) {
+      throw es[0];
+    } else {
+      List<String> userIds = new ArrayList<String>();
+      for (AVUser user : friends) {
+        userIds.add(user.getObjectId());
+      }
+      CacheService.setFriendIds(userIds);
+      CacheService.cacheUsers(userIds);
+      List<AVUser> newFriends = new ArrayList<>();
+      for (AVUser user : friends) {
+        newFriends.add(CacheService.lookupUser(user.getObjectId()));
+      }
+      return newFriends;
+    }
   }
 
   public void onEvent(ContactRefreshEvent event) {

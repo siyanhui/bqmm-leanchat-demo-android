@@ -7,12 +7,18 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVGeoPoint;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.avoscloud.chat.R;
-import com.avoscloud.chat.service.UserService;
+import com.avoscloud.chat.base.App;
+import com.avoscloud.chat.service.PreferenceMap;
 import com.avoscloud.chat.ui.MainActivity;
+import com.avoscloud.chat.util.Logger;
 import com.avoscloud.chat.util.Utils;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.LogUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -61,15 +67,14 @@ public class EntryLoginActivity extends EntryBaseActivity {
     }
 
     final ProgressDialog dialog = showSpinnerDialog();
-    AVUser.logInInBackground(name, password, new LogInCallback<AVUser>() {
+    LeanchatUser.logInInBackground(name, password, new LogInCallback<LeanchatUser>() {
       @Override
-      public void done(AVUser avUser, AVException e) {
+      public void done(LeanchatUser avUser, AVException e) {
         dialog.dismiss();
         if (filterException(e)) {
-          UserService.updateUserLocation();
           MainActivity.goMainActivityFromActivity(EntryLoginActivity.this);
         }
       }
-    });
+    }, LeanchatUser.class);
   }
 }
