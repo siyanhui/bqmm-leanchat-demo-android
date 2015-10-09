@@ -315,6 +315,7 @@ public class ContactFragment extends BaseFragment {
       for (AVUser user : friends) {
         userIds.add(user.getObjectId());
       }
+      CacheService.setFriendIds(userIds);
       CacheService.cacheUsers(userIds);
       List<AVUser> newFriends = new ArrayList<>();
       for (AVUser user : friends) {

@@ -38,6 +38,13 @@ public class CacheService {
     return friendIds;
   }
 
+  public static void setFriendIds(List<String> friendList) {
+    friendIds.clear();
+    if (friendList != null) {
+        friendIds.addAll(friendList);
+    }
+  }
+
   public static void cacheUsers(List<String> ids) throws AVException {
     Set<String> uncachedIds = new HashSet<String>();
     for (String id : ids) {

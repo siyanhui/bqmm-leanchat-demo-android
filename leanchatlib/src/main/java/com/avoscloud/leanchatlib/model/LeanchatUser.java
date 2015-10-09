@@ -97,7 +97,6 @@ public class LeanchatUser extends AVUser {
     });
   }
 
-  //TODO 放这是否合适
   public void findFriendsWithCachePolicy(AVQuery.CachePolicy cachePolicy, FindCallback<LeanchatUser>
       findCallback) {
     AVQuery<LeanchatUser> q = null;
@@ -109,36 +108,4 @@ public class LeanchatUser extends AVUser {
     q.setMaxCacheAge(TimeUnit.MINUTES.toMillis(1));
     q.findInBackground(findCallback);
   }
-
-//  public List<AVUser> findFriends() throws Exception {
-//    final List<AVUser> friends = new ArrayList<AVUser>();
-//    final AVException[] es = new AVException[1];
-//    final CountDownLatch latch = new CountDownLatch(1);
-//    findFriendsWithCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK, new FindCallback<AVUser>() {
-//      @Override
-//      public void done(List<AVUser> avUsers, AVException e) {
-//        if (e != null) {
-//          es[0] = e;
-//        } else {
-//          friends.addAll(avUsers);
-//        }
-//        latch.countDown();
-//      }
-//    });
-//    latch.await();
-//    if (es[0] != null) {
-//      throw es[0];
-//    } else {
-//      List<String> userIds = new ArrayList<String>();
-//      for (AVUser user : friends) {
-//        userIds.add(user.getObjectId());
-//      }
-//      CacheService.cacheUsers(userIds);
-//      List<AVUser> newFriends = new ArrayList<>();
-//      for (AVUser user : friends) {
-//        newFriends.add(CacheService.lookupUser(user.getObjectId()));
-//      }
-//      return newFriends;
-//    }
-//  }
 }

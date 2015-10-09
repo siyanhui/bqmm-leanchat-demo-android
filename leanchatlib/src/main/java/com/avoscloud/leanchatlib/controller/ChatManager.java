@@ -47,7 +47,6 @@ public class ChatManager extends AVIMClientEventHandler {
   };
 
   private ConnectionListener connectionListener = defaultConnectListener;
-  private Map<String, AVIMConversation> cachedConversations = new ConcurrentHashMap<String, AVIMConversation>();
   private volatile AVIMClient imClient;
   private volatile String selfId;
   private volatile boolean connect = false;
