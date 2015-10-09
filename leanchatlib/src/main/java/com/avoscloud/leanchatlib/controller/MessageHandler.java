@@ -40,25 +40,29 @@ public class MessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
     if (!ConversationHelper.isValidConversation(conversation)) {
       LogUtils.d("receive msg from invalid conversation");
     }
-    ChatManager.getInstance().getRoomsTable().insertRoom(message.getConversationId());
-    ChatManager.getInstance().getRoomsTable().increaseUnreadCount(message.getConversationId());
 
     if (ChatManager.getInstance().getSelfId() == null) {
       LogUtils.d("selfId is null, please call setupManagerWithUserId ");
+      client.close(null);
     } else {
-      if (client.getClientId().equals(ChatManager.getInstance().getSelfId())) {
+      if (!client.getClientId().equals(ChatManager.getInstance().getSelfId())) {
+        client.close(null);
+      } else {
+        ChatManager.getInstance().getRoomsTable().insertRoom(message.getConversationId());
         if (!message.getFrom().equals(client.getClientId())) {
-          sendEvent(message, conversation);
           if (NotificationUtils.isShowNotification(conversation.getConversationId())) {
             sendNotification(message, conversation);
           }
-          return;
+          ChatManager.getInstance().getRoomsTable().increaseUnreadCount(message.getConversationId());
         }
+        sendEvent(message, conversation);
       }
     }
+  }
 
-    // 收到其它的client的消息，可能是上一次别的client登录未正确关闭，这里关边掉。
-    client.close(null);
+  @Override
+  public void onMessageReceipt(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
+    super.onMessageReceipt(message, conversation, client);
   }
 
   /**

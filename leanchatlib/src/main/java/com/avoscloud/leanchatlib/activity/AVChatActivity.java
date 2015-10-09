@@ -12,6 +12,7 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.event.EmptyEvent;
+import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.LogUtils;
 
@@ -68,6 +69,7 @@ public class AVChatActivity extends AVBaseActivity {
     if (null != conversation) {
       this.conversation = conversation;
       chatFragment.setConversation(conversation);
+      chatFragment.showUserName(ConversationHelper.typeOfConversation(conversation) != ConversationType.Single);
       initActionBar(ConversationHelper.titleOfConversation(conversation));
     }
   }
