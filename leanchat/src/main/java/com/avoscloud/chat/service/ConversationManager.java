@@ -1,13 +1,11 @@
 package com.avoscloud.chat.service;
 
 import android.graphics.Bitmap;
-import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMConversationEventHandler;
 import com.avos.avoscloud.im.v2.AVIMConversationQuery;
 import com.avos.avoscloud.im.v2.AVIMException;
-import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
@@ -15,19 +13,15 @@ import com.avoscloud.chat.R;
 import com.avoscloud.chat.base.App;
 import com.avoscloud.chat.util.Logger;
 import com.avoscloud.leanchatlib.controller.ChatManager;
-import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.controller.MessageAgent;
 import com.avoscloud.leanchatlib.controller.MessageHelper;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.Constants;
-import com.avoscloud.leanchatlib.utils.LogUtils;
 import de.greenrobot.event.EventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,57 +82,31 @@ public class ConversationManager {
         + " type: " + conversation.getAttribute(ConversationType.TYPE_KEY);
   }
 
-  public List<Room> findAndCacheRooms() throws AVException, InterruptedException {
+  public void findAndCacheRooms(final Room.MultiRoomsCallback callback) {
+    List<String> conversationIds = getCacheConversationIds();
+    findConversationsByConversationIds(conversationIds, new AVIMConversationQueryCallback() {
+      @Override
+      public void done(List<AVIMConversation> list, AVIMException e) {
+        if (e != null) {
+          callback.done(null, e);
+        } else {
+          List<Room> rooms = ChatManager.getInstance().findRecentRooms();
+          for(Room room : rooms) {
+            room.setConversation(ChatManager.getInstance().getConversation(room.getConversationId()));
+          }
+          callback.done(rooms, null);
+        }
+      }
+    });
+  }
+
+  private List<String> getCacheConversationIds() {
     List<Room> rooms = ChatManager.getInstance().findRecentRooms();
     List<String> convids = new ArrayList<>();
     for (Room room : rooms) {
       convids.add(room.getConversationId());
     }
-    final List<Room> validRooms = new ArrayList<>();
-    for (Room room : rooms) {
-      AVIMConversation conversation = ChatManager.getInstance().getConversation(room.getConversationId());
-      if (ConversationHelper.isValidConversation(conversation)) {
-      } else {
-        LogUtils.e("conversation is invalid, please check", getConversationInfo(conversation));
-      }
-    }
-
-    List<String> userIds = new ArrayList<>();
-    for (Room room : validRooms) {
-      AVIMConversation conversation = ChatManager.getInstance().getConversation(room.getConversationId());
-      room.setConversation(conversation);
-      room.setLastMessage(ChatManager.getInstance().queryLatestMessage(conversation));
-      if (ConversationHelper.typeOfConversation(conversation) == ConversationType.Single) {
-        userIds.add(ConversationHelper.otherIdOfConversation(conversation));
-      }
-    }
-    Collections.sort(validRooms, new Comparator<Room>() {
-      private long getCompareTimestamp(AVIMMessage msg) {
-        long ts;
-        if (msg != null) {
-          ts = msg.getTimestamp();
-        } else {
-          ts = 0;
-        }
-        return ts;
-      }
-
-      @Override
-      public int compare(Room lhs, Room rhs) {
-        long leftTs = getCompareTimestamp(lhs.getLastMessage());
-        long rightTs = getCompareTimestamp(rhs.getLastMessage());
-        long value = leftTs - rightTs;
-        if (value > 0) {
-          return -1;
-        } else if (value < 0) {
-          return 1;
-        } else {
-          return 0;
-        }
-      }
-    });
-    CacheService.cacheUsers(new ArrayList<>(userIds));
-    return validRooms;
+    return convids;
   }
 
   public void updateName(final AVIMConversation conv, String newName, final AVIMConversationCallback callback) {

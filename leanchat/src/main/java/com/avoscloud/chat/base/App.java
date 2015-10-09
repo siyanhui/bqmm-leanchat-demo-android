@@ -9,7 +9,6 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.avoscloud.chat.entity.avobject.AddRequest;
 import com.avoscloud.chat.entity.avobject.UpdateInfo;
-import com.avoscloud.chat.service.ChatManagerAdapterImpl;
 import com.avoscloud.chat.service.ConversationManager;
 import com.avoscloud.chat.service.PushManager;
 import com.avoscloud.chat.util.Logger;
@@ -78,8 +77,6 @@ public class App extends Application {
       chatManager.setupManagerWithUserId(LeanchatUser.getCurrentUser().getObjectId());
     }
     chatManager.setConversationEventHandler(ConversationManager.getEventHandler());
-    ChatManagerAdapterImpl chatManagerAdapter = new ChatManagerAdapterImpl(App.ctx);
-    chatManager.setChatManagerAdapter(chatManagerAdapter);
     ChatManager.setDebugEnabled(App.debug);
   }
 

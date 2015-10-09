@@ -4,30 +4,28 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
 import com.avoscloud.leanchatlib.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by lzw on 14/12/19.
  * TODO 此类需要与 AVUserCacheUtils 合并
  */
 public class CacheService {
-  private static Map<String, LeanchatUser> cachedUsers = new ConcurrentHashMap<>();
   private static volatile List<String> friendIds = new ArrayList<String>();
 
   public static LeanchatUser lookupUser(String userId) {
-    return cachedUsers.get(userId);
+    return AVUserCacheUtils.getCachedUser(userId);
   }
 
   public static void registerUser(LeanchatUser user) {
-    cachedUsers.put(user.getObjectId(), user);
+    AVUserCacheUtils.cacheUser(user.getObjectId(), user);
   }
 
   public static void registerUsers(List<LeanchatUser> users) {
@@ -35,7 +33,6 @@ public class CacheService {
       registerUser(user);
     }
   }
-
 
   public static List<String> getFriendIds() {
     return friendIds;

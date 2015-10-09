@@ -83,9 +83,8 @@ public class ChatItemHolder extends AVCommonViewHolder {
       ImageLoader.getInstance().displayImage(user.getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
     } else {
       try {
-
         //TODO 加载完应该回调刷新 UI
-        ChatManager.getInstance().getChatManagerAdapter().cacheUserInfoByIdsInBackground(Arrays.asList(message.getFrom()));
+        AVUserCacheUtils.cacheUsers(Arrays.asList(message.getFrom()));
       } catch (Exception e) {
         e.printStackTrace();
       }

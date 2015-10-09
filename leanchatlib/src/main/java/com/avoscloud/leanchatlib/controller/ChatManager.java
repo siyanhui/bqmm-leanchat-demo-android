@@ -52,7 +52,6 @@ public class ChatManager extends AVIMClientEventHandler {
   private volatile String selfId;
   private volatile boolean connect = false;
   private RoomsTable roomsTable;
-  private ChatManagerAdapter chatManagerAdapter;
 
   private ChatManager() {
   }
@@ -262,14 +261,6 @@ public class ChatManager extends AVIMClientEventHandler {
    */
   public boolean isConnect() {
     return connect;
-  }
-
-  public ChatManagerAdapter getChatManagerAdapter() {
-    return chatManagerAdapter;
-  }
-
-  public void setChatManagerAdapter(ChatManagerAdapter chatManagerAdapter) {
-    this.chatManagerAdapter = chatManagerAdapter;
   }
 
   //ChatUser

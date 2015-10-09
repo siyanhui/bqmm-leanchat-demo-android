@@ -28,6 +28,10 @@ public class AVUserCacheUtils {
     return userMap.get(objectId);
   }
 
+  public static void cacheUser(String userId, LeanchatUser user) {
+    userMap.put(userId, user);
+  }
+
   public static void cacheUsers(List<String> ids, final CacheUserCallback cacheUserCallback) {
     Set<String> uncachedIds = new HashSet<String>();
     for (String id : ids) {
