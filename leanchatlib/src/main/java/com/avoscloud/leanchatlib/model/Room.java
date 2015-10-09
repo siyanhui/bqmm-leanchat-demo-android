@@ -4,6 +4,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
+import com.avoscloud.leanchatlib.utils.AVIMConversationCacheUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +14,6 @@ import java.util.List;
  */
 public class Room {
   private AVIMMessage lastMessage;
-  private AVIMConversation conversation;
   private String conversationId;
   private int unreadCount;
 
@@ -21,20 +21,25 @@ public class Room {
     return lastMessage;
   }
 
-  public Date getLastMessageAt() {
-    return ( null != conversation ? conversation.getLastMessageAt() : new Date());
+  public long getLastModifyTime() {
+    if (lastMessage != null) {
+      return lastMessage.getTimestamp();
+    }
+
+    AVIMConversation conversation = getConversation();
+    if (null != conversation && null != conversation.getUpdatedAt()) {
+      return conversation.getUpdatedAt().getTime();
+    }
+
+    return 0;
+  }
+
+  public AVIMConversation getConversation() {
+    return AVIMConversationCacheUtils.getCacheConversation(getConversationId());
   }
 
   public void setLastMessage(AVIMMessage lastMessage) {
     this.lastMessage = lastMessage;
-  }
-
-  public AVIMConversation getConversation() {
-    return conversation;
-  }
-
-  public void setConversation(AVIMConversation conversation) {
-    this.conversation = conversation;
   }
 
   public String getConversationId() {
@@ -54,6 +59,6 @@ public class Room {
   }
 
   public static abstract class MultiRoomsCallback {
-    public abstract void done(List<Room> rooms, AVException exception);
+    public abstract void done(List<Room> roomList, AVException exception);
   }
 }

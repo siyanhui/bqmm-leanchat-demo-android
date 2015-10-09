@@ -11,7 +11,6 @@ import com.avos.avoscloud.im.v2.AVIMTypedMessageHandler;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
-import com.avoscloud.leanchatlib.event.MessageReceiptEvent;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
 import com.avoscloud.leanchatlib.utils.Constants;
@@ -60,17 +59,6 @@ public class MessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
 
     // 收到其它的client的消息，可能是上一次别的client登录未正确关闭，这里关边掉。
     client.close(null);
-  }
-
-  @Override
-  public void onMessageReceipt(AVIMTypedMessage message, AVIMConversation conversation,
-                               AVIMClient client) {
-    if (client.getClientId().equals(ChatManager.getInstance().getSelfId())) {
-      MessageReceiptEvent messageEvent = new MessageReceiptEvent(message, MessageReceiptEvent.Type.Receipt);
-      EventBus.getDefault().post(messageEvent);
-    } else {
-      client.close(null);
-    }
   }
 
   /**

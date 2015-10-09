@@ -100,11 +100,20 @@ public class RoomsTable {
     db.delete(ROOMS_TABLE, getWhereClause(ROOM_CONVID), new String[]{convid});
   }
 
+  /**
+   * 此处的消息未读数量仅仅指的是本机的未读消息数量，并没有存储到 server 端
+   * 在收到消息时消息未读数量 + 1
+   * @param convid
+   */
   public void increaseUnreadCount(String convid) {
     SQLiteDatabase db = dbHelper.getWritableDatabase();
     db.execSQL(SQL.UPDATE_ROOMS_INCREASE_UNREAD_COUNT_WHERE_CONVID, new String[]{convid});
   }
 
+  /**
+   * 在 ChatItemHolder 中显示时清除未读消息数量
+   * @param convid
+   */
   public void clearUnread(String convid) {
     SQLiteDatabase db = dbHelper.getWritableDatabase();
     ContentValues cv = new ContentValues();

@@ -115,6 +115,8 @@ public class ChatItemHolder extends AVCommonViewHolder {
         statusLayout.setVisibility(View.GONE);
         break;
     }
+
+    ChatManager.getInstance().getRoomsTable().clearUnread(message.getConversationId());
   }
 
   public void onErrorClick(View view) {

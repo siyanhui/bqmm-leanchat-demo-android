@@ -3,7 +3,6 @@ package com.avoscloud.leanchatlib.activity;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import com.avoscloud.leanchatlib.R;
 import com.avos.avoscloud.im.v2.AVIMClient;
@@ -82,6 +81,7 @@ public class AVChatActivity extends AVBaseActivity {
       @Override
       public void done(AVIMConversation conversation, AVIMException e) {
         if (filterException(e)) {
+          ChatManager.getInstance().getRoomsTable().insertRoom(conversation.getConversationId());
           updateConversation(conversation);
         }
       }

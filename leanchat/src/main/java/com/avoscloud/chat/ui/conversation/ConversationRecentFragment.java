@@ -25,7 +25,7 @@ import com.avoscloud.chat.ui.chat.ChatRoomActivity;
 import com.avoscloud.chat.ui.view.ConversationListAdapter;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
-import com.avoscloud.leanchatlib.event.MessageReceiptEvent;
+import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
@@ -36,6 +36,7 @@ import de.greenrobot.event.EventBus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -109,42 +110,42 @@ public class ConversationRecentFragment extends BaseFragment implements ChatMana
     startActivity(intent);
   }
 
-  public void onEvent(MessageReceiptEvent event) {
-    List<Room> roomList = itemAdapter.getDataList();
-    for(Room room : roomList) {
-      if (room.getConversationId().equals(event.getMessage().getConversationId())) {
-        itemAdapter.notifyItemChanged(roomList.indexOf(room));
-        break;
-      }
-    }
+  public void onEvent(ImTypeMessageEvent event) {
+    updateConversationList();
   }
 
   private void updateConversationList() {
     conversationManager.findAndCacheRooms(new Room.MultiRoomsCallback() {
       @Override
-      public void done(List<Room> rooms, AVException exception) {
-        List<Room> sortedRooms = sortRooms(rooms);
-        itemAdapter.setDataList(sortedRooms);
-        itemAdapter.notifyDataSetChanged();
+      public void done(List<Room> roomList, AVException exception) {
+        if (filterException(exception)) {
 
-        updateLastMessage(sortedRooms);
-        cacheRelatedUsers(sortedRooms);
+          updateLastMessage(roomList);
+          cacheRelatedUsers(roomList);
+
+          List<Room> sortedRooms = sortRooms(roomList);
+          itemAdapter.setDataList(sortedRooms);
+          itemAdapter.notifyDataSetChanged();
+        }
       }
     });
   }
 
   private void updateLastMessage(final List<Room> roomList) {
     for (final Room room : roomList) {
-      AVIMConversation conversation = ChatManager.getInstance().getConversation(room.getConversationId());
-      room.setConversation(conversation);
-      conversation.getLastMessage(new AVIMSingleMessageQueryCallback() {
-        @Override
-        public void done(AVIMMessage avimMessage, AVIMException e) {
-          room.setLastMessage(avimMessage);
-          int index = roomList.indexOf(room);
-          itemAdapter.notifyItemChanged(index);
-        }
-      });
+      AVIMConversation conversation = room.getConversation();
+      if (null != conversation) {
+        conversation.getLastMessage(new AVIMSingleMessageQueryCallback() {
+          @Override
+          public void done(AVIMMessage avimMessage, AVIMException e) {
+            if (filterException(e) && null != avimMessage) {
+              room.setLastMessage(avimMessage);
+              int index = roomList.indexOf(room);
+              itemAdapter.notifyItemChanged(index);
+            }
+          }
+        });
+      }
     }
   }
 
@@ -164,24 +165,24 @@ public class ConversationRecentFragment extends BaseFragment implements ChatMana
     });
   }
 
-  private List<Room> sortRooms(List<Room> roomList) {
+  private List<Room> sortRooms(final List<Room> roomList) {
     List<Room> sortedList = new ArrayList<Room>();
-    sortedList.addAll(roomList);
-    Collections.sort(sortedList, new Comparator<Room>() {
-      @Override
-      public int compare(Room lhs, Room rhs) {
-        long leftTs = lhs.getLastMessageAt().getTime();
-        long rightTs = rhs.getLastMessageAt().getTime();
-        long value = leftTs - rightTs;
-        if (value > 0) {
-          return -1;
-        } else if (value < 0) {
-          return 1;
-        } else {
-          return 0;
+    if (null != roomList) {
+      sortedList.addAll(roomList);
+      Collections.sort(sortedList, new Comparator<Room>() {
+        @Override
+        public int compare(Room lhs, Room rhs) {
+          long value = lhs.getLastModifyTime() - rhs.getLastModifyTime();
+          if (value > 0) {
+            return -1;
+          } else if (value < 0) {
+            return 1;
+          } else {
+            return 0;
+          }
         }
-      }
-    });
+      });
+    }
     return sortedList;
   }
 
