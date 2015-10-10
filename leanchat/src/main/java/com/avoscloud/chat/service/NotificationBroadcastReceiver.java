@@ -3,11 +3,10 @@ package com.avoscloud.chat.service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.preference.PreferenceCategory;
 
-import com.avoscloud.chat.ui.chat.ChatRoomActivity;
-import com.avoscloud.chat.ui.contact.ContactNewFriendActivity;
-import com.avoscloud.chat.ui.entry.EntrySplashActivity;
+import com.avoscloud.chat.activity.ChatRoomActivity;
+import com.avoscloud.chat.activity.ContactNewFriendActivity;
+import com.avoscloud.chat.activity.EntrySplashActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.utils.Constants;
 

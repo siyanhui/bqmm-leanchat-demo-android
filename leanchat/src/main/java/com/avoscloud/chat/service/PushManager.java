@@ -6,7 +6,7 @@ import com.avos.avoscloud.AVPush;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.PushService;
-import com.avoscloud.chat.ui.entry.EntrySplashActivity;
+import com.avoscloud.chat.activity.EntrySplashActivity;
 
 import java.util.HashMap;
 import java.util.Map;

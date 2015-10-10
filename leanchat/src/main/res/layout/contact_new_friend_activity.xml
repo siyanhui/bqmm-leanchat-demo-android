@@ -5,7 +5,7 @@
     android:background="@color/contact_base_bg"
     android:orientation="vertical">
 
-    <com.avoscloud.chat.ui.view.BaseListView
+    <com.avoscloud.chat.view.BaseListView
         android:id="@+id/newfriendList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

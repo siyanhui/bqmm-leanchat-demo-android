@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.avoscloud.chat.R;
-import com.avoscloud.chat.base.App;
+import com.avoscloud.chat.App;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
