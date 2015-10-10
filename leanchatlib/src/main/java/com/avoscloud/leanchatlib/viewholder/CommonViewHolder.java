@@ -12,9 +12,9 @@ import android.view.ViewGroup;
  * ViewHolder 与 Adapter 解耦，和 ViewHolder 相关的逻辑都放到 ViewHolder 里边，避免 Adapter 有相关逻辑
  */
 
-public abstract class AVCommonViewHolder<T> extends RecyclerView.ViewHolder {
+public abstract class CommonViewHolder<T> extends RecyclerView.ViewHolder {
 
-  public AVCommonViewHolder(Context context, ViewGroup root, int layoutRes) {
+  public CommonViewHolder(Context context, ViewGroup root, int layoutRes) {
     super(LayoutInflater.from(context).inflate(layoutRes, root, false));
   }
 

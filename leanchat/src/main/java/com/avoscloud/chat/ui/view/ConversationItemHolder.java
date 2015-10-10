@@ -16,9 +16,8 @@ import com.avoscloud.leanchatlib.controller.MessageHelper;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.model.Room;
-import com.avoscloud.leanchatlib.utils.AVIMConversationCacheUtils;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
-import com.avoscloud.leanchatlib.viewholder.AVCommonViewHolder;
+import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.SimpleDateFormat;
@@ -29,7 +28,7 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by wli on 15/10/8.
  */
-public class ConversationItemHolder extends AVCommonViewHolder {
+public class ConversationItemHolder extends CommonViewHolder {
 
   ImageView recentAvatarView;
   TextView recentNameView;

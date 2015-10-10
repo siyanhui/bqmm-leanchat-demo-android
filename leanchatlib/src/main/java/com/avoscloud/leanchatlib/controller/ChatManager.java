@@ -271,31 +271,6 @@ public class ChatManager extends AVIMClientEventHandler {
     void onConnectionChanged(boolean connect);
   }
 
-  /**
-   * msgId 、time 共同使用，防止某毫秒时刻有重复消息
-   */
-  public void queryMessages(AVIMConversation conversation, final String msgId, long time, final int limit,
-                            final AVIMTypedMessagesArrayCallback callback) {
-    final AVIMMessagesQueryCallback queryCallback = new AVIMMessagesQueryCallback() {
-      @Override
-      public void done(List<AVIMMessage> list, AVIMException e) {
-        if (e != null) {
-          callback.done(Collections.EMPTY_LIST, e);
-        } else {
-          callback.done(filterTypedMessages(list), null);
-        }
-      }
-    };
-
-    if (time == 0) {
-      // 第一次加载
-      conversation.queryMessages(limit, queryCallback);
-    } else {
-      // 上拉
-      conversation.queryMessages(msgId, time, limit, queryCallback);
-    }
-  }
-
   List<AVIMTypedMessage> filterTypedMessages(List<AVIMMessage> messages) {
     List<AVIMTypedMessage> resultMessages = new ArrayList<>();
     for (AVIMMessage msg : messages) {

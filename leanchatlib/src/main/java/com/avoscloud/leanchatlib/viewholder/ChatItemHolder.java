@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.controller.ChatManager;
@@ -20,17 +19,13 @@ import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
-
 import de.greenrobot.event.EventBus;
 
 /**
  * Created by wli on 15/9/17.
  */
-public class ChatItemHolder extends AVCommonViewHolder {
+public class ChatItemHolder extends CommonViewHolder {
 
   protected boolean isLeft;
 

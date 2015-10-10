@@ -7,12 +7,13 @@ import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avoscloud.leanchatlib.controller.MessageHelper;
-import com.avoscloud.leanchatlib.viewholder.AVCommonViewHolder;
 import com.avoscloud.leanchatlib.viewholder.ChatItemAudioHolder;
 import com.avoscloud.leanchatlib.viewholder.ChatItemHolder;
 import com.avoscloud.leanchatlib.viewholder.ChatItemImageHolder;
 import com.avoscloud.leanchatlib.viewholder.ChatItemLocationHolder;
 import com.avoscloud.leanchatlib.viewholder.ChatItemTextHolder;
+import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
+
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.ArrayList;
@@ -97,7 +98,7 @@ public class MultipleItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-    ((AVCommonViewHolder)holder).bindData(messageList.get(position));
+    ((CommonViewHolder)holder).bindData(messageList.get(position));
     if (holder instanceof ChatItemHolder) {
       ((ChatItemHolder)holder).showTimeView(shouldShowTime(position));
       ((ChatItemHolder)holder).showUserName(isShowUserName);
