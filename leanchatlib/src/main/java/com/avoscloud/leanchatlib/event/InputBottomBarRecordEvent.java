@@ -16,7 +16,7 @@ public class InputBottomBarRecordEvent extends InputBottomBarEvent {
    */
   public int audioDuration;
 
-  public InputBottomBarRecordEvent(int action, String path, int duration, String tag) {
+  public InputBottomBarRecordEvent(int action, String path, int duration, Object tag) {
     super(action, tag);
     audioDuration = duration;
     audioPath = path;

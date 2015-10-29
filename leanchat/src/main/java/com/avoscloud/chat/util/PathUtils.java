@@ -1,7 +1,7 @@
 package com.avoscloud.chat.util;
 
 import android.os.Environment;
-import com.avoscloud.chat.base.App;
+import com.avoscloud.chat.App;
 
 import java.io.File;
 

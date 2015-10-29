@@ -282,7 +282,7 @@ public class InputBottomBar extends LinearLayout {
       @Override
       public void onFinishedRecord(final String audioPath, int secs) {
         EventBus.getDefault().post(
-          new InputBottomBarRecordEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_AUDIO_ACTION, audioPath, secs, ""));
+          new InputBottomBarRecordEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_AUDIO_ACTION, audioPath, secs, getTag()));
       }
 
       @Override

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 <!--
-        <com.avoscloud.chat.ui.view.ClearEditText
+        <com.avoscloud.chat.view.ClearEditText
             android:id="@+id/et_msg_search"
             android:layout_width="match_parent"
             android:layout_height="@dimen/base_action_bar_height"
@@ -32,7 +32,7 @@
             android:layout_gravity="top"
             android:orientation="horizontal">
 
-            <com.avoscloud.chat.ui.view.BaseListView
+            <com.avoscloud.chat.view.BaseListView
                 android:id="@+id/list_friends"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -53,7 +53,7 @@
                 android:visibility="invisible" />
         </RelativeLayout>
 
-        <com.avoscloud.chat.ui.view.EnLetterView
+        <com.avoscloud.chat.view.EnLetterView
             android:id="@+id/right_letter"
             android:layout_width="25dip"
             android:layout_height="match_parent"

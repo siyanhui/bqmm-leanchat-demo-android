@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import com.avoscloud.chat.R;
-import com.avoscloud.chat.service.event.InvitationEvent;
+import com.avoscloud.chat.event.InvitationEvent;
 
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.LogUtils;
