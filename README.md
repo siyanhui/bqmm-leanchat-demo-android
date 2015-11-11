@@ -21,13 +21,12 @@ LeanChat 是 [LeanCloud](http://leancloud.cn) [实时通信](https://leancloud.c
 * leancahtlib-demo，leanchatlib 最简单的使用例子。可以看到配置一下 AndroidManifest，以及额外配置一下 user 信息，即可集成聊天，不管是用 LeanCloud 的用户系统还是自己的用户系统。
 * leanchat ，为整个聊天应用。它包含好友管理、群组管理、地理消息、附近的人、个人页面、登录注册的功能，完全基于 LeanCloud 的存储和通信功能。
 
-
 ## LeanChat 项目构成
 
-* [Leanchat-android](https://github.com/leancloud/leanchat-android)：Android 客户端
-* [Leanchat-ios](https://github.com/leancloud/leanchat-ios)：iOS 客户端
-* [Leanchat-cloud-code](https://github.com/leancloud/leanchat-cloudcode)：可选服务端，使用 LeanCloud [云代码](https://leancloud.cn/docs/cloud_code_guide.html) 实现，实现了聊天的签名，更安全。
-* 
+* [leanchat-android](https://github.com/leancloud/leanchat-android)，Android 客户端
+* [leanchat-ios](https://github.com/leancloud/leanchat-ios)，iOS 客户端
+* [leanchat-webapp](https://github.com/leancloud/leanchat-webapp)，Web 客户端
+* [leanchat-cloud-code](https://github.com/leancloud/leanchat-cloudcode)，服务端
 
 ## Eclipse 或 Intellij IDEA 运行需知
 1. 请装相应的 Gradle 插件
