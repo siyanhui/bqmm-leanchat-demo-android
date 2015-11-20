@@ -103,6 +103,7 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
     int menuId = item.getItemId();
     if (menuId == ADD_MEMBERS) {
       Intent intent = new Intent(this, ConversationAddMembersActivity.class);
+      intent.putExtra(Constants.CONVERSATION_ID, conversation.getConversationId());
       startActivityForResult(intent, ADD_MEMBERS);
     }
     return super.onMenuItemSelected(featureId, item);
