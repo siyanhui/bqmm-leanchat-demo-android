@@ -144,4 +144,21 @@ public class MultipleItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
   public void showUserName(boolean isShow) {
     isShowUserName = isShow;
   }
+
+
+  /**
+   * 因为 RecyclerView 中的 item 缓存默认最大为 5，造成会重复的 create item 而卡顿
+   * 所以这里根据不同的类型设置不同的缓存值，经验值，不同 app 可以根据自己的场景进行更改
+   */
+  public void resetRecycledViewPoolSize(RecyclerView recyclerView) {
+    recyclerView.getRecycledViewPool().setMaxRecycledViews(ITEM_LEFT_TEXT, 25);
+    recyclerView.getRecycledViewPool().setMaxRecycledViews(ITEM_LEFT_IMAGE, 10);
+    recyclerView.getRecycledViewPool().setMaxRecycledViews(ITEM_LEFT_AUDIO, 15);
+    recyclerView.getRecycledViewPool().setMaxRecycledViews(ITEM_LEFT_LOCATION, 10);
+
+    recyclerView.getRecycledViewPool().setMaxRecycledViews(ITEM_RIGHT_TEXT, 25);
+    recyclerView.getRecycledViewPool().setMaxRecycledViews(ITEM_RIGHT_IMAGE, 10);
+    recyclerView.getRecycledViewPool().setMaxRecycledViews(ITEM_RIGHT_AUDIO, 15);
+    recyclerView.getRecycledViewPool().setMaxRecycledViews(ITEM_RIGHT_LOCATION, 10);
+  }
 }
