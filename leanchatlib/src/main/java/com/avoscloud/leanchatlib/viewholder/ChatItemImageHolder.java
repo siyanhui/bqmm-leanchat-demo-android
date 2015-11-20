@@ -33,13 +33,11 @@ public class ChatItemImageHolder extends ChatItemHolder {
   @Override
   public void initView() {
     super.initView();
+    conventLayout.addView(View.inflate(getContext(), R.layout.chat_item_image_layout, null));
+    contentView = (ImageView)itemView.findViewById(R.id.chat_item_image_view);
     if (isLeft) {
-      conventLayout.addView(View.inflate(getContext(), R.layout.chat_item_left_image_layout, null));
-      contentView = (ImageView)itemView.findViewById(R.id.chat_item_left_image_view);
       contentView.setBackgroundResource(R.drawable.chat_left_qp);
     } else {
-      conventLayout.addView(View.inflate(getContext(), R.layout.chat_item_left_image_layout, null));
-      contentView = (ImageView)itemView.findViewById(R.id.chat_item_left_image_view);
       contentView.setBackgroundResource(R.drawable.chat_right_qp);
     }
 
