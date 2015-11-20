@@ -56,23 +56,13 @@ public class ChatItemImageHolder extends ChatItemHolder {
   @Override
   public void bindData(Object o) {
     super.bindData(o);
+    contentView.setImageResource(0);
     AVIMMessage message = (AVIMMessage)o;
     if (message instanceof AVIMImageMessage) {
       AVIMImageMessage imageMsg = (AVIMImageMessage) message;
-      if (TextUtils.isEmpty(imageMsg.getFileUrl())) {
-        Class temp = imageMsg.getClass();
-        try {
-          //TODO 因为 sdk 不支持获取本地的 localFile 的地址，所以先使用反射，稍后 sdk 会支持
-          Field f = temp.getDeclaredField("localFile");
-          f.setAccessible(true);
-          File localFile = (File)f.get(imageMsg);
-          if (null != localFile) {
-            ImageLoader.getInstance().displayImage(localFile.getPath(), contentView);
-          }
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-
+      String localFilePath = imageMsg.getLocalFilePath();
+      if (!TextUtils.isEmpty(localFilePath)) {
+        ImageLoader.getInstance().displayImage("file://" + localFilePath, contentView);
       } else {
         PhotoUtils.displayImageCacheElseNetwork(contentView, MessageHelper.getFilePath(imageMsg),
           imageMsg.getFileUrl());
