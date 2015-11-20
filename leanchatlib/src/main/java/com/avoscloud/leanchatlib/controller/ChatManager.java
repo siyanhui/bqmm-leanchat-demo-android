@@ -248,6 +248,9 @@ public class ChatManager extends AVIMClientEventHandler {
     setConnectAndNotify(true);
   }
 
+  @Override
+  public void onClientOffline(AVIMClient avimClient, int i) {}
+
   public void setConnectAndNotify(boolean connect) {
     this.connect = connect;
     connectionListener.onConnectionChanged(connect);
