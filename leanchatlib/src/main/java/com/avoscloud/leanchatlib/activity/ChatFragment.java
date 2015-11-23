@@ -76,7 +76,9 @@ public class ChatFragment extends Fragment {
     inputBottomBar = (InputBottomBar) view.findViewById(R.id.fragment_chat_inputbottombar);
     layoutManager = new LinearLayoutManager(getActivity());
     recyclerView.setLayoutManager(layoutManager);
+
     itemAdapter = new MultipleItemAdapter();
+    itemAdapter.resetRecycledViewPoolSize(recyclerView);
     recyclerView.setAdapter(itemAdapter);
 
     EventBus.getDefault().register(this);

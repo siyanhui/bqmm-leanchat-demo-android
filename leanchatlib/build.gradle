@@ -27,8 +27,8 @@ android {
 //jar 包请见 ./libs，不是 ./leanchatlib/libs。转 Eclipse 的项目格式的时候可能用到。
 dependencies {
 
-    compile 'cn.leancloud.android:avoscloud-sdk:v3.8'
-    compile 'cn.leancloud.android:avoscloud-push:v3.8@aar'
+    compile 'cn.leancloud.android:avoscloud-sdk:v3.11+'
+    compile 'cn.leancloud.android:avoscloud-push:v3.11+@aar'
 
     compile files('libs/prettytime-3.2.5.Final.jar')
     compile 'cn.leancloud.android:Java-WebSocket:1.2.0-leancloud'
