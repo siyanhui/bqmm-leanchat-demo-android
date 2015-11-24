@@ -31,6 +31,7 @@ import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.view.ViewHolder;
@@ -69,13 +70,18 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
       @Override
       public void done(List<LeanchatUser> users, AVException e) {
         if (filterException(e)) {
-          List<String> userIds = new ArrayList<String>();
+          final List<String> userIds = new ArrayList<String>();
           for (AVUser user : users) {
             userIds.add(user.getObjectId());
           }
           userIds.removeAll(conversation.getMembers());
-          adapter.setDatas(userIds);
-          adapter.notifyDataSetChanged();
+          CacheService.cacheUsers(userIds, new AVUserCacheUtils.CacheUserCallback() {
+            @Override
+            public void done(Exception e) {
+              adapter.setDatas(userIds);
+              adapter.notifyDataSetChanged();
+            }
+          });
         }
       }
     });
@@ -155,11 +161,15 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
         conView = View.inflate(ctx, R.layout.conversation_add_members_item, null);
       }
       String userId = datas.get(position);
-      AVUser user = CacheService.lookupUser(userId);
+      LeanchatUser user = CacheService.lookupUser(userId);
       ImageView avatarView = ViewHolder.findViewById(conView, R.id.avatar);
       TextView nameView = ViewHolder.findViewById(conView, R.id.username);
-      ImageLoader.getInstance().displayImage(((LeanchatUser)user).getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
-      nameView.setText(user.getUsername());
+      if (null != user) {
+        ImageLoader.getInstance().displayImage(user.getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
+        nameView.setText(user.getUsername());
+      } else {
+        nameView.setText("");
+      }
       CheckBox checkBox = ViewHolder.findViewById(conView, R.id.checkbox);
       setCheckBox(checkBox, position);
       checkBox.setOnCheckedChangeListener(new CheckListener(position));

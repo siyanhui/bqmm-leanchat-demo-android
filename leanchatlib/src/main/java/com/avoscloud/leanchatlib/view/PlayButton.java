@@ -5,14 +5,15 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.controller.AudioHelper;
 
 /**
  * Created by lzw on 14-9-22.
  */
-public class PlayButton extends ImageView implements View.OnClickListener {
+public class PlayButton extends TextView implements View.OnClickListener {
   private String path;
   private boolean leftSide;
   private AnimationDrawable anim;
@@ -62,21 +63,15 @@ public class PlayButton extends ImageView implements View.OnClickListener {
   }
 
   private void startRecordAnimation() {
-    if (leftSide) {
-      setImageResource(R.anim.chat_anim_voice_left);
-    } else {
-      setImageResource(R.anim.chat_anim_voice_right);
-    }
-    anim = (AnimationDrawable) getDrawable();
+    setCompoundDrawablesWithIntrinsicBounds(leftSide ? R.drawable.chat_anim_voice_left : 0,
+      0, !leftSide ? R.drawable.chat_anim_voice_right : 0, 0);
+    anim = (AnimationDrawable)getCompoundDrawables()[leftSide ? 0 : 2];
     anim.start();
   }
 
   private void stopRecordAnimation() {
-    if (leftSide) {
-      setImageResource(R.drawable.chat_voice_right3);
-    } else {
-      setImageResource(R.drawable.chat_voice_left3);
-    }
+    setCompoundDrawablesWithIntrinsicBounds(leftSide ? R.drawable.chat_voice_right3 : 0,
+      0, !leftSide ? R.drawable.chat_voice_left3 : 0, 0);
     if (anim != null) {
       anim.stop();
     }
