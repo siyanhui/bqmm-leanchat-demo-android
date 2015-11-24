@@ -30,21 +30,21 @@ public class PreferenceMap {
   SharedPreferences.Editor editor;
 
   public PreferenceMap(Context cxt) {
-    this.cxt = cxt;
+    this.cxt = cxt.getApplicationContext();
     pref = PreferenceManager.getDefaultSharedPreferences(cxt);
     editor = pref.edit();
     Logger.d("PreferenceMap init no specific user");
   }
 
   public PreferenceMap(Context cxt, String prefName) {
-    this.cxt = cxt;
+    this.cxt = cxt.getApplicationContext();
     pref = cxt.getSharedPreferences(prefName, Context.MODE_PRIVATE);
     editor = pref.edit();
   }
 
   public static PreferenceMap getCurUserPrefDao(Context ctx) {
     if (currentUserPreferenceMap == null) {
-      currentUserPreferenceMap = new PreferenceMap(ctx, LeanchatUser.getCurrentUser().getObjectId());
+      currentUserPreferenceMap = new PreferenceMap(ctx.getApplicationContext(), LeanchatUser.getCurrentUser().getObjectId());
     }
     return currentUserPreferenceMap;
   }
