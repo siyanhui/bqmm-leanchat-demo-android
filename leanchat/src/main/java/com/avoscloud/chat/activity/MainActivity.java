@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity {
     //discoverBtn.performClick();
     initBaiduLocClient();
 
-    CacheService.registerUser((LeanchatUser) AVUser.getCurrentUser());
+    CacheService.registerUser(AVUser.getCurrentUser(LeanchatUser.class));
   }
 
   @Override
