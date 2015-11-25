@@ -67,7 +67,7 @@ public class ProfileFragment extends BaseFragment {
   }
 
   private void refresh() {
-    LeanchatUser curUser = (LeanchatUser)AVUser.getCurrentUser();
+    LeanchatUser curUser = AVUser.getCurrentUser(LeanchatUser.class);
     userNameView.setText(curUser.getUsername());
     ImageLoader.getInstance().displayImage(curUser.getAvatarUrl(), avatarView, com.avoscloud.leanchatlib.utils.PhotoUtils.avatarImageOptions);
   }
