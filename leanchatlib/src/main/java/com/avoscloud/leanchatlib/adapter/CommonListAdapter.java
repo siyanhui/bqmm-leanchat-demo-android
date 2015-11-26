@@ -13,17 +13,17 @@ import java.util.List;
 /**
  * Created by wli on 15/11/23.
  */
-public class CommonListAdapter<T, VH extends CommonViewHolder> extends RecyclerView.Adapter<VH> {
+public class CommonListAdapter<T> extends RecyclerView.Adapter<CommonViewHolder> {
 
   private static HashMap<String, ViewHolderCreator> creatorHashMap = new HashMap<>();
 
-  private Class<VH> vhClass;
+  private Class<?> vhClass;
 
-  private List<T> dataList = new ArrayList<T>();
+  protected List<T> dataList = new ArrayList<T>();
 
   public CommonListAdapter() {}
 
-  public CommonListAdapter(Class<VH> vhClass) {
+  public CommonListAdapter(Class<?> vhClass) {
     this.vhClass = vhClass;
   }
 
@@ -43,7 +43,7 @@ public class CommonListAdapter<T, VH extends CommonViewHolder> extends RecyclerV
   }
 
   @Override
-  public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+  public CommonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     if (null == vhClass) {
       try {
         throw new IllegalArgumentException("please use CommonListAdapter(Class<VH> vhClass)");
@@ -52,7 +52,7 @@ public class CommonListAdapter<T, VH extends CommonViewHolder> extends RecyclerV
       }
     }
 
-    ViewHolderCreator<VH> creator = null;
+    ViewHolderCreator<?> creator = null;
     if (creatorHashMap.containsKey(vhClass.getName())) {
       creator = creatorHashMap.get(vhClass.getName());
     } else {
@@ -73,7 +73,7 @@ public class CommonListAdapter<T, VH extends CommonViewHolder> extends RecyclerV
   }
 
   @Override
-  public void onBindViewHolder(VH holder, int position) {
+  public void onBindViewHolder(CommonViewHolder holder, int position) {
     if (position >= 0 && position < dataList.size()) {
       holder.bindData(dataList.get(position));
     }
