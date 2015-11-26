@@ -35,7 +35,6 @@ import com.avoscloud.chat.event.InvitationEvent;
 import com.avoscloud.chat.event.MemberLetterEvent;
 import com.avoscloud.chat.service.AddRequestManager;
 import com.avoscloud.chat.service.CacheService;
-import com.avoscloud.chat.view.LetterView;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
 
@@ -97,7 +96,6 @@ public class ContactFragment extends BaseFragment {
 
   @Override
   public void onActivityCreated(Bundle savedInstanceState) {
-    // TODO Auto-generated method stub
     super.onActivityCreated(savedInstanceState);
     initHeaderView();
     initHeader();

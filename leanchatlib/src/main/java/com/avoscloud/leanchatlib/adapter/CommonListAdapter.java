@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Created by wli on 15/11/23.
+ * 现在还仅仅支持单类型 item，多类型 item 稍后在重构
  */
 public class CommonListAdapter<T> extends RecyclerView.Adapter<CommonViewHolder> {
 
@@ -38,8 +39,12 @@ public class CommonListAdapter<T> extends RecyclerView.Adapter<CommonViewHolder>
     }
   }
 
+  /**
+   * 默认在最后插入
+   * @param datas
+   */
   public void addDataList(List<T> datas) {
-    dataList.addAll(0, datas);
+    dataList.addAll(datas);
   }
 
   @Override
