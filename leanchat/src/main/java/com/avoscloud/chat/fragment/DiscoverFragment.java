@@ -19,7 +19,6 @@ import de.greenrobot.event.EventBus;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVGeoPoint;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
 import com.avoscloud.chat.activity.ContactPersonInfoActivity;
@@ -167,7 +166,7 @@ public class DiscoverFragment extends BaseFragment {
       return new ArrayList<>();
     }
     AVQuery<LeanchatUser> q = LeanchatUser.getQuery(LeanchatUser.class);
-    AVUser user = LeanchatUser.getCurrentUser();
+    LeanchatUser user = LeanchatUser.getCurrentUser();
     q.whereNotEqualTo(Constants.OBJECT_ID, user.getObjectId());
     if (orderType == Constants.ORDER_DISTANCE) {
       q.whereNear(LeanchatUser.LOCATION, geoPoint);

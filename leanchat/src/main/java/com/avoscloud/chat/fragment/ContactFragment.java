@@ -17,7 +17,6 @@ import android.widget.ImageView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
@@ -222,7 +221,7 @@ public class ContactFragment extends BaseFragment {
       throw es[0];
     } else {
       List<String> userIds = new ArrayList<String>();
-      for (AVUser user : friends) {
+      for (LeanchatUser user : friends) {
         userIds.add(user.getObjectId());
       }
       CacheService.setFriendIds(userIds);

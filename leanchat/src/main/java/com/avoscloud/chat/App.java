@@ -8,10 +8,8 @@ import android.text.TextUtils;
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVUser;
 import com.avoscloud.chat.model.AddRequest;
 import com.avoscloud.chat.model.UpdateInfo;
-import com.avoscloud.chat.service.ConversationManager;
 import com.avoscloud.chat.service.PushManager;
 import com.avoscloud.leanchatlib.controller.ConversationEventHandler;
 import com.avoscloud.leanchatlib.utils.Logger;
@@ -45,7 +43,7 @@ public class App extends Application {
     String appId = "x3o016bxnkpyee7e9pa5pre6efx2dadyerdlcez0wbzhw25g";
     String appKey = "057x24cfdzhffnl3dzk14jh9xo2rq6w1hy1fdzt5tv46ym78";
 
-    AVUser.alwaysUseSubUserClass(LeanchatUser.class);
+    LeanchatUser.alwaysUseSubUserClass(LeanchatUser.class);
     AVOSCloud.initialize(this, appId, appKey);
     //AVOSCloud.initialize(this, publicId,publicKey);
     //AVOSCloud.initialize(this, testAppId, testAppKey);

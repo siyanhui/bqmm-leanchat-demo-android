@@ -1,11 +1,11 @@
 package com.avoscloud.leanchatlib.controller;
 
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMLocationMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.avoscloud.leanchatlib.R;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
 import com.avoscloud.leanchatlib.utils.PathUtils;
 
@@ -62,7 +62,7 @@ public class MessageHelper {
   }
 
   public static String nameByUserId(String id) {
-    AVUser user = AVUserCacheUtils.getCachedUser(id);
+    LeanchatUser user = AVUserCacheUtils.getCachedUser(id);
     if (user != null) {
       return user.getUsername();
     } else {

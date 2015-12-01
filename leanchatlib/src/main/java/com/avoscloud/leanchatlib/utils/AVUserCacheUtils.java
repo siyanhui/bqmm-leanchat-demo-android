@@ -2,7 +2,6 @@ package com.avoscloud.leanchatlib.utils;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 
@@ -47,7 +46,7 @@ public class AVUserCacheUtils {
       }
     }
 
-    AVQuery<LeanchatUser> q = AVUser.getQuery(LeanchatUser.class);
+    AVQuery<LeanchatUser> q = LeanchatUser.getQuery(LeanchatUser.class);
     q.whereContainedIn(Constants.OBJECT_ID, uncachedIds);
     q.setLimit(1000);
     q.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
@@ -55,8 +54,8 @@ public class AVUserCacheUtils {
       @Override
       public void done(List<LeanchatUser> list, AVException e) {
         if (null == e) {
-          for (AVUser user : list) {
-            userMap.put(user.getObjectId(), (LeanchatUser)user);
+          for (LeanchatUser user : list) {
+            userMap.put(user.getObjectId(), user);
           }
         }
         if (null != cacheUserCallback) {

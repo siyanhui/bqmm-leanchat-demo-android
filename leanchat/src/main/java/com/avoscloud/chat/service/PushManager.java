@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.avos.avoscloud.AVInstallation;
 import com.avos.avoscloud.AVPush;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.PushService;
 import com.avoscloud.chat.activity.EntrySplashActivity;
 import com.avoscloud.leanchatlib.model.LeanchatUser;

@@ -14,7 +14,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
@@ -92,7 +91,7 @@ public class ProfileFragment extends BaseFragment {
       }
     });
     PushManager.getInstance().unsubscribeCurrentUserChannel();
-    AVUser.logOut();
+    LeanchatUser.logOut();
     getActivity().finish();
     Intent intent = new Intent(ctx, EntryLoginActivity.class);
     ctx.startActivity(intent);

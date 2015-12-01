@@ -16,7 +16,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
@@ -134,7 +133,7 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
 
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    AVUser user = (AVUser) parent.getAdapter().getItem(position);
+    LeanchatUser user = (LeanchatUser)parent.getAdapter().getItem(position);
     ContactPersonInfoActivity.goPersonInfo(this, user.getObjectId());
   }
 
@@ -143,7 +142,7 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
     if (conversationType == ConversationType.Single) {
       return true;
     }
-    final AVUser user = (AVUser) parent.getAdapter().getItem(position);
+    final LeanchatUser user = (LeanchatUser) parent.getAdapter().getItem(position);
     boolean isTheOwner = conversation.getCreator().equals(user.getObjectId());
     if (!isTheOwner) {
       new AlertDialog.Builder(this).setMessage(R.string.conversation_kickTips)
@@ -231,10 +230,10 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
       if (conView == null) {
         conView = View.inflate(ctx, R.layout.conversation_member_item, null);
       }
-      AVUser user = datas.get(position);
+      LeanchatUser user = datas.get(position);
       ImageView avatarView = ViewHolder.findViewById(conView, R.id.avatar);
       TextView nameView = ViewHolder.findViewById(conView, R.id.username);
-      ImageLoader.getInstance().displayImage(((LeanchatUser)user).getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
+      ImageLoader.getInstance().displayImage(user.getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
       nameView.setText(user.getUsername());
       return conView;
     }

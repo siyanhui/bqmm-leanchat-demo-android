@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.*;
-import com.avos.avoscloud.AVUser;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.service.AddRequestManager;
 import com.avoscloud.chat.service.CacheService;
@@ -99,8 +98,8 @@ public class ContactPersonInfoActivity extends BaseActivity implements OnClickLi
     updateView(user);
   }
 
-  private void updateView(AVUser user) {
-    ImageLoader.getInstance().displayImage(((LeanchatUser)user).getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
+  private void updateView(LeanchatUser user) {
+    ImageLoader.getInstance().displayImage(user.getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
     usernameView.setText(user.getUsername());
   }
 

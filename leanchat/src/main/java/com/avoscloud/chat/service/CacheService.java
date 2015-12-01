@@ -2,7 +2,6 @@ package com.avoscloud.chat.service;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
@@ -63,7 +62,7 @@ public class CacheService {
     if (userIds.size() <= 0) {
       return Collections.EMPTY_LIST;
     }
-    AVQuery<LeanchatUser> q = AVUser.getQuery(LeanchatUser.class);
+    AVQuery<LeanchatUser> q = LeanchatUser.getQuery(LeanchatUser.class);
     q.whereContainedIn(Constants.OBJECT_ID, userIds);
     q.setLimit(1000);
     q.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
@@ -75,7 +74,7 @@ public class CacheService {
       callback.done(null);
       return;
     }
-    AVQuery<LeanchatUser> q = AVUser.getQuery(LeanchatUser.class);
+    AVQuery<LeanchatUser> q = LeanchatUser.getQuery(LeanchatUser.class);
     q.whereContainedIn(Constants.OBJECT_ID, userIds);
     q.setLimit(1000);
     q.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);

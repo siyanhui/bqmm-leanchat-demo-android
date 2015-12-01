@@ -12,7 +12,6 @@ import android.widget.Button;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVGeoPoint;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SaveCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;

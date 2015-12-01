@@ -15,7 +15,6 @@ import butterknife.OnClick;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
 import com.avoscloud.chat.service.AddRequestManager;
@@ -70,7 +69,7 @@ public class ContactAddFriendActivity extends BaseActivity {
   }
 
   public List<LeanchatUser> searchUser(String searchName, int skip) throws AVException {
-    AVQuery<LeanchatUser> q = AVUser.getQuery(LeanchatUser.class);
+    AVQuery<LeanchatUser> q = LeanchatUser.getQuery(LeanchatUser.class);
     q.whereContains(LeanchatUser.USERNAME, searchName);
     q.limit(Constants.PAGE_SIZE);
     q.skip(skip);

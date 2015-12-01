@@ -14,7 +14,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
@@ -71,7 +70,7 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
       public void done(List<LeanchatUser> users, AVException e) {
         if (filterException(e)) {
           final List<String> userIds = new ArrayList<String>();
-          for (AVUser user : users) {
+          for (LeanchatUser user : users) {
             userIds.add(user.getObjectId());
           }
           userIds.removeAll(conversation.getMembers());
