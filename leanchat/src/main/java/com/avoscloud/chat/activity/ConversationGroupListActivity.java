@@ -61,6 +61,7 @@ public class ConversationGroupListActivity extends AVBaseActivity {
       public void done(List<AVIMConversation> conversations, AVIMException e) {
         if (filterException(e)) {
           itemAdapter.setDataList(conversations);
+          itemAdapter.notifyDataSetChanged();
         }
       }
     });
