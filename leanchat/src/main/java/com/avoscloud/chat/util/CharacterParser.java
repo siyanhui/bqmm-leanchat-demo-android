@@ -1,5 +1,7 @@
 package com.avoscloud.chat.util;
 
+import com.avoscloud.leanchatlib.utils.Logger;
+
 /**
  * Java汉字转换为拼音
  */

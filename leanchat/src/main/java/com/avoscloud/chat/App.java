@@ -11,7 +11,8 @@ import com.avoscloud.chat.model.AddRequest;
 import com.avoscloud.chat.model.UpdateInfo;
 import com.avoscloud.chat.service.ConversationManager;
 import com.avoscloud.chat.service.PushManager;
-import com.avoscloud.chat.util.Logger;
+import com.avoscloud.leanchatlib.controller.ConversationEventHandler;
+import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
@@ -76,7 +77,7 @@ public class App extends Application {
     if (LeanchatUser.getCurrentUser() != null) {
       chatManager.setupManagerWithUserId(LeanchatUser.getCurrentUser().getObjectId());
     }
-    chatManager.setConversationEventHandler(ConversationManager.getEventHandler());
+    chatManager.setConversationEventHandler(ConversationEventHandler.getInstance());
     ChatManager.setDebugEnabled(App.debug);
   }
 

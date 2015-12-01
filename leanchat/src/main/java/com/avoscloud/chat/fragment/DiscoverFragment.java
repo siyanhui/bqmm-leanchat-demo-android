@@ -27,7 +27,7 @@ import com.avoscloud.leanchatlib.view.TwoWaySwipeLayout;
 import com.avoscloud.leanchatlib.adapter.CommonListAdapter;
 import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.chat.service.PreferenceMap;
-import com.avoscloud.chat.util.Logger;
+import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.viewholder.DiscoverItemHolder;
 import com.avoscloud.leanchatlib.event.DiscoverItemClickEvent;
 import com.avoscloud.leanchatlib.model.LeanchatUser;

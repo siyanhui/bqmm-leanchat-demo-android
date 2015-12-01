@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.adapter.BaseListAdapter;
-import com.avoscloud.chat.util.Logger;
+import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.util.SimpleNetTask;
 import com.avoscloud.chat.util.Utils;
 

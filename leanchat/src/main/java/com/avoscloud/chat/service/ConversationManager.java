@@ -3,9 +3,7 @@ package com.avoscloud.chat.service;
 import android.graphics.Bitmap;
 
 import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
-import com.avos.avoscloud.im.v2.AVIMConversationEventHandler;
 import com.avos.avoscloud.im.v2.AVIMConversationQuery;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
@@ -13,8 +11,6 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
-import com.avoscloud.chat.event.ConversationChangeEvent;
-import com.avoscloud.chat.util.Logger;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.MessageAgent;
 import com.avoscloud.leanchatlib.controller.MessageHelper;
@@ -22,7 +18,6 @@ import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.AVIMConversationCacheUtils;
 import com.avoscloud.leanchatlib.utils.Constants;
-import de.greenrobot.event.EventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,49 +31,13 @@ import java.util.Map;
 public class ConversationManager {
   private static ConversationManager conversationManager;
 
-  private static AVIMConversationEventHandler eventHandler = new AVIMConversationEventHandler() {
-    @Override
-    public void onMemberLeft(AVIMClient client, AVIMConversation conversation, List<String> members, String kickedBy) {
-      Logger.i(MessageHelper.nameByUserIds(members) + " left, kicked by " + MessageHelper.nameByUserId(kickedBy));
-      refreshCacheAndNotify(conversation);
-    }
-
-    @Override
-    public void onMemberJoined(AVIMClient client, AVIMConversation conversation, List<String> members, String invitedBy) {
-      Logger.i(MessageHelper.nameByUserIds(members) + " joined , invited by " + MessageHelper.nameByUserId(invitedBy));
-      refreshCacheAndNotify(conversation);
-    }
-
-    private void refreshCacheAndNotify(AVIMConversation conversation) {
-      ConversationChangeEvent conversationChangeEvent = new ConversationChangeEvent(conversation);
-      EventBus.getDefault().post(conversationChangeEvent);
-    }
-
-    @Override
-    public void onKicked(AVIMClient client, AVIMConversation conversation, String kickedBy) {
-      refreshCacheAndNotify(conversation);
-      Logger.i("you are kicked by " + MessageHelper.nameByUserId(kickedBy));
-    }
-
-    @Override
-    public void onInvited(AVIMClient client, AVIMConversation conversation, String operator) {
-      Logger.i("you are invited by " + MessageHelper.nameByUserId(operator));
-      refreshCacheAndNotify(conversation);
-    }
-  };
-
-  public ConversationManager() {
-  }
+  public ConversationManager() {}
 
   public static synchronized ConversationManager getInstance() {
     if (conversationManager == null) {
       conversationManager = new ConversationManager();
     }
     return conversationManager;
-  }
-
-  public static AVIMConversationEventHandler getEventHandler() {
-    return eventHandler;
   }
 
   public void findAndCacheRooms(final Room.MultiRoomsCallback callback) {
