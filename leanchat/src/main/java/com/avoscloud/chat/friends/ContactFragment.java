@@ -1,4 +1,4 @@
-package com.avoscloud.chat.fragment;
+package com.avoscloud.chat.friends;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -16,15 +16,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avoscloud.chat.App;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.activity.ChatRoomActivity;
-import com.avoscloud.chat.activity.ContactAddFriendActivity;
-import com.avoscloud.chat.activity.ContactNewFriendActivity;
+import com.avoscloud.chat.fragment.BaseFragment;
 import com.avoscloud.chat.activity.ConversationGroupListActivity;
 import com.avoscloud.chat.adapter.ContactsAdapter;
 import com.avoscloud.chat.event.ContactItemClickEvent;
@@ -32,15 +30,10 @@ import com.avoscloud.chat.event.ContactItemLongClickEvent;
 import com.avoscloud.chat.event.ContactRefreshEvent;
 import com.avoscloud.chat.event.InvitationEvent;
 import com.avoscloud.chat.event.MemberLetterEvent;
-import com.avoscloud.chat.service.AddRequestManager;
-import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
-import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -138,24 +131,17 @@ public class ContactFragment extends BaseFragment {
   }
 
   private void getMembers(final boolean isforce) {
-    new Thread(new Runnable() {
+    FriendsManager.fetchFriends(isforce, new FindCallback() {
       @Override
-      public void run() {
-        try {
-          final List<LeanchatUser> users = findFriends(isforce);
-          handler.post(new Runnable() {
-            @Override
-            public void run() {
-              refreshLayout.setRefreshing(false);
-              itemAdapter.setUserList(users);
-              itemAdapter.notifyDataSetChanged();
-            }
-          });
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
+      public void done(List list, AVException e) {
+        refreshLayout.setRefreshing(false);
+        itemAdapter.setUserList(list);
+        itemAdapter.notifyDataSetChanged();
       }
-    }).start();
+
+      @Override
+      protected void internalDone0(Object o, AVException e) {}
+    });
   }
 
   private void initHeader() {
@@ -199,40 +185,6 @@ public class ContactFragment extends BaseFragment {
             });
           }
         }).setNegativeButton(R.string.chat_common_cancel, null).show();
-  }
-
-    public static List<LeanchatUser> findFriends(boolean isforce) throws Exception {
-    final List<LeanchatUser> friends = new ArrayList<LeanchatUser>();
-    final AVException[] es = new AVException[1];
-    final CountDownLatch latch = new CountDownLatch(1);
-      LeanchatUser.getCurrentUser().findFriendsWithCachePolicy(
-        isforce ? AVQuery.CachePolicy.NETWORK_ELSE_CACHE : AVQuery.CachePolicy.CACHE_ELSE_NETWORK, new FindCallback<LeanchatUser>() {
-        @Override
-        public void done(List<LeanchatUser> avUsers, AVException e) {
-          if (e != null) {
-            es[0] = e;
-          } else {
-            friends.addAll(avUsers);
-          }
-          latch.countDown();
-        }
-      });
-    latch.await();
-    if (es[0] != null) {
-      throw es[0];
-    } else {
-      List<String> userIds = new ArrayList<String>();
-      for (LeanchatUser user : friends) {
-        userIds.add(user.getObjectId());
-      }
-      CacheService.setFriendIds(userIds);
-      UserCacheUtils.fetchUsers(userIds);
-      List<LeanchatUser> newFriends = new ArrayList<>();
-      for (LeanchatUser user : friends) {
-        newFriends.add(UserCacheUtils.getCachedUser(user.getObjectId()));
-      }
-      return newFriends;
-    }
   }
 
   public void onEvent(ContactRefreshEvent event) {

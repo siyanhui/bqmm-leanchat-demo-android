@@ -2,6 +2,7 @@ package com.avoscloud.chat.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,11 +22,10 @@ import com.avos.avoscloud.AVGeoPoint;
 import com.avos.avoscloud.AVQuery;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
-import com.avoscloud.chat.activity.ContactPersonInfoActivity;
+import com.avoscloud.chat.friends.ContactPersonInfoActivity;
 import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 import com.avoscloud.leanchatlib.view.TwoWaySwipeLayout;
 import com.avoscloud.leanchatlib.adapter.CommonListAdapter;
-import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.chat.service.PreferenceMap;
 import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.viewholder.DiscoverItemHolder;
@@ -183,7 +183,9 @@ public class DiscoverFragment extends BaseFragment {
   }
 
   public void onEvent(DiscoverItemClickEvent clickEvent) {
-    ContactPersonInfoActivity.goPersonInfo(ctx, clickEvent.userId);
+    Intent intent = new Intent(getActivity(), ContactPersonInfoActivity.class);
+    intent.putExtra(Constants.LEANCHAT_USER_ID, clickEvent.userId);
+    startActivity(intent);
   }
 
   public class SortDialogListener implements DialogInterface.OnClickListener {

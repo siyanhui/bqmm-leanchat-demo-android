@@ -22,6 +22,7 @@ import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
+import com.avoscloud.chat.friends.ContactPersonInfoActivity;
 import com.avoscloud.chat.service.ConversationManager;
 import com.avoscloud.chat.view.ExpandGridView;
 import com.avoscloud.chat.util.Utils;
@@ -134,7 +135,9 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     LeanchatUser user = (LeanchatUser)parent.getAdapter().getItem(position);
-    ContactPersonInfoActivity.goPersonInfo(this, user.getObjectId());
+    Intent intent = new Intent(this, ContactPersonInfoActivity.class);
+    intent.putExtra(Constants.LEANCHAT_USER_ID, user.getObjectId());
+    startActivity(intent);
   }
 
   @Override

@@ -1,4 +1,4 @@
-package com.avoscloud.chat.activity;
+package com.avoscloud.chat.friends;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,8 +17,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
-import com.avoscloud.chat.service.AddRequestManager;
-import com.avoscloud.chat.service.CacheService;
+import com.avoscloud.chat.activity.BaseActivity;
 import com.avoscloud.chat.view.BaseListView;
 import com.avoscloud.chat.adapter.BaseListAdapter;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
@@ -75,7 +74,7 @@ public class ContactAddFriendActivity extends BaseActivity {
     q.limit(Constants.PAGE_SIZE);
     q.skip(skip);
     LeanchatUser user = LeanchatUser.getCurrentUser();
-    List<String> friendIds = new ArrayList<String>(CacheService.getFriendIds());
+    List<String> friendIds = new ArrayList<String>(FriendsManager.getFriendIds());
     friendIds.add(user.getObjectId());
     q.whereNotContainedIn(Constants.OBJECT_ID, friendIds);
     q.orderByDescending(Constants.UPDATED_AT);

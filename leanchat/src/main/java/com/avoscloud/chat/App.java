@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
-import com.avoscloud.chat.model.AddRequest;
+import com.avoscloud.chat.friends.AddRequest;
 import com.avoscloud.chat.model.UpdateInfo;
 import com.avoscloud.chat.service.PushManager;
 import com.avoscloud.leanchatlib.controller.ConversationEventHandler;

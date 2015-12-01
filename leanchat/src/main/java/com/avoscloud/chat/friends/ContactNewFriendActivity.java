@@ -1,4 +1,4 @@
-package com.avoscloud.chat.activity;
+package com.avoscloud.chat.friends;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -15,8 +15,9 @@ import butterknife.InjectView;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.SaveCallback;
 import com.avoscloud.chat.R;
-import com.avoscloud.chat.model.AddRequest;
-import com.avoscloud.chat.service.AddRequestManager;
+import com.avoscloud.chat.activity.BaseActivity;
+import com.avoscloud.chat.friends.AddRequest;
+import com.avoscloud.chat.friends.AddRequestManager;
 import com.avoscloud.chat.service.ConversationManager;
 import com.avoscloud.chat.service.PreferenceMap;
 import com.avoscloud.chat.event.ContactRefreshEvent;

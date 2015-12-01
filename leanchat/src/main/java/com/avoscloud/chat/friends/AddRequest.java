@@ -1,4 +1,4 @@
-package com.avoscloud.chat.model;
+package com.avoscloud.chat.friends;
 
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;

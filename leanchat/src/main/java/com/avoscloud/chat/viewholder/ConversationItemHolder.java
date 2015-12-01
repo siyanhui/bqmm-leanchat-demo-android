@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avoscloud.chat.R;
-import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.chat.service.ConversationManager;
 import com.avoscloud.chat.event.ConversationItemClickEvent;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;

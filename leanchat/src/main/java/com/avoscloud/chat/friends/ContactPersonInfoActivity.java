@@ -1,6 +1,5 @@
-package com.avoscloud.chat.activity;
+package com.avoscloud.chat.friends;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,8 +7,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.*;
 import com.avoscloud.chat.R;
-import com.avoscloud.chat.service.AddRequestManager;
-import com.avoscloud.chat.service.CacheService;
+import com.avoscloud.chat.activity.BaseActivity;
+import com.avoscloud.chat.activity.ChatRoomActivity;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
@@ -32,12 +31,6 @@ public class ContactPersonInfoActivity extends BaseActivity implements OnClickLi
   String userId = "";
   LeanchatUser user;
 
-  public static void goPersonInfo(Context ctx, String userId) {
-    Intent intent = new Intent(ctx, ContactPersonInfoActivity.class);
-    intent.putExtra(USER_ID, userId);
-    ctx.startActivity(intent);
-  }
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     // TODO Auto-generated method stub
@@ -56,7 +49,7 @@ public class ContactPersonInfoActivity extends BaseActivity implements OnClickLi
   }
 
   private void initData() {
-    userId = getIntent().getStringExtra(USER_ID);
+    userId = getIntent().getStringExtra(Constants.LEANCHAT_USER_ID);
     user = UserCacheUtils.getCachedUser(userId);
   }
 
@@ -85,7 +78,7 @@ public class ContactPersonInfoActivity extends BaseActivity implements OnClickLi
     } else {
       initActionBar(R.string.contact_detailInfo);
       avatarArrowView.setVisibility(View.INVISIBLE);
-      List<String> cacheFriends = CacheService.getFriendIds();
+      List<String> cacheFriends = FriendsManager.getFriendIds();
       boolean isFriend = cacheFriends.contains(user.getObjectId());
       if (isFriend) {
         chatBtn.setVisibility(View.VISIBLE);
