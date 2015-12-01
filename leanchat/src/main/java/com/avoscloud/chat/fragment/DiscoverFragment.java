@@ -167,7 +167,7 @@ public class DiscoverFragment extends BaseFragment {
       return new ArrayList<>();
     }
     AVQuery<LeanchatUser> q = LeanchatUser.getQuery(LeanchatUser.class);
-    AVUser user = AVUser.getCurrentUser();
+    AVUser user = LeanchatUser.getCurrentUser();
     q.whereNotEqualTo(Constants.OBJECT_ID, user.getObjectId());
     if (orderType == Constants.ORDER_DISTANCE) {
       q.whereNear(LeanchatUser.LOCATION, geoPoint);

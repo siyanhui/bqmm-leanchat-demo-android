@@ -188,7 +188,7 @@ public class ContactFragment extends BaseFragment {
           @Override
           public void onClick(DialogInterface dialog, int which) {
             final ProgressDialog dialog1 = showSpinnerDialog();
-            AVUser.getCurrentUser(LeanchatUser.class).removeFriend(memberId, new SaveCallback() {
+            LeanchatUser.getCurrentUser().removeFriend(memberId, new SaveCallback() {
               @Override
               public void done(AVException e) {
                 dialog1.dismiss();
@@ -205,7 +205,7 @@ public class ContactFragment extends BaseFragment {
     final List<LeanchatUser> friends = new ArrayList<LeanchatUser>();
     final AVException[] es = new AVException[1];
     final CountDownLatch latch = new CountDownLatch(1);
-      LeanchatUser.getCurrentUser(LeanchatUser.class).findFriendsWithCachePolicy(
+      LeanchatUser.getCurrentUser().findFriendsWithCachePolicy(
         isforce ? AVQuery.CachePolicy.NETWORK_ELSE_CACHE : AVQuery.CachePolicy.CACHE_ELSE_NETWORK, new FindCallback<LeanchatUser>() {
         @Override
         public void done(List<LeanchatUser> avUsers, AVException e) {

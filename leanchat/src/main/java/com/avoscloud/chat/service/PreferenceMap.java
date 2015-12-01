@@ -44,7 +44,7 @@ public class PreferenceMap {
 
   public static PreferenceMap getCurUserPrefDao(Context ctx) {
     if (currentUserPreferenceMap == null) {
-      currentUserPreferenceMap = new PreferenceMap(ctx.getApplicationContext(), LeanchatUser.getCurrentUser().getObjectId());
+      currentUserPreferenceMap = new PreferenceMap(ctx.getApplicationContext(), LeanchatUser.getCurrentUserId());
     }
     return currentUserPreferenceMap;
   }

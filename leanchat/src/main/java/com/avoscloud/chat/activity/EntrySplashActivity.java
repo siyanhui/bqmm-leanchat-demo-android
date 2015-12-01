@@ -36,7 +36,7 @@ public class EntrySplashActivity extends BaseActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.entry_splash_layout);
     if (AVUser.getCurrentUser() != null) {
-      AVUser.getCurrentUser(LeanchatUser.class).updateUserInfo();
+      LeanchatUser.getCurrentUser().updateUserInfo();
       handler.sendEmptyMessageDelayed(GO_MAIN_MSG, SPLASH_DURATION);
     } else {
       handler.sendEmptyMessageDelayed(GO_LOGIN_MSG, SPLASH_DURATION);

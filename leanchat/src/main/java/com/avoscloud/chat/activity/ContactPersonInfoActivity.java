@@ -74,7 +74,7 @@ public class ContactPersonInfoActivity extends BaseActivity implements OnClickLi
   }
 
   private void initView() {
-    AVUser curUser = AVUser.getCurrentUser();
+    LeanchatUser curUser = LeanchatUser.getCurrentUser();
     if (curUser.equals(user)) {
       initActionBar(R.string.contact_personalInfo);
       avatarLayout.setOnClickListener(this);

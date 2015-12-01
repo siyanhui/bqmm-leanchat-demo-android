@@ -74,7 +74,7 @@ public class ContactAddFriendActivity extends BaseActivity {
     q.whereContains(LeanchatUser.USERNAME, searchName);
     q.limit(Constants.PAGE_SIZE);
     q.skip(skip);
-    LeanchatUser user = (LeanchatUser)AVUser.getCurrentUser();
+    LeanchatUser user = LeanchatUser.getCurrentUser();
     List<String> friendIds = new ArrayList<String>(CacheService.getFriendIds());
     friendIds.add(user.getObjectId());
     q.whereNotContainedIn(Constants.OBJECT_ID, friendIds);
@@ -109,7 +109,7 @@ public class ContactAddFriendActivity extends BaseActivity {
       if (conView == null) {
         conView = inflater.inflate(R.layout.contact_add_friend_item, null);
       }
-      final LeanchatUser user = (LeanchatUser) datas.get(position);
+      final LeanchatUser user = datas.get(position);
       TextView nameView = ViewHolder.findViewById(conView, R.id.name);
       ImageView avatarView = ViewHolder.findViewById(conView, R.id.avatar);
       Button addBtn = ViewHolder.findViewById(conView, R.id.add);

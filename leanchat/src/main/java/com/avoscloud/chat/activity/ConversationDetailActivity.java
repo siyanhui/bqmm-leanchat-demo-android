@@ -128,7 +128,7 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
 
   private void initData() {
     conversationManager = ConversationManager.getInstance();
-    isOwner = conversation.getCreator().equals(AVUser.getCurrentUser().getObjectId());
+    isOwner = conversation.getCreator().equals(LeanchatUser.getCurrentUserId());
     conversationType = ConversationHelper.typeOfConversation(conversation);
   }
 

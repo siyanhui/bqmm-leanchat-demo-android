@@ -66,7 +66,7 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
   }
 
   private void setListData() {
-    AVUser.getCurrentUser(LeanchatUser.class).findFriendsWithCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK, new FindCallback<LeanchatUser>() {
+    LeanchatUser.getCurrentUser().findFriendsWithCachePolicy(AVQuery.CachePolicy.CACHE_ELSE_NETWORK, new FindCallback<LeanchatUser>() {
       @Override
       public void done(List<LeanchatUser> users, AVException e) {
         if (filterException(e)) {

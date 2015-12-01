@@ -27,6 +27,12 @@ public class LeanchatUser extends AVUser {
   public static final String LOCATION = "location";
   public static final String INSTALLATION = "installation";
 
+  public static String getCurrentUserId () {
+    LeanchatUser currentUser = getCurrentUser(LeanchatUser.class);
+    return (null != currentUser ? currentUser.getObjectId() : null);
+  }
+
+
   public String getAvatarUrl() {
     AVFile avatar = getAVFile(AVATAR);
     if (avatar != null) {

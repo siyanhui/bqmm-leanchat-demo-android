@@ -3,6 +3,8 @@ package com.avoscloud.chat;
 import android.app.Application;
 import android.content.Context;
 import android.os.StrictMode;
+import android.text.TextUtils;
+
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
@@ -74,8 +76,9 @@ public class App extends Application {
   private void initChatManager() {
     final ChatManager chatManager = ChatManager.getInstance();
     chatManager.init(this);
-    if (LeanchatUser.getCurrentUser() != null) {
-      chatManager.setupManagerWithUserId(LeanchatUser.getCurrentUser().getObjectId());
+    String currentUserId = LeanchatUser.getCurrentUserId();
+    if (!TextUtils.isEmpty(currentUserId)) {
+      chatManager.setupManagerWithUserId(currentUserId);
     }
     chatManager.setConversationEventHandler(ConversationEventHandler.getInstance());
     ChatManager.setDebugEnabled(App.debug);

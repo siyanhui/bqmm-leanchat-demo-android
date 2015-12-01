@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
@@ -67,7 +68,7 @@ public class MainActivity extends BaseActivity {
     eventBus.post(new LoginFinishEvent());
 
     ChatManager chatManager = ChatManager.getInstance();
-    chatManager.setupManagerWithUserId(AVUser.getCurrentUser().getObjectId());
+    chatManager.setupManagerWithUserId(LeanchatUser.getCurrentUserId());
     chatManager.openClient(null);
     Intent intent = new Intent(fromActivity, MainActivity.class);
     fromActivity.startActivity(intent);
@@ -88,7 +89,7 @@ public class MainActivity extends BaseActivity {
     //discoverBtn.performClick();
     initBaiduLocClient();
 
-    CacheService.registerUser(AVUser.getCurrentUser(LeanchatUser.class));
+    CacheService.registerUser(LeanchatUser.getCurrentUser());
   }
 
   @Override
@@ -193,7 +194,7 @@ public class MainActivity extends BaseActivity {
     PreferenceMap preferenceMap = PreferenceMap.getCurUserPrefDao(App.ctx);
     AVGeoPoint lastLocation = preferenceMap.getLocation();
     if (lastLocation != null) {
-      final AVUser user = AVUser.getCurrentUser();
+      final LeanchatUser user = LeanchatUser.getCurrentUser();
       final AVGeoPoint location = user.getAVGeoPoint(LeanchatUser.LOCATION);
       if (location == null || !Utils.doubleEqual(location.getLatitude(), lastLocation.getLatitude())
         || !Utils.doubleEqual(location.getLongitude(), lastLocation.getLongitude())) {
@@ -227,9 +228,9 @@ public class MainActivity extends BaseActivity {
       int locType = location.getLocType();
       Logger.d("onReceiveLocation latitude=" + latitude + " longitude=" + longitude
           + " locType=" + locType + " address=" + location.getAddrStr());
-      AVUser user = AVUser.getCurrentUser();
-      if (user != null) {
-        PreferenceMap preferenceMap = new PreferenceMap(ctx, user.getObjectId());
+      String currentUserId = LeanchatUser.getCurrentUserId();
+      if (!TextUtils.isEmpty(currentUserId)) {
+        PreferenceMap preferenceMap = new PreferenceMap(ctx, currentUserId);
         AVGeoPoint avGeoPoint = preferenceMap.getLocation();
         if (avGeoPoint != null && avGeoPoint.getLatitude() == location.getLatitude()
             && avGeoPoint.getLongitude() == location.getLongitude()) {

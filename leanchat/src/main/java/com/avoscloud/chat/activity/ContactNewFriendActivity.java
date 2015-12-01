@@ -93,7 +93,7 @@ public class ContactNewFriendActivity extends BaseActivity implements
           }
         }
         addRequests = filters;
-        PreferenceMap preferenceMap = new PreferenceMap(ctx, LeanchatUser.getCurrentUser().getObjectId());
+        PreferenceMap preferenceMap = new PreferenceMap(ctx, LeanchatUser.getCurrentUserId());
         preferenceMap.setAddRequestN(addRequests.size());
         return addRequests;
       }
