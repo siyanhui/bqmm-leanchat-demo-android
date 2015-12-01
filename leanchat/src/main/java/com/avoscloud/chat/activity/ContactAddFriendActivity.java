@@ -23,6 +23,7 @@ import com.avoscloud.chat.view.BaseListView;
 import com.avoscloud.chat.adapter.BaseListAdapter;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 import com.avoscloud.leanchatlib.view.ViewHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -80,7 +81,7 @@ public class ContactAddFriendActivity extends BaseActivity {
     q.orderByDescending(Constants.UPDATED_AT);
     q.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     List<LeanchatUser> users = q.find();
-    CacheService.registerUsers(users);
+    UserCacheUtils.cacheUsers(users);
     return users;
   }
 

@@ -30,7 +30,7 @@ import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
-import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.view.ViewHolder;
@@ -74,7 +74,7 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
             userIds.add(user.getObjectId());
           }
           userIds.removeAll(conversation.getMembers());
-          CacheService.cacheUsers(userIds, new AVUserCacheUtils.CacheUserCallback() {
+          UserCacheUtils.fetchUsers(userIds, new UserCacheUtils.CacheUserCallback() {
             @Override
             public void done(Exception e) {
               adapter.setDatas(userIds);
@@ -160,7 +160,7 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
         conView = View.inflate(ctx, R.layout.conversation_add_members_item, null);
       }
       String userId = datas.get(position);
-      LeanchatUser user = CacheService.lookupUser(userId);
+      LeanchatUser user = UserCacheUtils.getCachedUser(userId);
       ImageView avatarView = ViewHolder.findViewById(conView, R.id.avatar);
       TextView nameView = ViewHolder.findViewById(conView, R.id.username);
       if (null != user) {

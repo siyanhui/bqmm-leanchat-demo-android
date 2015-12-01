@@ -13,6 +13,7 @@ import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -56,7 +57,7 @@ public class ContactPersonInfoActivity extends BaseActivity implements OnClickLi
 
   private void initData() {
     userId = getIntent().getStringExtra(USER_ID);
-    user = CacheService.lookupUser(userId);
+    user = UserCacheUtils.getCachedUser(userId);
   }
 
   private void findView() {

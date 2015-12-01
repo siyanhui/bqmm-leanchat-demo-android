@@ -22,6 +22,7 @@ import com.avos.avoscloud.AVQuery;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
 import com.avoscloud.chat.activity.ContactPersonInfoActivity;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 import com.avoscloud.leanchatlib.view.TwoWaySwipeLayout;
 import com.avoscloud.leanchatlib.adapter.CommonListAdapter;
 import com.avoscloud.chat.service.CacheService;
@@ -177,7 +178,7 @@ public class DiscoverFragment extends BaseFragment {
     q.limit(limit);
     q.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     List<LeanchatUser> users = q.find();
-    CacheService.registerUsers(users);
+    UserCacheUtils.cacheUsers(users);
     return users;
   }
 

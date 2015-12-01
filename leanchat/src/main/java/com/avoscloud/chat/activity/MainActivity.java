@@ -28,6 +28,7 @@ import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.LogUtils;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -88,7 +89,7 @@ public class MainActivity extends BaseActivity {
     //discoverBtn.performClick();
     initBaiduLocClient();
 
-    CacheService.registerUser(LeanchatUser.getCurrentUser());
+    UserCacheUtils.cacheUser(LeanchatUser.getCurrentUser());
   }
 
   @Override

@@ -15,7 +15,7 @@ import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.event.ImTypeMessageResendEvent;
 import com.avoscloud.leanchatlib.event.LeftChatItemClickEvent;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
-import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -72,14 +72,14 @@ public class ChatItemHolder extends CommonViewHolder {
     message = (AVIMMessage)o;
     timeView.setText(Utils.millisecsToDateString(message.getTimestamp()));
 
-    LeanchatUser user = AVUserCacheUtils.getCachedUser(message.getFrom());
+    LeanchatUser user = UserCacheUtils.getCachedUser(message.getFrom());
     if (null != user) {
       nameView.setText(user.getUsername());
       ImageLoader.getInstance().displayImage(user.getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
     } else {
       try {
         //TODO 加载完应该回调刷新 UI
-        AVUserCacheUtils.cacheUsers(Arrays.asList(message.getFrom()));
+        UserCacheUtils.fetchUsers(Arrays.asList(message.getFrom()));
       } catch (Exception e) {
         e.printStackTrace();
       }

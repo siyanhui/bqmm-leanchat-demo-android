@@ -32,8 +32,8 @@ import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.controller.RoomsTable;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
-import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
-import com.avoscloud.leanchatlib.utils.AVUserCacheUtils.CacheUserCallback;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils.CacheUserCallback;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.view.ViewHolder;
@@ -109,11 +109,11 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
   }
 
   private void refresh() {
-    AVUserCacheUtils.cacheUsers(conversation.getMembers(), new CacheUserCallback() {
+    UserCacheUtils.fetchUsers(conversation.getMembers(), new CacheUserCallback() {
       @Override
       public void done(Exception e) {
         usersAdapter.clear();
-        usersAdapter.addAll(AVUserCacheUtils.getUsersFromCache(conversation.getMembers()));
+        usersAdapter.addAll(UserCacheUtils.getUsersFromCache(conversation.getMembers()));
       }
     });
   }

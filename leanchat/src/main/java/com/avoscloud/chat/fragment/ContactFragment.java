@@ -36,6 +36,7 @@ import com.avoscloud.chat.service.AddRequestManager;
 import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,10 +226,10 @@ public class ContactFragment extends BaseFragment {
         userIds.add(user.getObjectId());
       }
       CacheService.setFriendIds(userIds);
-      CacheService.cacheUsers(userIds);
+      UserCacheUtils.fetchUsers(userIds);
       List<LeanchatUser> newFriends = new ArrayList<>();
       for (LeanchatUser user : friends) {
-        newFriends.add(CacheService.lookupUser(user.getObjectId()));
+        newFriends.add(UserCacheUtils.getCachedUser(user.getObjectId()));
       }
       return newFriends;
     }

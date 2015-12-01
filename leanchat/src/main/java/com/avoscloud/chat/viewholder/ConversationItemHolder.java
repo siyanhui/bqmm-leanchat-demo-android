@@ -17,6 +17,7 @@ import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -56,7 +57,7 @@ public class ConversationItemHolder extends CommonViewHolder {
     AVIMConversation conversation = room.getConversation();
     if (null != conversation) {
       if (ConversationHelper.typeOfConversation(conversation) == ConversationType.Single) {
-        LeanchatUser user = (LeanchatUser) CacheService.lookupUser(ConversationHelper.otherIdOfConversation(conversation));
+        LeanchatUser user = UserCacheUtils.getCachedUser(ConversationHelper.otherIdOfConversation(conversation));
         if (null != user) {
           ImageLoader.getInstance().displayImage(user.getAvatarUrl(), recentAvatarView, PhotoUtils.avatarImageOptions);
         }
