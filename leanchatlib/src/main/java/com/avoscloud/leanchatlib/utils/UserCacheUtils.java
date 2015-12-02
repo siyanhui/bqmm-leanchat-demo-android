@@ -54,7 +54,7 @@ public class UserCacheUtils {
     fetchUsers(ids, null);
   }
 
-  public static void fetchUsers(List<String> ids, final CacheUserCallback cacheUserCallback) {
+  public static void fetchUsers(final List<String> ids, final CacheUserCallback cacheUserCallback) {
     Set<String> uncachedIds = new HashSet<String>();
     for (String id : ids) {
       if (!userMap.containsKey(id)) {
@@ -64,7 +64,7 @@ public class UserCacheUtils {
 
     if (uncachedIds.isEmpty()) {
       if (null != cacheUserCallback) {
-        cacheUserCallback.done(null);
+        cacheUserCallback.done(getUsersFromCache(ids), null);
         return;
       }
     }
@@ -82,7 +82,7 @@ public class UserCacheUtils {
           }
         }
         if (null != cacheUserCallback) {
-          cacheUserCallback.done(e);
+          cacheUserCallback.done(getUsersFromCache(ids), e);
         }
       }
     });
@@ -99,6 +99,6 @@ public class UserCacheUtils {
   }
 
   public static abstract class CacheUserCallback {
-    public abstract void done(Exception e);
+    public abstract void done(List<LeanchatUser> userList, Exception e);
   }
 }

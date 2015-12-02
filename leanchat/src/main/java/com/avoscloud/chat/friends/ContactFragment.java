@@ -131,16 +131,13 @@ public class ContactFragment extends BaseFragment {
   }
 
   private void getMembers(final boolean isforce) {
-    FriendsManager.fetchFriends(isforce, new FindCallback() {
+    FriendsManager.fetchFriends(isforce, new FindCallback<LeanchatUser>() {
       @Override
-      public void done(List list, AVException e) {
+      public void done(List<LeanchatUser> list, AVException e) {
         refreshLayout.setRefreshing(false);
         itemAdapter.setUserList(list);
         itemAdapter.notifyDataSetChanged();
       }
-
-      @Override
-      protected void internalDone0(Object o, AVException e) {}
     });
   }
 

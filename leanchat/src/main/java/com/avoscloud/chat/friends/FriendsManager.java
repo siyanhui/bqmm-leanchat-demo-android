@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by wli on 15/12/1.
  */
-class FriendsManager {
+public class FriendsManager {
 
   private static volatile List<String> friendIds = new ArrayList<String>();
 
@@ -29,7 +29,7 @@ class FriendsManager {
     }
   }
 
-  public static void fetchFriends(boolean isForce, final FindCallback findCallback) {
+  public static void fetchFriends(boolean isForce, final FindCallback<LeanchatUser> findCallback) {
     AVQuery.CachePolicy policy =
       (isForce ? AVQuery.CachePolicy.NETWORK_ELSE_CACHE : AVQuery.CachePolicy.CACHE_ELSE_NETWORK);
     LeanchatUser.getCurrentUser().findFriendsWithCachePolicy(policy, new FindCallback<LeanchatUser>() {
@@ -44,9 +44,9 @@ class FriendsManager {
           }
           UserCacheUtils.fetchUsers(userIds, new UserCacheUtils.CacheUserCallback() {
             @Override
-            public void done(Exception e) {
+            public void done(List<LeanchatUser> list1, Exception e) {
               setFriendIds(userIds);
-              findCallback.done(UserCacheUtils.getUsersFromCache(userIds), null);
+              findCallback.done(list1, null);
             }
           });
 

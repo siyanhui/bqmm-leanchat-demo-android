@@ -112,9 +112,9 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
   private void refresh() {
     UserCacheUtils.fetchUsers(conversation.getMembers(), new CacheUserCallback() {
       @Override
-      public void done(Exception e) {
+      public void done(List<LeanchatUser> userList, Exception e) {
         usersAdapter.clear();
-        usersAdapter.addAll(UserCacheUtils.getUsersFromCache(conversation.getMembers()));
+        usersAdapter.addAll(userList);
       }
     });
   }
