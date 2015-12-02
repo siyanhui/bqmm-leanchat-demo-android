@@ -1,18 +1,15 @@
 package com.avoscloud.chat.viewholder;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.avoscloud.chat.R;
-import com.avoscloud.chat.activity.ChatRoomActivity;
 import com.avoscloud.chat.adapter.ContactsAdapter;
 import com.avoscloud.chat.event.ContactItemClickEvent;
 import com.avoscloud.chat.event.ContactItemLongClickEvent;
-import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

@@ -6,7 +6,7 @@ import android.preference.PreferenceManager;
 import com.avos.avoscloud.AVGeoPoint;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
-import com.avoscloud.chat.util.Logger;
+import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
 
@@ -44,7 +44,7 @@ public class PreferenceMap {
 
   public static PreferenceMap getCurUserPrefDao(Context ctx) {
     if (currentUserPreferenceMap == null) {
-      currentUserPreferenceMap = new PreferenceMap(ctx.getApplicationContext(), LeanchatUser.getCurrentUser().getObjectId());
+      currentUserPreferenceMap = new PreferenceMap(ctx.getApplicationContext(), LeanchatUser.getCurrentUserId());
     }
     return currentUserPreferenceMap;
   }

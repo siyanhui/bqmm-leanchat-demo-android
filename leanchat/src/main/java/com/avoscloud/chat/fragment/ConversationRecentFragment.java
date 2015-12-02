@@ -26,8 +26,9 @@ import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
 import com.avoscloud.leanchatlib.model.ConversationType;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.model.Room;
-import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 import com.avoscloud.leanchatlib.utils.Constants;
 
 import de.greenrobot.event.EventBus;
@@ -155,9 +156,9 @@ public class ConversationRecentFragment extends BaseFragment implements ChatMana
         needCacheUsers.add(ConversationHelper.otherIdOfConversation(conversation));
       }
     }
-    AVUserCacheUtils.cacheUsers(needCacheUsers, new AVUserCacheUtils.CacheUserCallback() {
+    UserCacheUtils.fetchUsers(needCacheUsers, new UserCacheUtils.CacheUserCallback() {
       @Override
-      public void done(Exception e) {
+      public void done(List<LeanchatUser> userList, Exception e) {
         itemAdapter.notifyDataSetChanged();
       }
     });

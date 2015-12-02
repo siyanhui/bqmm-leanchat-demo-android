@@ -1,6 +1,7 @@
 package com.avoscloud.chat.viewholder;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import com.avoscloud.chat.App;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.service.PreferenceMap;
 import com.avoscloud.chat.util.Utils;
+import com.avoscloud.leanchatlib.event.DiscoverItemClickEvent;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -17,6 +19,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.Date;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by wli on 15/11/24.
@@ -31,6 +35,7 @@ public class DiscoverItemHolder extends CommonViewHolder<LeanchatUser> {
   TextView distanceView;
   TextView loginTimeView;
   ImageView avatarView;
+  LeanchatUser leanchatUser;
 
   public DiscoverItemHolder(Context context, ViewGroup root) {
     super(context, root, R.layout.discover_near_people_item);
@@ -47,10 +52,20 @@ public class DiscoverItemHolder extends CommonViewHolder<LeanchatUser> {
     distanceView = (TextView)itemView.findViewById(R.id.distance_text);
     loginTimeView = (TextView)itemView.findViewById(R.id.login_time_text);
     avatarView = (ImageView)itemView.findViewById(R.id.avatar_view);
+
+    itemView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (null != leanchatUser) {
+          EventBus.getDefault().post(new DiscoverItemClickEvent(leanchatUser.getObjectId()));
+        }
+      }
+    });
   }
 
   @Override
   public void bindData(LeanchatUser user) {
+    leanchatUser = user;
     if (null != user) {
       ImageLoader.getInstance().displayImage(user.getAvatarUrl(), avatarView, com.avoscloud.leanchatlib.utils.PhotoUtils.avatarImageOptions);
       AVGeoPoint geoPoint = user.getAVGeoPoint(LeanchatUser.LOCATION);

@@ -1,4 +1,4 @@
-package com.avoscloud.chat.service;
+package com.avoscloud.chat.friends;
 
 import android.content.Context;
 import com.avos.avoscloud.AVException;
@@ -9,7 +9,7 @@ import com.avos.avoscloud.FollowCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
-import com.avoscloud.chat.model.AddRequest;
+import com.avoscloud.chat.service.PushManager;
 import com.avoscloud.chat.util.SimpleNetTask;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by lzw on 14-9-27.
  */
-public class AddRequestManager {
+class AddRequestManager {
   private static AddRequestManager addRequestManager;
 
   /**

@@ -3,7 +3,6 @@ package com.avoscloud.leanchatlib.controller;
 import android.content.Context;
 import android.content.Intent;
 
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
@@ -12,7 +11,8 @@ import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
 import com.avoscloud.leanchatlib.model.ConversationType;
-import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.LogUtils;
 import com.avoscloud.leanchatlib.utils.NotificationUtils;
@@ -83,7 +83,7 @@ public class MessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
       String notificationContent = message instanceof AVIMTextMessage ?
         ((AVIMTextMessage) message).getText() : context.getString(R.string.unspport_message_type);
 
-      AVUser user = AVUserCacheUtils.getCachedUser(message.getFrom());
+      LeanchatUser user = UserCacheUtils.getCachedUser(message.getFrom());
       String title = (null != user ? user.getUsername() : "");
 
       Intent intent = new Intent();

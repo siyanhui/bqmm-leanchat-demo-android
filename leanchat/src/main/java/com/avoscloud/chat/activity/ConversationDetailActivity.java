@@ -16,13 +16,13 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
+import com.avoscloud.chat.friends.ContactPersonInfoActivity;
 import com.avoscloud.chat.service.ConversationManager;
 import com.avoscloud.chat.view.ExpandGridView;
 import com.avoscloud.chat.util.Utils;
@@ -33,8 +33,8 @@ import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.controller.RoomsTable;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
-import com.avoscloud.leanchatlib.utils.AVUserCacheUtils;
-import com.avoscloud.leanchatlib.utils.AVUserCacheUtils.CacheUserCallback;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils.CacheUserCallback;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.view.ViewHolder;
@@ -110,11 +110,11 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
   }
 
   private void refresh() {
-    AVUserCacheUtils.cacheUsers(conversation.getMembers(), new CacheUserCallback() {
+    UserCacheUtils.fetchUsers(conversation.getMembers(), new CacheUserCallback() {
       @Override
-      public void done(Exception e) {
+      public void done(List<LeanchatUser> userList, Exception e) {
         usersAdapter.clear();
-        usersAdapter.addAll(AVUserCacheUtils.getUsersFromCache(conversation.getMembers()));
+        usersAdapter.addAll(userList);
       }
     });
   }
@@ -128,14 +128,16 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
 
   private void initData() {
     conversationManager = ConversationManager.getInstance();
-    isOwner = conversation.getCreator().equals(AVUser.getCurrentUser().getObjectId());
+    isOwner = conversation.getCreator().equals(LeanchatUser.getCurrentUserId());
     conversationType = ConversationHelper.typeOfConversation(conversation);
   }
 
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    AVUser user = (AVUser) parent.getAdapter().getItem(position);
-    ContactPersonInfoActivity.goPersonInfo(this, user.getObjectId());
+    LeanchatUser user = (LeanchatUser)parent.getAdapter().getItem(position);
+    Intent intent = new Intent(this, ContactPersonInfoActivity.class);
+    intent.putExtra(Constants.LEANCHAT_USER_ID, user.getObjectId());
+    startActivity(intent);
   }
 
   @Override
@@ -143,7 +145,7 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
     if (conversationType == ConversationType.Single) {
       return true;
     }
-    final AVUser user = (AVUser) parent.getAdapter().getItem(position);
+    final LeanchatUser user = (LeanchatUser) parent.getAdapter().getItem(position);
     boolean isTheOwner = conversation.getCreator().equals(user.getObjectId());
     if (!isTheOwner) {
       new AlertDialog.Builder(this).setMessage(R.string.conversation_kickTips)
@@ -231,10 +233,10 @@ public class ConversationDetailActivity extends AVBaseActivity implements Adapte
       if (conView == null) {
         conView = View.inflate(ctx, R.layout.conversation_member_item, null);
       }
-      AVUser user = datas.get(position);
+      LeanchatUser user = datas.get(position);
       ImageView avatarView = ViewHolder.findViewById(conView, R.id.avatar);
       TextView nameView = ViewHolder.findViewById(conView, R.id.username);
-      ImageLoader.getInstance().displayImage(((LeanchatUser)user).getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
+      ImageLoader.getInstance().displayImage(user.getAvatarUrl(), avatarView, PhotoUtils.avatarImageOptions);
       nameView.setText(user.getUsername());
       return conView;
     }

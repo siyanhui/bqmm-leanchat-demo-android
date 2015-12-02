@@ -1,4 +1,4 @@
-package com.avoscloud.chat.util;
+package com.avoscloud.leanchatlib.utils;
 
 import android.util.Log;
 

@@ -1,8 +1,9 @@
 package com.avoscloud.leanchatlib.utils;
 
+import android.text.TextUtils;
+
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 
@@ -15,8 +16,11 @@ import java.util.Set;
 
 /**
  * Created by wli on 15/9/30.
+ * TODO
+ * 1、本地存储
+ * 2、避免内存、外存占用过多
  */
-public class AVUserCacheUtils {
+public class UserCacheUtils {
 
   private static Map<String, LeanchatUser> userMap;
 
@@ -28,11 +32,29 @@ public class AVUserCacheUtils {
     return userMap.get(objectId);
   }
 
-  public static void cacheUser(String userId, LeanchatUser user) {
-    userMap.put(userId, user);
+  public static boolean hasCachedUser(String objectId) {
+    return userMap.containsKey(objectId);
   }
 
-  public static void cacheUsers(List<String> ids, final CacheUserCallback cacheUserCallback) {
+  public static void cacheUser(LeanchatUser user) {
+    if (null != user && !TextUtils.isEmpty(user.getObjectId())) {
+      userMap.put(user.getObjectId(), user);
+    }
+  }
+
+  public static void cacheUsers(List<LeanchatUser> users) {
+    if (null != users) {
+      for (LeanchatUser user : users) {
+        cacheUser(user);
+      }
+    }
+  }
+
+  public static void fetchUsers(List<String> ids) {
+    fetchUsers(ids, null);
+  }
+
+  public static void fetchUsers(final List<String> ids, final CacheUserCallback cacheUserCallback) {
     Set<String> uncachedIds = new HashSet<String>();
     for (String id : ids) {
       if (!userMap.containsKey(id)) {
@@ -42,12 +64,12 @@ public class AVUserCacheUtils {
 
     if (uncachedIds.isEmpty()) {
       if (null != cacheUserCallback) {
-        cacheUserCallback.done(null);
+        cacheUserCallback.done(getUsersFromCache(ids), null);
         return;
       }
     }
 
-    AVQuery<LeanchatUser> q = AVUser.getQuery(LeanchatUser.class);
+    AVQuery<LeanchatUser> q = LeanchatUser.getQuery(LeanchatUser.class);
     q.whereContainedIn(Constants.OBJECT_ID, uncachedIds);
     q.setLimit(1000);
     q.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
@@ -55,12 +77,12 @@ public class AVUserCacheUtils {
       @Override
       public void done(List<LeanchatUser> list, AVException e) {
         if (null == e) {
-          for (AVUser user : list) {
-            userMap.put(user.getObjectId(), (LeanchatUser)user);
+          for (LeanchatUser user : list) {
+            userMap.put(user.getObjectId(), user);
           }
         }
         if (null != cacheUserCallback) {
-          cacheUserCallback.done(e);
+          cacheUserCallback.done(getUsersFromCache(ids), e);
         }
       }
     });
@@ -76,11 +98,7 @@ public class AVUserCacheUtils {
     return userList;
   }
 
-  public static void cacheUsers(List<String> ids) {
-    cacheUsers(ids, null);
-  }
-
   public static abstract class CacheUserCallback {
-    public abstract void done(Exception e);
+    public abstract void done(List<LeanchatUser> userList, Exception e);
   }
 }

@@ -6,28 +6,28 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVGeoPoint;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SaveCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
-import com.avoscloud.chat.service.CacheService;
 import com.avoscloud.chat.service.PreferenceMap;
 import com.avoscloud.chat.service.UpdateService;
 import com.avoscloud.chat.event.LoginFinishEvent;
-import com.avoscloud.chat.fragment.ContactFragment;
+import com.avoscloud.chat.friends.ContactFragment;
 import com.avoscloud.chat.fragment.ConversationRecentFragment;
 import com.avoscloud.chat.fragment.DiscoverFragment;
 import com.avoscloud.chat.fragment.ProfileFragment;
-import com.avoscloud.chat.util.Logger;
+import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.LogUtils;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -67,7 +67,7 @@ public class MainActivity extends BaseActivity {
     eventBus.post(new LoginFinishEvent());
 
     ChatManager chatManager = ChatManager.getInstance();
-    chatManager.setupManagerWithUserId(AVUser.getCurrentUser().getObjectId());
+    chatManager.setupManagerWithUserId(LeanchatUser.getCurrentUserId());
     chatManager.openClient(null);
     Intent intent = new Intent(fromActivity, MainActivity.class);
     fromActivity.startActivity(intent);
@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity {
     //discoverBtn.performClick();
     initBaiduLocClient();
 
-    CacheService.registerUser(AVUser.getCurrentUser(LeanchatUser.class));
+    UserCacheUtils.cacheUser(LeanchatUser.getCurrentUser());
   }
 
   @Override
@@ -193,7 +193,7 @@ public class MainActivity extends BaseActivity {
     PreferenceMap preferenceMap = PreferenceMap.getCurUserPrefDao(App.ctx);
     AVGeoPoint lastLocation = preferenceMap.getLocation();
     if (lastLocation != null) {
-      final AVUser user = AVUser.getCurrentUser();
+      final LeanchatUser user = LeanchatUser.getCurrentUser();
       final AVGeoPoint location = user.getAVGeoPoint(LeanchatUser.LOCATION);
       if (location == null || !Utils.doubleEqual(location.getLatitude(), lastLocation.getLatitude())
         || !Utils.doubleEqual(location.getLongitude(), lastLocation.getLongitude())) {
@@ -227,9 +227,9 @@ public class MainActivity extends BaseActivity {
       int locType = location.getLocType();
       Logger.d("onReceiveLocation latitude=" + latitude + " longitude=" + longitude
           + " locType=" + locType + " address=" + location.getAddrStr());
-      AVUser user = AVUser.getCurrentUser();
-      if (user != null) {
-        PreferenceMap preferenceMap = new PreferenceMap(ctx, user.getObjectId());
+      String currentUserId = LeanchatUser.getCurrentUserId();
+      if (!TextUtils.isEmpty(currentUserId)) {
+        PreferenceMap preferenceMap = new PreferenceMap(ctx, currentUserId);
         AVGeoPoint avGeoPoint = preferenceMap.getLocation();
         if (avGeoPoint != null && avGeoPoint.getLatitude() == location.getLatitude()
             && avGeoPoint.getLongitude() == location.getLongitude()) {

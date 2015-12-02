@@ -1,4 +1,4 @@
-package com.avoscloud.chat.event;
+package com.avoscloud.leanchatlib.event;
 
 import com.avos.avoscloud.im.v2.AVIMConversation;
 

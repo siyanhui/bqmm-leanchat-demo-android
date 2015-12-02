@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.avoscloud.chat.activity.ChatRoomActivity;
-import com.avoscloud.chat.activity.ContactNewFriendActivity;
+import com.avoscloud.chat.friends.ContactNewFriendActivity;
 import com.avoscloud.chat.activity.EntrySplashActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.utils.Constants;

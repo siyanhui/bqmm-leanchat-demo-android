@@ -14,7 +14,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
@@ -67,7 +66,7 @@ public class ProfileFragment extends BaseFragment {
   }
 
   private void refresh() {
-    LeanchatUser curUser = AVUser.getCurrentUser(LeanchatUser.class);
+    LeanchatUser curUser = LeanchatUser.getCurrentUser();
     userNameView.setText(curUser.getUsername());
     ImageLoader.getInstance().displayImage(curUser.getAvatarUrl(), avatarView, com.avoscloud.leanchatlib.utils.PhotoUtils.avatarImageOptions);
   }
@@ -92,7 +91,7 @@ public class ProfileFragment extends BaseFragment {
       }
     });
     PushManager.getInstance().unsubscribeCurrentUserChannel();
-    AVUser.logOut();
+    LeanchatUser.logOut();
     getActivity().finish();
     Intent intent = new Intent(ctx, EntryLoginActivity.class);
     ctx.startActivity(intent);
@@ -114,7 +113,7 @@ public class ProfileFragment extends BaseFragment {
         startImageCrop(uri, 200, 200, CROP_REQUEST);
       } else if (requestCode == CROP_REQUEST) {
         final String path = saveCropAvatar(data);
-        LeanchatUser user = (LeanchatUser)AVUser.getCurrentUser();
+        LeanchatUser user = LeanchatUser.getCurrentUser();
         user.saveAvatar(path, null);
       }
     }

@@ -1,8 +1,8 @@
-package com.avoscloud.chat.model;
+package com.avoscloud.chat.friends;
 
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVUser;
+import com.avoscloud.leanchatlib.model.LeanchatUser;
 
 /**
  * Created by lzw on 14-9-27.
@@ -24,19 +24,19 @@ public class AddRequest extends AVObject {
   public AddRequest() {
   }
 
-  public AVUser getFromUser() {
-    return getAVUser(FROM_USER);
+  public LeanchatUser getFromUser() {
+    return getAVUser(FROM_USER, LeanchatUser.class);
   }
 
-  public void setFromUser(AVUser fromUser) {
+  public void setFromUser(LeanchatUser fromUser) {
     put(FROM_USER, fromUser);
   }
 
-  public AVUser getToUser() {
-    return getAVUser(TO_USER);
+  public LeanchatUser getToUser() {
+    return getAVUser(TO_USER, LeanchatUser.class);
   }
 
-  public void setToUser(AVUser toUser) {
+  public void setToUser(LeanchatUser toUser) {
     put(TO_USER, toUser);
   }
 

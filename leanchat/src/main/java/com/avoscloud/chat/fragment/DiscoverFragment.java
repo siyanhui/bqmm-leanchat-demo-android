@@ -2,28 +2,36 @@ package com.avoscloud.chat.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVGeoPoint;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
-import com.avoscloud.chat.service.CacheService;
+import com.avoscloud.chat.friends.ContactPersonInfoActivity;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
+import com.avoscloud.leanchatlib.view.TwoWaySwipeLayout;
+import com.avoscloud.leanchatlib.adapter.CommonListAdapter;
 import com.avoscloud.chat.service.PreferenceMap;
-import com.avoscloud.chat.activity.ContactPersonInfoActivity;
-import com.avoscloud.chat.adapter.DiscoverFragmentUserAdapter;
-import com.avoscloud.chat.view.BaseListView;
-import com.avoscloud.chat.util.Logger;
+import com.avoscloud.leanchatlib.utils.Logger;
+import com.avoscloud.chat.viewholder.DiscoverItemHolder;
+import com.avoscloud.leanchatlib.event.DiscoverItemClickEvent;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +43,52 @@ public class DiscoverFragment extends BaseFragment {
 
   private final SortDialogListener distanceListener = new SortDialogListener(Constants.ORDER_DISTANCE);
   private final SortDialogListener updatedAtListener = new SortDialogListener(Constants.ORDER_UPDATED_AT);
-  @InjectView(R.id.list_near)
-  BaseListView<LeanchatUser> listView;
-  DiscoverFragmentUserAdapter adapter;
-  List<LeanchatUser> nears = new ArrayList<LeanchatUser>();
+
+  @InjectView(R.id.fragment_near_srl_pullrefresh)
+  protected TwoWaySwipeLayout refreshLayout;
+
+  @InjectView(R.id.fragment_near_srl_view)
+  protected RecyclerView recyclerView;
+
+  protected LinearLayoutManager layoutManager;
+
+  CommonListAdapter<LeanchatUser> discoverAdapter;
   int orderType;
   PreferenceMap preferenceMap;
 
+  Handler handler = new Handler(Looper.getMainLooper());
+
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.discover_fragment, container, false);
+    View view = inflater.inflate(R.layout.discover_fragment, container, false);
+    ButterKnife.inject(this, view);
+    EventBus.getDefault().register(this);
+    layoutManager = new LinearLayoutManager(getActivity());
+    discoverAdapter = new CommonListAdapter<LeanchatUser>(DiscoverItemHolder.class);
+    recyclerView.setLayoutManager(layoutManager);
+    recyclerView.setAdapter(discoverAdapter);
+    refreshLayout.setChildView(recyclerView);
+    refreshLayout.setOnLoadListener(new TwoWaySwipeLayout.OnLoadmoreListener() {
+      @Override
+      public void onLoad() {
+        loadMoreDiscoverData();
+      }
+    });
+
+    refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        refreshDiscoverList();
+      }
+    });
+
+    recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+      @Override
+      public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        super.onScrollStateChanged(recyclerView, newState);
+      }
+    });
+    return view;
   }
 
   @Override
@@ -58,33 +102,55 @@ public class DiscoverFragment extends BaseFragment {
       public void onClick(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.discover_fragment_sort).setPositiveButton(R.string.discover_fragment_loginTime,
-            updatedAtListener).setNegativeButton(R.string.discover_fragment_distance, distanceListener).show();
+          updatedAtListener).setNegativeButton(R.string.discover_fragment_distance, distanceListener).show();
       }
     });
-    initXListView();
-    listView.onRefresh();
+    refreshDiscoverList();
   }
 
-  private void initXListView() {
-    adapter = new DiscoverFragmentUserAdapter(ctx, nears);
-    listView = (BaseListView<LeanchatUser>) getView().findViewById(R.id.list_near);
-    listView.init(new BaseListView.DataFactory<LeanchatUser>() {
+  private void loadMoreDiscoverData() {
+    new Thread(new Runnable() {
       @Override
-      public List<LeanchatUser> getDatasInBackground(int skip, int limit, List<LeanchatUser> currentDatas) throws Exception {
-        return findNearbyPeople(orderType, skip, limit);
-      }
-    }, adapter);
+      public void run() {
+        try {
+          final List<LeanchatUser> userList = findNearbyPeople(Constants.ORDER_DISTANCE, discoverAdapter.getItemCount(), 20);
+          handler.post(new Runnable() {
+            @Override
+            public void run() {
+              refreshLayout.setLoading(false);
+              discoverAdapter.addDataList(userList);
+              discoverAdapter.notifyDataSetChanged();
+            }
+          });
 
-    listView.setItemListener(new BaseListView.ItemListener<LeanchatUser>() {
+        } catch (AVException e) {
+          e.printStackTrace();
+        }
+      }
+    }).start();
+  }
+
+  private void refreshDiscoverList() {
+    new Thread(new Runnable() {
       @Override
-      public void onItemSelected(LeanchatUser item) {
-        ContactPersonInfoActivity.goPersonInfo(ctx, item.getObjectId());
-      }
-    });
+      public void run() {
+        try {
+          final List<LeanchatUser> userList = findNearbyPeople(Constants.ORDER_DISTANCE, 0, 20);
+          handler.post(new Runnable() {
+            @Override
+            public void run() {
+              refreshLayout.setRefreshing(false);
+              discoverAdapter.setDataList(userList);
+              discoverAdapter.notifyDataSetChanged();
+            }
+          });
 
-    PauseOnScrollListener listener = new PauseOnScrollListener(ImageLoader.getInstance(),
-        true, true);
-    listView.setOnScrollListener(listener);
+        } catch (AVException e) {
+          e.printStackTrace();
+        }
+      }
+    }).start();
+
   }
 
   @Override
@@ -101,7 +167,7 @@ public class DiscoverFragment extends BaseFragment {
       return new ArrayList<>();
     }
     AVQuery<LeanchatUser> q = LeanchatUser.getQuery(LeanchatUser.class);
-    AVUser user = AVUser.getCurrentUser();
+    LeanchatUser user = LeanchatUser.getCurrentUser();
     q.whereNotEqualTo(Constants.OBJECT_ID, user.getObjectId());
     if (orderType == Constants.ORDER_DISTANCE) {
       q.whereNear(LeanchatUser.LOCATION, geoPoint);
@@ -112,8 +178,14 @@ public class DiscoverFragment extends BaseFragment {
     q.limit(limit);
     q.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     List<LeanchatUser> users = q.find();
-    CacheService.registerUsers(users);
+    UserCacheUtils.cacheUsers(users);
     return users;
+  }
+
+  public void onEvent(DiscoverItemClickEvent clickEvent) {
+    Intent intent = new Intent(getActivity(), ContactPersonInfoActivity.class);
+    intent.putExtra(Constants.LEANCHAT_USER_ID, clickEvent.userId);
+    startActivity(intent);
   }
 
   public class SortDialogListener implements DialogInterface.OnClickListener {
@@ -126,7 +198,7 @@ public class DiscoverFragment extends BaseFragment {
     @Override
     public void onClick(DialogInterface dialog, int which) {
       DiscoverFragment.this.orderType = orderType;
-      listView.onRefresh();
+      refreshDiscoverList();
     }
   }
 }

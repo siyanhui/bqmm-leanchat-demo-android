@@ -108,15 +108,15 @@
             android:theme="@style/ChatMainTheme" />
 
         <activity
-            android:name=".activity.ContactNewFriendActivity"
+            android:name=".friends.ContactNewFriendActivity"
             android:theme="@style/ChatMainTheme" />
 
         <activity
-            android:name=".activity.ContactAddFriendActivity"
+            android:name=".friends.ContactAddFriendActivity"
             android:theme="@style/ChatMainTheme" />
 
         <activity
-            android:name=".activity.ContactPersonInfoActivity"
+            android:name=".friends.ContactPersonInfoActivity"
             android:theme="@style/ChatMainTheme" />
 
         <activity

@@ -1,4 +1,4 @@
-package com.avoscloud.chat.activity;
+package com.avoscloud.chat.friends;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,15 +15,14 @@ import butterknife.OnClick;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
-import com.avoscloud.chat.service.AddRequestManager;
-import com.avoscloud.chat.service.CacheService;
+import com.avoscloud.chat.activity.BaseActivity;
 import com.avoscloud.chat.view.BaseListView;
 import com.avoscloud.chat.adapter.BaseListAdapter;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
+import com.avoscloud.leanchatlib.utils.UserCacheUtils;
 import com.avoscloud.leanchatlib.view.ViewHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -70,18 +69,18 @@ public class ContactAddFriendActivity extends BaseActivity {
   }
 
   public List<LeanchatUser> searchUser(String searchName, int skip) throws AVException {
-    AVQuery<LeanchatUser> q = AVUser.getQuery(LeanchatUser.class);
+    AVQuery<LeanchatUser> q = LeanchatUser.getQuery(LeanchatUser.class);
     q.whereContains(LeanchatUser.USERNAME, searchName);
     q.limit(Constants.PAGE_SIZE);
     q.skip(skip);
-    LeanchatUser user = (LeanchatUser)AVUser.getCurrentUser();
-    List<String> friendIds = new ArrayList<String>(CacheService.getFriendIds());
+    LeanchatUser user = LeanchatUser.getCurrentUser();
+    List<String> friendIds = new ArrayList<String>(FriendsManager.getFriendIds());
     friendIds.add(user.getObjectId());
     q.whereNotContainedIn(Constants.OBJECT_ID, friendIds);
     q.orderByDescending(Constants.UPDATED_AT);
     q.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     List<LeanchatUser> users = q.find();
-    CacheService.registerUsers(users);
+    UserCacheUtils.cacheUsers(users);
     return users;
   }
 
@@ -109,7 +108,7 @@ public class ContactAddFriendActivity extends BaseActivity {
       if (conView == null) {
         conView = inflater.inflate(R.layout.contact_add_friend_item, null);
       }
-      final LeanchatUser user = (LeanchatUser) datas.get(position);
+      final LeanchatUser user = datas.get(position);
       TextView nameView = ViewHolder.findViewById(conView, R.id.name);
       ImageView avatarView = ViewHolder.findViewById(conView, R.id.avatar);
       Button addBtn = ViewHolder.findViewById(conView, R.id.add);

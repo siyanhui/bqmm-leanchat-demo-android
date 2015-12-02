@@ -3,15 +3,16 @@ package com.avoscloud.chat;
 import android.app.Application;
 import android.content.Context;
 import android.os.StrictMode;
+import android.text.TextUtils;
+
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVUser;
-import com.avoscloud.chat.model.AddRequest;
+import com.avoscloud.chat.friends.AddRequest;
 import com.avoscloud.chat.model.UpdateInfo;
-import com.avoscloud.chat.service.ConversationManager;
 import com.avoscloud.chat.service.PushManager;
-import com.avoscloud.chat.util.Logger;
+import com.avoscloud.leanchatlib.controller.ConversationEventHandler;
+import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.model.LeanchatUser;
@@ -42,7 +43,7 @@ public class App extends Application {
     String appId = "x3o016bxnkpyee7e9pa5pre6efx2dadyerdlcez0wbzhw25g";
     String appKey = "057x24cfdzhffnl3dzk14jh9xo2rq6w1hy1fdzt5tv46ym78";
 
-    AVUser.alwaysUseSubUserClass(LeanchatUser.class);
+    LeanchatUser.alwaysUseSubUserClass(LeanchatUser.class);
     AVOSCloud.initialize(this, appId, appKey);
     //AVOSCloud.initialize(this, publicId,publicKey);
     //AVOSCloud.initialize(this, testAppId, testAppKey);
@@ -73,10 +74,11 @@ public class App extends Application {
   private void initChatManager() {
     final ChatManager chatManager = ChatManager.getInstance();
     chatManager.init(this);
-    if (LeanchatUser.getCurrentUser() != null) {
-      chatManager.setupManagerWithUserId(LeanchatUser.getCurrentUser().getObjectId());
+    String currentUserId = LeanchatUser.getCurrentUserId();
+    if (!TextUtils.isEmpty(currentUserId)) {
+      chatManager.setupManagerWithUserId(currentUserId);
     }
-    chatManager.setConversationEventHandler(ConversationManager.getEventHandler());
+    chatManager.setConversationEventHandler(ConversationEventHandler.getInstance());
     ChatManager.setDebugEnabled(App.debug);
   }
 
