@@ -73,7 +73,7 @@ public class CommonListAdapter<T> extends RecyclerView.Adapter<CommonViewHolder>
     if (null != creator) {
       return creator.createByViewGroupAndType(parent, viewType);
     } else {
-      return null;
+      throw new IllegalArgumentException(vhClass.getName() + " HOLDER_CREATOR should be instantiated");
     }
   }
 
