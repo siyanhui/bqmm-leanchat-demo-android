@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +22,10 @@ import com.avos.avoscloud.AVQuery;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
 import com.avoscloud.chat.friends.ContactPersonInfoActivity;
+import com.avoscloud.leanchatlib.adapter.HeaderListAdapter;
 import com.avoscloud.leanchatlib.utils.UserCacheUtils;
-import com.avoscloud.leanchatlib.view.TwoWaySwipeLayout;
-import com.avoscloud.leanchatlib.adapter.CommonListAdapter;
+import com.avoscloud.leanchatlib.view.CustomRecyclerView;
+import com.avoscloud.leanchatlib.view.LoadMoreFooterView;
 import com.avoscloud.chat.service.PreferenceMap;
 import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.viewholder.DiscoverItemHolder;
@@ -45,14 +45,14 @@ public class DiscoverFragment extends BaseFragment {
   private final SortDialogListener updatedAtListener = new SortDialogListener(Constants.ORDER_UPDATED_AT);
 
   @InjectView(R.id.fragment_near_srl_pullrefresh)
-  protected TwoWaySwipeLayout refreshLayout;
+  protected SwipeRefreshLayout refreshLayout;
 
   @InjectView(R.id.fragment_near_srl_view)
-  protected RecyclerView recyclerView;
+  protected CustomRecyclerView recyclerView;
 
   protected LinearLayoutManager layoutManager;
 
-  CommonListAdapter<LeanchatUser> discoverAdapter;
+  HeaderListAdapter<LeanchatUser> discoverAdapter;
   int orderType;
   PreferenceMap preferenceMap;
 
@@ -63,31 +63,26 @@ public class DiscoverFragment extends BaseFragment {
     View view = inflater.inflate(R.layout.discover_fragment, container, false);
     ButterKnife.inject(this, view);
     EventBus.getDefault().register(this);
+
+    LoadMoreFooterView footerView = new LoadMoreFooterView(getActivity());
     layoutManager = new LinearLayoutManager(getActivity());
-    discoverAdapter = new CommonListAdapter<LeanchatUser>(DiscoverItemHolder.class);
-    recyclerView.setLayoutManager(layoutManager);
-    recyclerView.setAdapter(discoverAdapter);
-    refreshLayout.setChildView(recyclerView);
-    refreshLayout.setOnLoadListener(new TwoWaySwipeLayout.OnLoadmoreListener() {
+    discoverAdapter = new HeaderListAdapter<>(DiscoverItemHolder.class);
+    discoverAdapter.setFooterView(footerView);
+    recyclerView.setOnLoadMoreStatusChangedListener(footerView);
+    recyclerView.setOnLoadMoreListener(new CustomRecyclerView.OnLoadMoreListener() {
       @Override
-      public void onLoad() {
+      public void onLoadMore() {
         loadMoreDiscoverData();
       }
     });
-
     refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
       public void onRefresh() {
         refreshDiscoverList();
       }
     });
-
-    recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-      @Override
-      public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-        super.onScrollStateChanged(recyclerView, newState);
-      }
-    });
+    recyclerView.setLayoutManager(layoutManager);
+    recyclerView.setAdapter(discoverAdapter);
     return view;
   }
 
@@ -117,7 +112,7 @@ public class DiscoverFragment extends BaseFragment {
           handler.post(new Runnable() {
             @Override
             public void run() {
-              refreshLayout.setLoading(false);
+              recyclerView.setLoadComplete();
               discoverAdapter.addDataList(userList);
               discoverAdapter.notifyDataSetChanged();
             }
