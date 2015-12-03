@@ -89,7 +89,7 @@ public class ConversationDetailActivity extends AVBaseActivity {
     layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
       @Override
       public int getSpanSize(int position) {
-        return (listAdapter.getItemViewType(position) == HeaderListAdapter.FOOTER_ITEM_TYPE ? 4: 1);
+        return (listAdapter.getItemViewType(position) == HeaderListAdapter.FOOTER_ITEM_TYPE ? layoutManager.getSpanCount(): 1);
       }
     });
     listAdapter = new HeaderListAdapter<>(ConversationDetailItemHolder.class);
