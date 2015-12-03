@@ -9,6 +9,7 @@ import android.view.View;
 
 /**
  * Created by wli on 15/12/3.
+ * TODO 关于下拉刷新，此处还需要优化，这样还是太麻烦了
  */
 public class CustomRecyclerView extends RecyclerView {
 
