@@ -1,35 +1,72 @@
 package com.avoscloud.leanchatlib_demo;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 import com.avos.avoscloud.im.v2.AVIMClient;
-import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avoscloud.leanchatlib.controller.ChatManager;
-import com.avoscloud.leanchatlib.utils.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class MainActivity extends Activity implements View.OnClickListener {
-  private EditText otherIdEditText;
-  private Button chatButton;
+public class MainActivity extends AppCompatActivity {
+
+  private Toolbar toolbar;
+  private ViewPager viewPager;
+  private TabLayout tabLayout;
+  ConversationFragment conversationFragment;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    otherIdEditText = (EditText) findViewById(R.id.otherIdEditText);
-    chatButton = (Button) findViewById(R.id.chatButton);
-    chatButton.setOnClickListener(this);
+    toolbar = (Toolbar) findViewById(R.id.toolbar);
+    viewPager = (ViewPager)findViewById(R.id.pager);
+    tabLayout = (TabLayout)findViewById(R.id.tablayout);
+    setSupportActionBar(toolbar);
+
+    List<String> tabList = new ArrayList<>();
+    List<Fragment> fragmentList = new ArrayList<>();
+
+    tabList.add("会话");
+    tabList.add("联系人");
+    conversationFragment = new ConversationFragment();
+    tabLayout.setTabMode(TabLayout.MODE_FIXED);//设置tab模式，当前为系统默认模式
+    tabLayout.addTab(tabLayout.newTab().setText(tabList.get(0)));//添加tab选项卡
+    fragmentList.add(conversationFragment);
+    tabLayout.addTab(tabLayout.newTab().setText(tabList.get(1)));
+    fragmentList.add(new ContactFragment());
+
+    TabFragmentAdapter adapter = new TabFragmentAdapter(getSupportFragmentManager(), fragmentList, tabList);
+    viewPager.setAdapter(adapter);
+    viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+      @Override
+      public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+      @Override
+      public void onPageSelected(int position) {
+        if (1 == position) {
+          conversationFragment.updateConversationList();
+        }
+      }
+
+      @Override
+      public void onPageScrollStateChanged(int state) {
+
+      }
+    });
+    tabLayout.setupWithViewPager(viewPager);
+    tabLayout.setTabsFromPagerAdapter(adapter);
   }
 
 
@@ -54,23 +91,30 @@ public class MainActivity extends Activity implements View.OnClickListener {
     return super.onOptionsItemSelected(item);
   }
 
-  @Override
-  public void onClick(View view) {
-    String otherId = otherIdEditText.getText().toString();
-    if (TextUtils.isEmpty(otherId) == false) {
-      final ChatManager chatManager = ChatManager.getInstance();
-      chatManager.fetchConversationWithUserId(otherId, new AVIMConversationCreatedCallback() {
-        @Override
-        public void done(AVIMConversation conversation, AVIMException e) {
-          if (e != null) {
-            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-          } else {
-            Intent intent = new Intent(MainActivity.this, ChatRoomActivity.class);
-            intent.putExtra(Constants.CONVERSATION_ID, conversation.getConversationId());
-            startActivity(intent);
-          }
-        }
-      });
+  public class TabFragmentAdapter extends FragmentStatePagerAdapter {
+
+    private List<Fragment> mFragments;
+    private List<String> mTitles;
+
+    public TabFragmentAdapter(FragmentManager fm, List<Fragment> fragments, List<String> titles) {
+      super(fm);
+      mFragments = fragments;
+      mTitles = titles;
+    }
+
+    @Override
+    public Fragment getItem(int position) {
+      return mFragments.get(position);
+    }
+
+    @Override
+    public int getCount() {
+      return mFragments.size();
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+      return mTitles.get(position);
     }
   }
 }
