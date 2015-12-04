@@ -48,7 +48,7 @@ import de.greenrobot.event.EventBus;
  * Created by wli on 15/8/27.
  * 将聊天相关的封装到此 Fragment 里边，只需要通过 setConversation 传入 Conversation 即可
  */
-public class ChatFragment extends Fragment {
+public class ChatFragment extends android.support.v4.app.Fragment {
 
   private static final int TAKE_CAMERA_REQUEST = 2;
   private static final int GALLERY_REQUEST = 0;
