@@ -1,10 +1,8 @@
-package com.avoscloud.chat.service;
+package com.avoscloud.leanchatlib.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.LruCache;
-import com.avoscloud.chat.util.PhotoUtils;
-import com.avoscloud.leanchatlib.utils.LogUtils;
 
 import java.util.Random;
 

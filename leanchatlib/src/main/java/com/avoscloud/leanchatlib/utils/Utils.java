@@ -1,22 +1,12 @@
 package com.avoscloud.leanchatlib.utils;
 
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
-import android.os.AsyncTask;
 
 import com.avoscloud.leanchatlib.R;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.Closeable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -68,6 +58,13 @@ public class Utils {
     } else {
       SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
       return format.format(new Date(timestamp));
+    }
+  }
+
+  public static void closeQuietly(Closeable closeable) {
+    try {
+      closeable.close();
+    } catch (Exception e) {
     }
   }
 }

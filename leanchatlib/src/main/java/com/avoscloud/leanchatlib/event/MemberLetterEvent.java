@@ -1,4 +1,4 @@
-package com.avoscloud.chat.event;
+package com.avoscloud.leanchatlib.event;
 
 /**
  * Created by wli on 15/8/24.

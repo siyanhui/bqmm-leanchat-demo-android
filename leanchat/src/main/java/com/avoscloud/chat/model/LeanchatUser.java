@@ -1,4 +1,4 @@
-package com.avoscloud.leanchatlib.model;
+package com.avoscloud.chat.model;
 
 
 import com.avos.avoscloud.AVException;

@@ -1,4 +1,4 @@
-package com.avoscloud.chat.view;
+package com.avoscloud.leanchatlib.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,12 +6,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.avoscloud.chat.event.MemberLetterEvent;
-
+import com.avoscloud.leanchatlib.event.MemberLetterEvent;
 import java.util.ArrayList;
 import java.util.List;
-
 import de.greenrobot.event.EventBus;
 
 

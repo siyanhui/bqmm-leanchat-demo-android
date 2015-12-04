@@ -1,4 +1,4 @@
-package com.avoscloud.chat.service;
+package com.avoscloud.leanchatlib.utils;
 
 import android.graphics.Bitmap;
 
@@ -9,15 +9,10 @@ import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
-import com.avoscloud.chat.R;
-import com.avoscloud.chat.App;
 import com.avoscloud.leanchatlib.controller.ChatManager;
-import com.avoscloud.leanchatlib.controller.MessageAgent;
 import com.avoscloud.leanchatlib.controller.MessageHelper;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.Room;
-import com.avoscloud.leanchatlib.utils.AVIMConversationCacheUtils;
-import com.avoscloud.leanchatlib.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,18 +99,5 @@ public class ConversationManager {
 
   public static Bitmap getConversationIcon(AVIMConversation conversation) {
     return ColoredBitmapProvider.getInstance().createColoredBitmapByHashString(conversation.getConversationId());
-  }
-
-  public void sendWelcomeMessage(String toUserId) {
-    ChatManager.getInstance().fetchConversationWithUserId(toUserId,
-        new AVIMConversationCreatedCallback() {
-          @Override
-          public void done(AVIMConversation avimConversation, AVIMException e) {
-            if (e == null) {
-              MessageAgent agent = new MessageAgent(avimConversation);
-              agent.sendText(App.ctx.getString(R.string.message_when_agree_request));
-            }
-          }
-        });
   }
 }

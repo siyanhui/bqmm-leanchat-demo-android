@@ -1,10 +1,11 @@
 package com.avoscloud.leanchatlib.controller;
 
+import android.text.TextUtils;
+
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avoscloud.leanchatlib.model.ConversationType;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.LogUtils;
-import com.avoscloud.leanchatlib.utils.UserCacheUtils;
+import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
 
 import java.util.List;
 
@@ -83,13 +84,8 @@ public class ConversationHelper {
     if (isValidConversation(conversation)) {
       if (typeOfConversation(conversation) == ConversationType.Single) {
         String otherId = otherIdOfConversation(conversation);
-        LeanchatUser user = UserCacheUtils.getCachedUser(otherId);
-        if (user != null) {
-          return user.getUsername();
-        } else {
-          LogUtils.e("use is null");
-          return "对话";
-        }
+        String userName = ThirdPartUserUtils.getInstance().getUserName(otherId);
+        return (TextUtils.isEmpty(userName) ? "对话" : userName);
       } else {
         return conversation.getName();
       }
