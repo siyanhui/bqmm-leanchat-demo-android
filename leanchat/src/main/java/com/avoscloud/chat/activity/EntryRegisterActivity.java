@@ -11,7 +11,7 @@ import com.avos.avoscloud.SignUpCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
 import com.avoscloud.chat.util.Utils;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 
 public class EntryRegisterActivity extends EntryBaseActivity {
   View registerButton;

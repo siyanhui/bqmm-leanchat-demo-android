@@ -13,7 +13,7 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
 import com.avoscloud.chat.event.GroupItemClickEvent;
-import com.avoscloud.chat.service.ConversationManager;
+import com.avoscloud.leanchatlib.utils.ConversationManager;
 import com.avoscloud.chat.viewholder.GroupItemHolder;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.adapter.CommonListAdapter;

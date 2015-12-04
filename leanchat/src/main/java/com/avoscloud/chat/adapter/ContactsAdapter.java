@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.avoscloud.chat.viewholder.ContactItemHolder;
 import com.avoscloud.leanchatlib.adapter.HeaderListAdapter;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 

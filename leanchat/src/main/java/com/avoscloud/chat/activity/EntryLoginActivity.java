@@ -10,7 +10,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.LogInCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.util.Utils;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

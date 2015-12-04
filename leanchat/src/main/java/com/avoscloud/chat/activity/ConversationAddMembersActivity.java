@@ -18,14 +18,14 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.adapter.MemeberAddAdapter;
 import com.avoscloud.chat.friends.FriendsManager;
-import com.avoscloud.chat.service.ConversationManager;
+import com.avoscloud.leanchatlib.utils.ConversationManager;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.model.ConversationType;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
-import com.avoscloud.leanchatlib.utils.UserCacheUtils;
+import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.chat.util.UserCacheUtils;
 import com.avoscloud.leanchatlib.utils.Constants;
 
 import java.util.ArrayList;

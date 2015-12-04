@@ -23,9 +23,9 @@ import com.avoscloud.chat.service.PushManager;
 import com.avoscloud.chat.service.UpdateService;
 import com.avoscloud.chat.activity.EntryLoginActivity;
 import com.avoscloud.chat.util.PathUtils;
-import com.avoscloud.chat.util.PhotoUtils;
 import com.avoscloud.leanchatlib.controller.ChatManager;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;

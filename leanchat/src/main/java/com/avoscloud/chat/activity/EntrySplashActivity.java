@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import com.avoscloud.chat.R;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 
 public class EntrySplashActivity extends BaseActivity {
   public static final int SPLASH_DURATION = 2000;

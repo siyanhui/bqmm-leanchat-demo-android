@@ -8,7 +8,7 @@ import com.avos.avoscloud.AVPush;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.PushService;
 import com.avoscloud.chat.activity.EntrySplashActivity;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 
 import java.util.HashMap;
 import java.util.Map;

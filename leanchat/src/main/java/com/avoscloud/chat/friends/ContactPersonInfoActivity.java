@@ -9,10 +9,10 @@ import android.widget.*;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.activity.BaseActivity;
 import com.avoscloud.chat.activity.ChatRoomActivity;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
-import com.avoscloud.leanchatlib.utils.UserCacheUtils;
+import com.avoscloud.chat.util.UserCacheUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;

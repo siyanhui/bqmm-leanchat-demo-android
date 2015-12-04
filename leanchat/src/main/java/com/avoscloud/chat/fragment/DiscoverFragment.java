@@ -23,14 +23,14 @@ import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
 import com.avoscloud.chat.friends.ContactPersonInfoActivity;
 import com.avoscloud.leanchatlib.adapter.HeaderListAdapter;
-import com.avoscloud.leanchatlib.utils.UserCacheUtils;
+import com.avoscloud.chat.util.UserCacheUtils;
 import com.avoscloud.leanchatlib.view.CustomRecyclerView;
 import com.avoscloud.leanchatlib.view.LoadMoreFooterView;
 import com.avoscloud.chat.service.PreferenceMap;
 import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.viewholder.DiscoverItemHolder;
 import com.avoscloud.leanchatlib.event.DiscoverItemClickEvent;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
 
 import java.util.ArrayList;

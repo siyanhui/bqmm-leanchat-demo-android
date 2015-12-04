@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.event.SearchUserItemClickEvent;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;

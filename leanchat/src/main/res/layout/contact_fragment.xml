@@ -20,13 +20,13 @@
                 android:layout_height="match_parent"/>
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <com.avoscloud.chat.view.LetterView
+        <com.avoscloud.leanchatlib.view.LetterView
             android:id="@+id/activity_square_members_letterview"
             android:layout_width="20dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true">
 
-        </com.avoscloud.chat.view.LetterView>
+        </com.avoscloud.leanchatlib.view.LetterView>
 
     </RelativeLayout>
 </LinearLayout>

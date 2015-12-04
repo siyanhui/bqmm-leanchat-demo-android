@@ -3,8 +3,8 @@ package com.avoscloud.chat.friends;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
-import com.avoscloud.leanchatlib.utils.UserCacheUtils;
+import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.chat.util.UserCacheUtils;
 
 import java.util.ArrayList;
 import java.util.List;

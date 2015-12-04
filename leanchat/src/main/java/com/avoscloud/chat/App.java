@@ -11,11 +11,13 @@ import com.avos.avoscloud.AVObject;
 import com.avoscloud.chat.friends.AddRequest;
 import com.avoscloud.chat.model.UpdateInfo;
 import com.avoscloud.chat.service.PushManager;
+import com.avoscloud.chat.util.LeanchatUserProvider;
 import com.avoscloud.leanchatlib.controller.ConversationEventHandler;
 import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.controller.ChatManager;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
 import com.baidu.mapapi.SDKInitializer;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -62,6 +64,7 @@ public class App extends Application {
       openStrictMode();
     }
 
+    ThirdPartUserUtils.setThirdPartUserProvider(new LeanchatUserProvider());
     initChatManager();
 
     if (App.debug) {

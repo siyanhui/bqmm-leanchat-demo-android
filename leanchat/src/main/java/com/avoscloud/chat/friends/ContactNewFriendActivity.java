@@ -13,15 +13,19 @@ import butterknife.InjectView;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.DeleteCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.avos.avoscloud.im.v2.AVIMConversation;
+import com.avos.avoscloud.im.v2.AVIMException;
+import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.event.NewFriendItemClickEvent;
-import com.avoscloud.chat.service.ConversationManager;
+import com.avoscloud.leanchatlib.controller.ChatManager;
+import com.avoscloud.leanchatlib.controller.MessageAgent;
 import com.avoscloud.chat.service.PreferenceMap;
 import com.avoscloud.chat.event.ContactRefreshEvent;
 import com.avoscloud.chat.viewholder.NewFriendItemHolder;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.adapter.HeaderListAdapter;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.view.CustomRecyclerView;
 import com.avoscloud.leanchatlib.view.LoadMoreFooterView;
 
@@ -117,7 +121,7 @@ public class ContactNewFriendActivity extends AVBaseActivity {
         dialog.dismiss();
         if (filterException(e)) {
           if (addRequest.getFromUser() != null) {
-            ConversationManager.getInstance().sendWelcomeMessage(addRequest.getFromUser().getObjectId());
+            sendWelcomeMessage(addRequest.getFromUser().getObjectId());
           }
           loadMoreAddRequest(false);
           ContactRefreshEvent event = new ContactRefreshEvent();
@@ -125,6 +129,19 @@ public class ContactNewFriendActivity extends AVBaseActivity {
         }
       }
     });
+  }
+
+  public void sendWelcomeMessage(String toUserId) {
+    ChatManager.getInstance().fetchConversationWithUserId(toUserId,
+      new AVIMConversationCreatedCallback() {
+        @Override
+        public void done(AVIMConversation avimConversation, AVIMException e) {
+          if (e == null) {
+            MessageAgent agent = new MessageAgent(avimConversation);
+            agent.sendText(getString(R.string.message_when_agree_request));
+          }
+        }
+      });
   }
 
   private void deleteAddRequest(final AddRequest addRequest) {

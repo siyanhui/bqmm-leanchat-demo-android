@@ -29,8 +29,8 @@ import com.avoscloud.chat.event.ContactItemClickEvent;
 import com.avoscloud.chat.event.ContactItemLongClickEvent;
 import com.avoscloud.chat.event.ContactRefreshEvent;
 import com.avoscloud.chat.event.InvitationEvent;
-import com.avoscloud.chat.event.MemberLetterEvent;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.leanchatlib.event.MemberLetterEvent;
+import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
 
 import java.util.List;

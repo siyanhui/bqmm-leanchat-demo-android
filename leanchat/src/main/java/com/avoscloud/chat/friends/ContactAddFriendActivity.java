@@ -20,9 +20,9 @@ import com.avoscloud.chat.event.SearchUserItemClickEvent;
 import com.avoscloud.chat.viewholder.SearchUserItemHolder;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.adapter.HeaderListAdapter;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
-import com.avoscloud.leanchatlib.utils.UserCacheUtils;
+import com.avoscloud.chat.util.UserCacheUtils;
 import com.avoscloud.leanchatlib.view.CustomRecyclerView;
 import com.avoscloud.leanchatlib.view.LoadMoreFooterView;
 
