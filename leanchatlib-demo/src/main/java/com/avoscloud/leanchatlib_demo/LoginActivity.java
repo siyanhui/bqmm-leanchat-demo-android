@@ -36,11 +36,16 @@ public class LoginActivity extends AVBaseActivity {
   @OnClick(R.id.activity_login_btn_login)
   public void onLoginClick(View view) {
     String clientId = nameView.getText().toString();
+    if (TextUtils.isEmpty(clientId.trim())) {
+      showToast(R.string.login_null_name_tip);
+      return;
+    }
     initChatManager(clientId);
     ChatManager.getInstance().openClient(new AVIMClientCallback() {
       @Override
       public void done(AVIMClient avimClient, AVIMException e) {
         if (null == e) {
+          finish();
           Intent intent = new Intent(LoginActivity.this, MainActivity.class);
           startActivity(intent);
         } else {

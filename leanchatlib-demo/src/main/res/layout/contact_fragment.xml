@@ -12,18 +12,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.RecyclerView
+            <com.avoscloud.leanchatlib.view.RefreshableRecyclerView
                 android:id="@+id/contact_fragment_rv_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <com.avoscloud.leanchatlib.view.LetterView
-            android:id="@+id/contact_fragment_members_letterview"
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true">
+        <!--<com.avoscloud.leanchatlib.view.LetterView-->
+            <!--android:id="@+id/contact_fragment_members_letterview"-->
+            <!--android:layout_width="20dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_alignParentRight="true">-->
 
-        </com.avoscloud.leanchatlib.view.LetterView>
+        <!--</com.avoscloud.leanchatlib.view.LetterView>-->
     </RelativeLayout>
 </LinearLayout>

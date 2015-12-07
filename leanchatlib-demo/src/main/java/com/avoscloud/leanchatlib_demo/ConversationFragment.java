@@ -146,6 +146,10 @@ public class ConversationFragment extends Fragment {
     }
     return sortedList;
   }
+
+  public void onEvent(ConversationFragmentUpdateEvent updateEvent) {
+    updateConversationList();
+  }
 //
 //  @Override
 //  public void onConnectionChanged(boolean connect) {

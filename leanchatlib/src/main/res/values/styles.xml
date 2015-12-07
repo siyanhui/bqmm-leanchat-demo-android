@@ -116,7 +116,6 @@
         <item name="android:paddingLeft">@dimen/common_horizontal_margin</item>
     </style>
 
-
     <!-- 以下代码需要整理 -->
     <style name="chat_text_date_style">
         <item name="android:padding">2dp</item>

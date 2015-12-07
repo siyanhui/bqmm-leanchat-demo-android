@@ -30,6 +30,11 @@ public class ThirdPartUserUtils {
     thirdPartDataProvider = provider;
   }
 
+  public ThirdPartUser getSelf() {
+    checkDataProvider();
+    return thirdPartDataProvider.getSelf();
+  }
+
   public String getUserName(String userId) {
     ThirdPartUser user = getFriend(userId);
     return (null != user ? user.name : "");
@@ -50,9 +55,9 @@ public class ThirdPartUserUtils {
     }
   }
 
-  public void getFriends(final FetchUserCallBack callBack) {
+  public void getFriends(int skip, int limit, final FetchUserCallBack callBack) {
     checkDataProvider();
-    thirdPartDataProvider.getFriends(new FetchUserCallBack() {
+    thirdPartDataProvider.getFriends(skip, limit, new FetchUserCallBack() {
       @Override
       public void done(List<ThirdPartUser> userList, Exception e) {
         if (null != e && null != userList) {
@@ -101,7 +106,7 @@ public class ThirdPartUserUtils {
     public ThirdPartUser getSelf();
     public void getFriend(String userId, FetchUserCallBack callBack);
     public void getFriends(List<String> list, FetchUserCallBack callBack);
-    public void getFriends(FetchUserCallBack callBack);
+    public void getFriends(int skip, int limit, FetchUserCallBack callBack);
   }
 
   public interface FetchUserCallBack {

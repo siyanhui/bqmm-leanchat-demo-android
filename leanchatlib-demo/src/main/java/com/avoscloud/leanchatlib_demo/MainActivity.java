@@ -8,23 +8,19 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import com.avos.avoscloud.im.v2.AVIMClient;
-import com.avos.avoscloud.im.v2.AVIMException;
-import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
-import com.avoscloud.leanchatlib.controller.ChatManager;
-
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 
+/**
+ * 主页面，包含三个 fragment，会话、联系人、我
+ */
 public class MainActivity extends AppCompatActivity {
 
   private Toolbar toolbar;
   private ViewPager viewPager;
   private TabLayout tabLayout;
-  ConversationFragment conversationFragment;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -34,20 +30,21 @@ public class MainActivity extends AppCompatActivity {
     viewPager = (ViewPager)findViewById(R.id.pager);
     tabLayout = (TabLayout)findViewById(R.id.tablayout);
     setSupportActionBar(toolbar);
+    initTabLayout();
+  }
 
-    List<String> tabList = new ArrayList<>();
-    List<Fragment> fragmentList = new ArrayList<>();
+  private void initTabLayout() {
+    String[] tabList = new String[]{"会话", "联系人", "我"};
+    final Fragment[] fragmentList = new Fragment[] {new ConversationFragment(),
+      new ContactFragment(), new PersonalProfileFragment()};
 
-    tabList.add("会话");
-    tabList.add("联系人");
-    conversationFragment = new ConversationFragment();
-    tabLayout.setTabMode(TabLayout.MODE_FIXED);//设置tab模式，当前为系统默认模式
-    tabLayout.addTab(tabLayout.newTab().setText(tabList.get(0)));//添加tab选项卡
-    fragmentList.add(conversationFragment);
-    tabLayout.addTab(tabLayout.newTab().setText(tabList.get(1)));
-    fragmentList.add(new ContactFragment());
+    tabLayout.setTabMode(TabLayout.MODE_FIXED);
+    for (int i = 0; i < tabList.length; i++) {
+      tabLayout.addTab(tabLayout.newTab().setText(tabList[i]));
+    }
 
-    TabFragmentAdapter adapter = new TabFragmentAdapter(getSupportFragmentManager(), fragmentList, tabList);
+    TabFragmentAdapter adapter = new TabFragmentAdapter(getSupportFragmentManager(),
+      Arrays.asList(fragmentList), Arrays.asList(tabList));
     viewPager.setAdapter(adapter);
     viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
       @Override
@@ -55,40 +52,16 @@ public class MainActivity extends AppCompatActivity {
 
       @Override
       public void onPageSelected(int position) {
-        if (1 == position) {
-          conversationFragment.updateConversationList();
+        if (0 == position) {
+          EventBus.getDefault().post(new ConversationFragmentUpdateEvent());
         }
       }
 
       @Override
-      public void onPageScrollStateChanged(int state) {
-
-      }
+      public void onPageScrollStateChanged(int state) {}
     });
     tabLayout.setupWithViewPager(viewPager);
     tabLayout.setTabsFromPagerAdapter(adapter);
-  }
-
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.menu_main, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    int id = item.getItemId();
-    if (id == R.id.action_settings) {
-      ChatManager.getInstance().closeWithCallback(new AVIMClientCallback() {
-        @Override
-        public void done(AVIMClient avimClient, AVIMException e) {
-          finish();
-        }
-      });
-      return true;
-    }
-    return super.onOptionsItemSelected(item);
   }
 
   public class TabFragmentAdapter extends FragmentStatePagerAdapter {

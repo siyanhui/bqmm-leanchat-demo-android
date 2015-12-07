@@ -1,18 +1,15 @@
 package com.avoscloud.leanchatlib_demo;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.avoscloud.leanchatlib.activity.AVChatActivity;
-import com.avoscloud.leanchatlib.adapter.CommonListAdapter;
-import com.avoscloud.leanchatlib.utils.Constants;
+import com.avoscloud.leanchatlib.adapter.HeaderListAdapter;
 import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
+import com.avoscloud.leanchatlib.view.RefreshableRecyclerView;
 
 import java.util.List;
 
@@ -22,6 +19,7 @@ import de.greenrobot.event.EventBus;
 
 /**
  * Created by wli on 15/12/4.
+ * 联系人页面
  */
 public class ContactFragment extends Fragment {
 
@@ -29,9 +27,9 @@ public class ContactFragment extends Fragment {
   protected SwipeRefreshLayout refreshLayout;
 
   @Bind(R.id.contact_fragment_rv_list)
-  protected RecyclerView recyclerView;
+  protected RefreshableRecyclerView recyclerView;
 
-  private CommonListAdapter<ThirdPartUserUtils.ThirdPartUser> itemAdapter;
+  private HeaderListAdapter<ThirdPartUserUtils.ThirdPartUser> itemAdapter;
   LinearLayoutManager layoutManager;
 
   @Override
@@ -41,46 +39,32 @@ public class ContactFragment extends Fragment {
 
     layoutManager = new LinearLayoutManager(getActivity());
     recyclerView.setLayoutManager(layoutManager);
-
-    itemAdapter = new CommonListAdapter(ContactItemHolder.class);
+    recyclerView.setRelationSwipeLayout(refreshLayout);
+    itemAdapter = new HeaderListAdapter<ThirdPartUserUtils.ThirdPartUser>(ContactItemHolder.class);
     recyclerView.setAdapter(itemAdapter);
-
-    refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    recyclerView.setRelationAdapter(itemAdapter);
+    recyclerView.setOnLoadDataListener(new RefreshableRecyclerView.OnLoadDataListener() {
       @Override
-      public void onRefresh() {
-        getMembers();
+      public void onLoad(int skip, int limit, boolean isRefresh) {
+        getMembers(skip, limit, isRefresh);
       }
     });
     return view;
   }
 
   @Override
-  public void onPause() {
-    EventBus.getDefault().unregister(this);
-    super.onPause();
-  }
-
-  @Override
   public void onResume() {
     super.onResume();
-    EventBus.getDefault().register(this);
-    getMembers();
+    recyclerView.refreshData();
   }
 
-  private void getMembers() {
-    ThirdPartUserUtils.getInstance().getFriends(new ThirdPartUserUtils.FetchUserCallBack() {
+  private void getMembers(int skip, int limit, final boolean isRefresh) {
+    ThirdPartUserUtils.getInstance().getFriends(skip, limit,
+      new ThirdPartUserUtils.FetchUserCallBack() {
       @Override
       public void done(List<ThirdPartUserUtils.ThirdPartUser> userList, Exception e) {
-        refreshLayout.setRefreshing(false);
-        itemAdapter.setDataList(userList);
-        itemAdapter.notifyDataSetChanged();
+        recyclerView.setLoadComplete(userList.toArray(), isRefresh);
       }
     });
-  }
-
-  public void onEvent(ContactItemClickEvent clickEvent) {
-    Intent intent = new Intent(getActivity(), AVChatActivity.class);
-    intent.putExtra(Constants.MEMBER_ID, clickEvent.memberId);
-    startActivity(intent);
   }
 }

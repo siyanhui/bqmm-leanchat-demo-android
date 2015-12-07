@@ -7,6 +7,9 @@
     <dimen name="common_left_margin">@dimen/common_horizontal_margin</dimen>
     <dimen name="common_right_margin">@dimen/common_horizontal_margin</dimen>
 
+    <dimen name="setting_item_height">60dp</dimen>
+    <dimen name="activity_top_margin">@dimen/common_vertical_margin</dimen>
+
     <dimen name="divider_line_height">1px</dimen>
 
     <!-- textsize -->

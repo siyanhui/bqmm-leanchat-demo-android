@@ -3,5 +3,4 @@
     <item android:drawable="@color/chat_common_blue" android:state_pressed="true" />
     <item android:drawable="@color/chat_common_blue" android:state_selected="true" />
     <item android:drawable="@android:color/transparent" />
-
 </selector>
