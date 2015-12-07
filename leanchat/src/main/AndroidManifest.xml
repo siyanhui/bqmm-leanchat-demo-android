@@ -41,13 +41,11 @@
         android:name=".App"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Holo.Light.NoActionBar">
+        android:theme="@style/AppTheme">
 
         <activity
             android:name=".activity.ChatRoomActivity"
-            android:launchMode="singleTask"
-            android:theme="@style/ChatMainTheme"
-            android:label="" />
+            android:launchMode="singleTask" />
 
         <receiver android:name="com.avoscloud.chat.service.LeanchatReceiver">
             <intent-filter>
@@ -82,9 +80,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activity.UpdateContentActivity"
-            android:theme="@style/ChatMainTheme" />
+        <activity android:name=".activity.UpdateContentActivity"/>
 
         <activity
             android:name=".activity.EntrySplashActivity"
@@ -97,45 +93,29 @@
 
         <activity android:name=".activity.ImageBrowserActivity" />
 
-        <activity
-            android:name=".activity.LocationActivity"
-            android:theme="@style/ChatMainTheme" />
+        <activity android:name=".activity.LocationActivity"/>
 
         <activity android:name=".activity.EntryLoginActivity" />
 
-        <activity
-            android:name=".activity.EntryRegisterActivity"
-            android:theme="@style/ChatMainTheme" />
+        <activity android:name=".activity.EntryRegisterActivity" />
 
-        <activity
-            android:name=".friends.ContactNewFriendActivity"
-            android:theme="@style/ChatMainTheme" />
+        <activity android:name=".friends.ContactNewFriendActivity"/>
 
-        <activity
-            android:name=".friends.ContactAddFriendActivity"
-            android:theme="@style/ChatMainTheme" />
+        <activity android:name=".friends.ContactAddFriendActivity"/>
 
-        <activity
-            android:name=".friends.ContactPersonInfoActivity"
-            android:theme="@style/ChatMainTheme" />
+        <activity android:name=".friends.ContactPersonInfoActivity"/>
 
-        <activity
-            android:name=".activity.ProfileNotifySettingActivity"
-            android:theme="@style/ChatMainTheme" />
+        <activity android:name=".activity.ProfileNotifySettingActivity"/>
 
         <activity
             android:name=".activity.ConversationGroupListActivity"
-            android:label="@string/conversation_group"
-            android:theme="@style/ChatMainTheme" />
+            android:label="@string/conversation_group"/>
 
-        <activity
-            android:name=".activity.ConversationDetailActivity"
-            android:theme="@style/ChatMainTheme" />
+        <activity android:name=".activity.ConversationDetailActivity"/>
 
         <activity
             android:name=".activity.ConversationAddMembersActivity"
-            android:label="@string/conversation_inviteMembers"
-            android:theme="@style/ChatMainTheme" />
+            android:label="@string/conversation_inviteMembers"/>
 
         <service
             android:name="com.baidu.location.f"

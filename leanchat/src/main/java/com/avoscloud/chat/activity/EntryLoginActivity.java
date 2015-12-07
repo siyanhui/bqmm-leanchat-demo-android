@@ -11,18 +11,18 @@ import com.avos.avoscloud.LogInCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 
 
-public class EntryLoginActivity extends EntryBaseActivity {
+public class EntryLoginActivity extends AVBaseActivity {
 
-  @InjectView(R.id.activity_login_et_username)
+  @Bind(R.id.activity_login_et_username)
   public EditText userNameView;
 
-  @InjectView(R.id.activity_login_et_password)
+  @Bind(R.id.activity_login_et_password)
   public EditText passwordView;
 
   @Override
@@ -30,7 +30,6 @@ public class EntryLoginActivity extends EntryBaseActivity {
     // TODO Auto-generated method stub
     super.onCreate(savedInstanceState);
     setContentView(R.layout.entry_login_activity);
-    ButterKnife.inject(this);
   }
 
   @OnClick(R.id.activity_login_btn_login)
@@ -40,8 +39,8 @@ public class EntryLoginActivity extends EntryBaseActivity {
 
   @OnClick(R.id.activity_login_btn_register)
   public void onRegisterClick(View v) {
-    Intent intent = new Intent(ctx, EntryRegisterActivity.class);
-    ctx.startActivity(intent);
+    Intent intent = new Intent(this, EntryRegisterActivity.class);
+    startActivity(intent);
   }
 
   private void login() {

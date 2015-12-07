@@ -8,8 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.EditText;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 
 import com.avos.avoscloud.AVException;
@@ -34,10 +33,10 @@ import java.util.List;
  */
 public class ContactAddFriendActivity extends AVBaseActivity {
 
-  @InjectView(R.id.search_user_rv_layout)
+  @Bind(R.id.search_user_rv_layout)
   protected CustomRecyclerView recyclerView;
 
-  @InjectView(R.id.searchNameEdit)
+  @Bind(R.id.searchNameEdit)
   EditText searchNameEdit;
 
   private HeaderListAdapter<LeanchatUser> adapter;
@@ -49,13 +48,12 @@ public class ContactAddFriendActivity extends AVBaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.contact_add_friend_activity);
-    ButterKnife.inject(this);
     init();
     loadMoreFriend(0, true);
   }
 
   private void init() {
-    initActionBar(App.ctx.getString(R.string.contact_findFriends));
+    setTitle(App.ctx.getString(R.string.contact_findFriends));
     adapter = new HeaderListAdapter<>(SearchUserItemHolder.class);
 
     LoadMoreFooterView footerView = new LoadMoreFooterView(this);

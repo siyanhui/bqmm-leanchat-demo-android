@@ -8,8 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.widget.LinearLayoutManager;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.DeleteCallback;
 import com.avos.avoscloud.SaveCallback;
@@ -36,7 +35,7 @@ import java.util.List;
 
 public class ContactNewFriendActivity extends AVBaseActivity {
 
-  @InjectView(R.id.newfriendList)
+  @Bind(R.id.newfriendList)
   CustomRecyclerView recyclerView;
 
   LinearLayoutManager layoutManager;
@@ -48,13 +47,12 @@ public class ContactNewFriendActivity extends AVBaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.contact_new_friend_activity);
-    ButterKnife.inject(this);
     initView();
     loadMoreAddRequest(true);
   }
 
   private void initView() {
-    initActionBar(R.string.contact_new_friends);
+    setTitle(R.string.contact_new_friends);
     layoutManager = new LinearLayoutManager(this);
     recyclerView.setLayoutManager(layoutManager);
     adapter = new HeaderListAdapter<>(NewFriendItemHolder.class);

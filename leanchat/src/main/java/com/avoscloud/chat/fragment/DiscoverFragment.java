@@ -12,8 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 import com.avos.avoscloud.AVException;
@@ -44,10 +44,10 @@ public class DiscoverFragment extends BaseFragment {
   private final SortDialogListener distanceListener = new SortDialogListener(Constants.ORDER_DISTANCE);
   private final SortDialogListener updatedAtListener = new SortDialogListener(Constants.ORDER_UPDATED_AT);
 
-  @InjectView(R.id.fragment_near_srl_pullrefresh)
+  @Bind(R.id.fragment_near_srl_pullrefresh)
   protected SwipeRefreshLayout refreshLayout;
 
-  @InjectView(R.id.fragment_near_srl_view)
+  @Bind(R.id.fragment_near_srl_view)
   protected CustomRecyclerView recyclerView;
 
   protected LinearLayoutManager layoutManager;
@@ -61,7 +61,7 @@ public class DiscoverFragment extends BaseFragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.discover_fragment, container, false);
-    ButterKnife.inject(this, view);
+    ButterKnife.bind(this, view);
     EventBus.getDefault().register(this);
 
     LoadMoreFooterView footerView = new LoadMoreFooterView(getActivity());

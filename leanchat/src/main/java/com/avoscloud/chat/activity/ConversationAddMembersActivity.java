@@ -31,8 +31,7 @@ import com.avoscloud.leanchatlib.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 /**
  * 群聊对话拉人页面
  * Created by lzw on 14-10-11.
@@ -40,7 +39,7 @@ import butterknife.InjectView;
  */
 public class ConversationAddMembersActivity extends AVBaseActivity {
 
-  @InjectView(R.id.member_add_rv_list)
+  @Bind(R.id.member_add_rv_list)
   protected RecyclerView recyclerView;
 
   private LinearLayoutManager layoutManager;
@@ -53,7 +52,6 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.conversation_add_members_layout);
-    ButterKnife.inject(this);
     String conversationId = getIntent().getStringExtra(Constants.CONVERSATION_ID);
     conversation = AVIMClient.getInstance(ChatManager.getInstance().getSelfId()).getConversation(conversationId);
 
@@ -62,7 +60,6 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
     adapter = new MemeberAddAdapter();
     recyclerView.setAdapter(adapter);
 
-    initActionBar();
     setListData();
   }
 
@@ -91,17 +88,16 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuItem add = menu.add(0, OK, 0, R.string.common_sure);
-    alwaysShowMenuItem(add);
     return super.onCreateOptionsMenu(menu);
   }
 
   @Override
-  public boolean onMenuItemSelected(int featureId, MenuItem item) {
+  public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
     if (id == OK) {
       addMembers();
     }
-    return super.onMenuItemSelected(featureId, item);
+    return super.onOptionsItemSelected(item);
   }
 
   private void addMembers() {

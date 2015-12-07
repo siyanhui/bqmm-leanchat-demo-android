@@ -35,8 +35,8 @@ import com.avoscloud.leanchatlib.utils.Constants;
 
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -49,10 +49,10 @@ import de.greenrobot.event.EventBus;
 
 public class ContactFragment extends BaseFragment {
 
-  @InjectView(R.id.activity_square_members_srl_list)
+  @Bind(R.id.activity_square_members_srl_list)
   protected SwipeRefreshLayout refreshLayout;
 
-  @InjectView(R.id.activity_square_members_rv_list)
+  @Bind(R.id.activity_square_members_rv_list)
   protected RecyclerView recyclerView;
 
   private View headerView;
@@ -69,7 +69,7 @@ public class ContactFragment extends BaseFragment {
     // TODO Auto-generated method stub
     View view = inflater.inflate(R.layout.contact_fragment, container, false);
     headerView = inflater.inflate(R.layout.contact_fragment_header_layout, container, false);
-    ButterKnife.inject(this, view);
+    ButterKnife.bind(this, view);
 
     layoutManager = new LinearLayoutManager(getActivity());
     recyclerView.setLayoutManager(layoutManager);

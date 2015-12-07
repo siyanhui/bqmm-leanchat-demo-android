@@ -45,7 +45,7 @@ public class ChatRoomActivity extends AVChatActivity {
   }
 
   @Override
-  public boolean onMenuItemSelected(int featureId, MenuItem item) {
+  public boolean onOptionsItemSelected(MenuItem item) {
     int menuId = item.getItemId();
     if (menuId == R.id.people) {
       if (null != conversation) {
@@ -54,7 +54,7 @@ public class ChatRoomActivity extends AVChatActivity {
         startActivityForResult(intent, QUIT_GROUP_REQUEST);
       }
     }
-    return super.onMenuItemSelected(featureId, item);
+    return super.onOptionsItemSelected(item);
   }
 
   @Override

@@ -4,8 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
@@ -26,7 +27,7 @@ import java.util.List;
  */
 public class ConversationGroupListActivity extends AVBaseActivity {
 
-  @InjectView(R.id.activity_group_list_srl_view)
+  @Bind(R.id.activity_group_list_srl_view)
   protected RecyclerView recyclerView;
 
   LinearLayoutManager layoutManager;
@@ -41,14 +42,12 @@ public class ConversationGroupListActivity extends AVBaseActivity {
     initView();
 
     conversationManager = ConversationManager.getInstance();
-    initActionBar(App.ctx.getString(R.string.conversation_group));
+    setTitle(App.ctx.getString(R.string.conversation_group));
 
     refreshGroupList();
   }
 
   private void initView() {
-    ButterKnife.inject(this);
-
     layoutManager = new LinearLayoutManager(this);
     recyclerView.setLayoutManager(layoutManager);
     itemAdapter = new CommonListAdapter<>(GroupItemHolder.class);

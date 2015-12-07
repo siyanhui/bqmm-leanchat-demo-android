@@ -9,9 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
@@ -43,13 +42,13 @@ import java.util.List;
  */
 public class ConversationRecentFragment extends BaseFragment implements ChatManager.ConnectionListener {
 
-  @InjectView(R.id.im_client_state_view)
+  @Bind(R.id.im_client_state_view)
   View imClientStateView;
 
-  @InjectView(R.id.fragment_conversation_srl_pullrefresh)
+  @Bind(R.id.fragment_conversation_srl_pullrefresh)
   protected SwipeRefreshLayout refreshLayout;
 
-  @InjectView(R.id.fragment_conversation_srl_view)
+  @Bind(R.id.fragment_conversation_srl_view)
   protected RecyclerView recyclerView;
 
   protected ConversationListAdapter<Room> itemAdapter;
@@ -61,8 +60,7 @@ public class ConversationRecentFragment extends BaseFragment implements ChatMana
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.message_fragment, container, false);
-    ButterKnife.inject(this, view);
-
+    ButterKnife.bind(this, view);
     conversationManager = ConversationManager.getInstance();
     refreshLayout.setEnabled(false);
     layoutManager = new LinearLayoutManager(getActivity());

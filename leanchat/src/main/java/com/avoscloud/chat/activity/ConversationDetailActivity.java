@@ -37,8 +37,8 @@ import com.avoscloud.leanchatlib.utils.Constants;
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * Created by lzw on 14-10-11.
@@ -47,7 +47,7 @@ public class ConversationDetailActivity extends AVBaseActivity {
   private static final int ADD_MEMBERS = 0;
   private static final int INTENT_NAME = 1;
 
-  @InjectView(R.id.activity_conv_detail_rv_list)
+  @Bind(R.id.activity_conv_detail_rv_list)
   RecyclerView recyclerView;
 
   GridLayoutManager layoutManager;
@@ -67,7 +67,6 @@ public class ConversationDetailActivity extends AVBaseActivity {
     setContentView(R.layout.conversation_detail_activity);
     String conversationId = getIntent().getStringExtra(Constants.CONVERSATION_ID);
     conversation = AVIMClient.getInstance(ChatManager.getInstance().getSelfId()).getConversation(conversationId);
-    ButterKnife.inject(this);
 
     View footerView = getLayoutInflater().inflate(R.layout.conversation_detail_footer_layout, null);
     nameLayout = footerView.findViewById(R.id.name_layout);
@@ -99,7 +98,7 @@ public class ConversationDetailActivity extends AVBaseActivity {
     recyclerView.setAdapter(listAdapter);
 
     initData();
-    initActionBar(R.string.conversation_detail_title);
+    setTitle(R.string.conversation_detail_title);
     setViewByConvType(conversationType);
   }
 
@@ -122,19 +121,17 @@ public class ConversationDetailActivity extends AVBaseActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuItem invite = menu.add(0, ADD_MEMBERS, 0, R.string.conversation_detail_invite);
-    alwaysShowMenuItem(invite);
     return super.onCreateOptionsMenu(menu);
   }
 
-  @Override
-  public boolean onMenuItemSelected(int featureId, MenuItem item) {
+  public boolean onOptionsItemSelected(MenuItem item) {
     int menuId = item.getItemId();
     if (menuId == ADD_MEMBERS) {
       Intent intent = new Intent(this, ConversationAddMembersActivity.class);
       intent.putExtra(Constants.CONVERSATION_ID, conversation.getConversationId());
       startActivityForResult(intent, ADD_MEMBERS);
     }
-    return super.onMenuItemSelected(featureId, item);
+    return super.onOptionsItemSelected(item);
   }
 
   private void refresh() {
