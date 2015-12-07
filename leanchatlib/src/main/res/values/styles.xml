@@ -1,6 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/common_blue</item>
+        <item name="colorPrimaryDark">@color/common_blue</item>
+        <item name="colorAccent">@color/common_blue</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
+
+    <style name="AVActivity" parent="AppTheme"/>
+
+    <style name="AVActivity.FullScreen">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="BigFont">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">70dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginBottom">14dp</item>
+    </style>
+
+    <style name="SmallFont">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="AVTheme" parent="Theme.AppCompat.Light"/>
+
+    <style name="DividerLine">
+        <item name="android:background">@color/divider_line_color</item>
+    </style>
+
+    <style name="DividerLine.Horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/divider_line_height</item>
+    </style>
+
+    <style name="DividerLine.Vertical">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">@dimen/divider_line_height</item>
+    </style>
+
+    <style name="EditText"/>
+
+    <style name="EditText.UserName">
+        <item name="android:singleLine">true</item>
+        <item name="android:maxLength">30</item>
+    </style>
+
+    <style name="EditText.Password">
+        <item name="android:singleLine">true</item>
+        <item name="android:inputType">textPassword</item>
+    </style>
+
+    <!-- button -->
+    <style name="Button"/>
+
+    <style name="Button.Normal"/>
+
+    <style name="Button.Larger">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/button_big_height</item>
+        <item name="android:layout_marginLeft">@dimen/common_horizontal_margin</item>
+        <item name="android:layout_marginRight">@dimen/common_horizontal_margin</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAppearance">@style/TextAppearance.Normal.Bold</item>
+    </style>
+
+
+    <!-- text appearance -->
+    <style name="TextAppearance"/>
+
+    <style name="TextAppearance.Large">
+        <item name="android:textSize">@dimen/textsize_large</item>
+    </style>
+
+    <style name="TextAppearance.Large.Gray">
+        <item name="android:textColor">@color/common_gray</item>
+    </style>
+
+    <style name="TextAppearance.Normal">
+        <item name="android:textSize">@dimen/textsize_normal</item>
+    </style>
+
+    <style name="TextAppearance.Normal.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Normal.Gray">
+        <item name="android:textColor">@color/common_gray</item>
+    </style>
+
+    <style name="TextAppearance.small"/>
+
+
+
+    <!-- -->
+    <style name="TextView"/>
+    <style name="TextView.Large">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/textview_height_big</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:textAppearance">@style/TextAppearance.Normal</item>
+        <item name="android:textColor">@color/common_gray</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">@dimen/common_horizontal_margin</item>
+    </style>
+
+
+    <!-- 以下代码需要整理 -->
     <style name="chat_text_date_style">
         <item name="android:padding">2dp</item>
         <item name="android:paddingTop">2dip</item>
