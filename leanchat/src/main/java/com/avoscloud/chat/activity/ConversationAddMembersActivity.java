@@ -88,6 +88,7 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuItem add = menu.add(0, OK, 0, R.string.common_sure);
+    alwaysShowMenuItem(menu);
     return super.onCreateOptionsMenu(menu);
   }
 

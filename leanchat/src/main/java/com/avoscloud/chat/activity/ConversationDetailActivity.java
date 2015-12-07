@@ -121,6 +121,7 @@ public class ConversationDetailActivity extends AVBaseActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuItem invite = menu.add(0, ADD_MEMBERS, 0, R.string.conversation_detail_invite);
+    alwaysShowMenuItem(menu);
     return super.onCreateOptionsMenu(menu);
   }
 

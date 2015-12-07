@@ -12,7 +12,9 @@
 
     <style name="AVActivity" parent="AppTheme"/>
 
-    <style name="AVActivity.FullScreen">
+    <style name="AVActivity.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar"/>
+
+    <style name="AVActivity.FullScreen" >
         <item name="android:windowFullscreen">true</item>
     </style>
 

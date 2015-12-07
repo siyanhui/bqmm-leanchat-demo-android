@@ -3,6 +3,8 @@ package com.avoscloud.leanchatlib.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -52,6 +54,14 @@ public class AVBaseActivity extends AppCompatActivity {
   }
 
   protected void onViewCreated() {}
+
+  protected void alwaysShowMenuItem(Menu menu) {
+    if (null != menu && menu.size() > 0) {
+      MenuItem item = menu.getItem(0);
+      item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS
+        | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+    }
+  }
 
   protected boolean filterException(Exception e) {
     if (e != null) {

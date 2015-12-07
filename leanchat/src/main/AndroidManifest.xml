@@ -73,7 +73,8 @@
 
         <activity
             android:name=".activity.MainActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:theme="@style/AVActivity.NoActionBar">
             <intent-filter>
                 <action android:name="com.avos.leanchart.MAIN_ACTIVITY"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -84,7 +85,7 @@
 
         <activity
             android:name=".activity.EntrySplashActivity"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
+            android:theme="@style/AVActivity.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -95,9 +96,11 @@
 
         <activity android:name=".activity.LocationActivity"/>
 
-        <activity android:name=".activity.EntryLoginActivity" />
+        <activity android:name=".activity.EntryLoginActivity"
+                  android:theme="@style/AVActivity.NoActionBar"/>
 
-        <activity android:name=".activity.EntryRegisterActivity" />
+        <activity android:name=".activity.EntryRegisterActivity"
+                  android:theme="@style/AVActivity.NoActionBar"/>
 
         <activity android:name=".friends.ContactNewFriendActivity"/>
 

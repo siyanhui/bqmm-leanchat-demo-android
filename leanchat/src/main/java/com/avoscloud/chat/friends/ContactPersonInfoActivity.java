@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.*;
 import com.avoscloud.chat.R;
-import com.avoscloud.chat.activity.BaseActivity;
 import com.avoscloud.chat.activity.ChatRoomActivity;
 import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.chat.util.UserCacheUtils;
@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * 用户详情页，从对话详情页面和发现页面跳转过来
  */
-public class ContactPersonInfoActivity extends BaseActivity implements OnClickListener {
+public class ContactPersonInfoActivity extends AVBaseActivity implements OnClickListener {
   public static final String USER_ID = "userId";
   TextView usernameView, genderView;
   ImageView avatarView, avatarArrowView;
@@ -35,12 +35,6 @@ public class ContactPersonInfoActivity extends BaseActivity implements OnClickLi
   protected void onCreate(Bundle savedInstanceState) {
     // TODO Auto-generated method stub
     super.onCreate(savedInstanceState);
-    //meizu?
-    int currentApiVersion = Build.VERSION.SDK_INT;
-    if (currentApiVersion >= 14) {
-      getWindow().getDecorView().setSystemUiVisibility(
-          View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-    }
     setContentView(R.layout.contact_person_info_activity);
     initData();
 
@@ -69,14 +63,14 @@ public class ContactPersonInfoActivity extends BaseActivity implements OnClickLi
   private void initView() {
     LeanchatUser curUser = LeanchatUser.getCurrentUser();
     if (curUser.equals(user)) {
-      initActionBar(R.string.contact_personalInfo);
+      setTitle(R.string.contact_personalInfo);
       avatarLayout.setOnClickListener(this);
       genderLayout.setOnClickListener(this);
       avatarArrowView.setVisibility(View.VISIBLE);
       chatBtn.setVisibility(View.GONE);
       addFriendBtn.setVisibility(View.GONE);
     } else {
-      initActionBar(R.string.contact_detailInfo);
+      setTitle(R.string.contact_detailInfo);
       avatarArrowView.setVisibility(View.INVISIBLE);
       List<String> cacheFriends = FriendsManager.getFriendIds();
       boolean isFriend = cacheFriends.contains(user.getObjectId());

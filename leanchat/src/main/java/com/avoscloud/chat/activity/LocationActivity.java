@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.avoscloud.chat.R;
+import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.utils.Logger;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -23,7 +24,7 @@ import com.baidu.mapapi.search.geocode.*;
 /**
  * 选取地理位置、展现地理位置
  */
-public class LocationActivity extends BaseActivity implements
+public class LocationActivity extends AVBaseActivity implements
     OnGetGeoCoderResultListener {
   public static final int SEND = 0;
   public static final String TYPE = "type";
@@ -64,7 +65,7 @@ public class LocationActivity extends BaseActivity implements
 
     Intent intent = getIntent();
     intentType = intent.getStringExtra(TYPE);
-    initActionBar(R.string.chat_position);
+    setTitle(R.string.chat_position);
     if (intentType.equals(TYPE_SELECT)) {
       // 选择发送位置
       // 开启定位图层
@@ -107,18 +108,18 @@ public class LocationActivity extends BaseActivity implements
   public boolean onCreateOptionsMenu(Menu menu) {
     if (intentType != null && intentType.equals(TYPE_SELECT)) {
       MenuItem add = menu.add(0, SEND, 0, R.string.chat_location_activity_send);
-      alwaysShowMenuItem(add);
     }
+    alwaysShowMenuItem(menu);
     return super.onCreateOptionsMenu(menu);
   }
 
   @Override
-  public boolean onMenuItemSelected(int featureId, MenuItem item) {
+  public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
     if (id == SEND) {
       gotoChatPage();
     }
-    return super.onMenuItemSelected(featureId, item);
+    return super.onOptionsItemSelected(item);
   }
 
   private void gotoChatPage() {
@@ -130,7 +131,7 @@ public class LocationActivity extends BaseActivity implements
       setResult(RESULT_OK, intent);
       this.finish();
     } else {
-      toast(R.string.chat_getGeoInfoFailed);
+      showToast(R.string.chat_getGeoInfoFailed);
     }
   }
 

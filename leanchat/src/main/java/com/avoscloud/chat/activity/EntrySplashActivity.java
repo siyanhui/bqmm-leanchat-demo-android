@@ -6,8 +6,9 @@ import android.os.Handler;
 import android.os.Message;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 
-public class EntrySplashActivity extends BaseActivity {
+public class EntrySplashActivity extends AVBaseActivity {
   public static final int SPLASH_DURATION = 2000;
   private static final int GO_MAIN_MSG = 1;
   private static final int GO_LOGIN_MSG = 2;
@@ -21,8 +22,8 @@ public class EntrySplashActivity extends BaseActivity {
           finish();
           break;
         case GO_LOGIN_MSG:
-          Intent intent = new Intent(ctx, EntryLoginActivity.class);
-          ctx.startActivity(intent);
+          Intent intent = new Intent(EntrySplashActivity.this, EntryLoginActivity.class);
+          EntrySplashActivity.this.startActivity(intent);
           finish();
           break;
       }

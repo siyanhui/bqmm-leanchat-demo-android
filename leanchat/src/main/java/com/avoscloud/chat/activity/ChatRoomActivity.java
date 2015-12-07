@@ -41,6 +41,7 @@ public class ChatRoomActivity extends AVChatActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.chat_ativity_menu, menu);
+    alwaysShowMenuItem(menu);
     return super.onCreateOptionsMenu(menu);
   }
 
