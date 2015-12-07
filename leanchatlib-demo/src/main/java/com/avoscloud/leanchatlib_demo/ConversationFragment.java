@@ -1,6 +1,5 @@
 package com.avoscloud.leanchatlib_demo;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,10 +15,8 @@ import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMSingleMessageQueryCallback;
 import com.avoscloud.leanchatlib.adapter.CommonListAdapter;
-import com.avoscloud.leanchatlib.event.ConversationItemClickEvent;
 import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
 import com.avoscloud.leanchatlib.model.Room;
-import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.ConversationManager;
 
 import java.util.ArrayList;
@@ -76,18 +73,6 @@ public class ConversationFragment extends Fragment {
     EventBus.getDefault().unregister(this);
   }
 
-  @Override
-  public void onResume() {
-    super.onResume();
-    updateConversationList();
-  }
-
-  public void onEvent(ConversationItemClickEvent event) {
-    Intent intent = new Intent(getActivity(), ChatRoomActivity.class);
-    intent.putExtra(Constants.CONVERSATION_ID, event.conversationId);
-    startActivity(intent);
-  }
-
   public void onEvent(ImTypeMessageEvent event) {
     updateConversationList();
   }
@@ -98,7 +83,7 @@ public class ConversationFragment extends Fragment {
       public void done(List<Room> roomList, AVException exception) {
         if (null == exception) {
 
-//          updateLastMessage(roomList);
+          updateLastMessage(roomList);
 
           List<Room> sortedRooms = sortRooms(roomList);
           itemAdapter.setDataList(sortedRooms);

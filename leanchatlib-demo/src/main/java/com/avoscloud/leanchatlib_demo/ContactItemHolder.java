@@ -1,10 +1,14 @@
 package com.avoscloud.leanchatlib_demo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.avoscloud.leanchatlib.activity.AVChatActivity;
+import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
 import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -32,15 +36,9 @@ public class ContactItemHolder extends CommonViewHolder<ThirdPartUserUtils.Third
     itemView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        EventBus.getDefault().post(new ContactItemClickEvent(thirdPartUser.userId, false));
-      }
-    });
-
-    itemView.setOnLongClickListener(new View.OnLongClickListener() {
-      @Override
-      public boolean onLongClick(View v) {
-        EventBus.getDefault().post(new ContactItemClickEvent(thirdPartUser.userId, true));
-        return true;
+        Intent intent = new Intent(getContext(), AVChatActivity.class);
+        intent.putExtra(Constants.MEMBER_ID, thirdPartUser.userId);
+        getContext().startActivity(intent);
       }
     });
   }

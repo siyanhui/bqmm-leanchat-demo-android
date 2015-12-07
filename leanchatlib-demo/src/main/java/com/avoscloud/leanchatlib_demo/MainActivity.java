@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     toolbar = (Toolbar) findViewById(R.id.toolbar);
     viewPager = (ViewPager)findViewById(R.id.pager);
     tabLayout = (TabLayout)findViewById(R.id.tablayout);
+    setTitle("Leanchat_demo");
     setSupportActionBar(toolbar);
     initTabLayout();
   }
