@@ -27,21 +27,21 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 /**
  * Created by wli on 15/12/4.
  */
 public class ConversationFragment extends Fragment {
-  @InjectView(R.id.im_client_state_view)
+  @Bind(R.id.im_client_state_view)
   View imClientStateView;
 
-  @InjectView(R.id.fragment_conversation_srl_pullrefresh)
+  @Bind(R.id.fragment_conversation_srl_pullrefresh)
   protected SwipeRefreshLayout refreshLayout;
 
-  @InjectView(R.id.fragment_conversation_srl_view)
+  @Bind(R.id.fragment_conversation_srl_view)
   protected RecyclerView recyclerView;
 
   protected CommonListAdapter<Room> itemAdapter;
@@ -52,7 +52,7 @@ public class ConversationFragment extends Fragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.conversation_fragment, container, false);
-    ButterKnife.inject(this, view);
+    ButterKnife.bind(this, view);
 
     conversationManager = ConversationManager.getInstance();
     refreshLayout.setEnabled(false);

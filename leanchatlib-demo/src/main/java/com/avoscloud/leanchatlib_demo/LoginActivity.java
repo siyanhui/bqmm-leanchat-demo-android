@@ -1,6 +1,5 @@
 package com.avoscloud.leanchatlib_demo;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,24 +10,31 @@ import android.widget.EditText;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
+import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationEventHandler;
 
-public class LoginActivity extends Activity implements View.OnClickListener {
-  private EditText nameView;
-  private Button loginButton;
+import butterknife.Bind;
+import butterknife.OnClick;
+
+/**
+ * 登陆页面
+ */
+public class LoginActivity extends AVBaseActivity {
+  @Bind(R.id.activity_login_et_username)
+  protected EditText nameView;
+
+  @Bind(R.id.activity_login_btn_login)
+  protected Button loginButton;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
-    nameView = (EditText) findViewById(R.id.login_tv_name);
-    loginButton = (Button) findViewById(R.id.login_btn_login);
-    loginButton.setOnClickListener(this);
   }
 
-  @Override
-  public void onClick(View view) {
+  @OnClick(R.id.activity_login_btn_login)
+  public void onLoginClick(View view) {
     String clientId = nameView.getText().toString();
     initChatManager(clientId);
     ChatManager.getInstance().openClient(new AVIMClientCallback() {
@@ -37,6 +43,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         if (null == e) {
           Intent intent = new Intent(LoginActivity.this, MainActivity.class);
           startActivity(intent);
+        } else {
+          showToast(e.toString());
         }
       }
     });

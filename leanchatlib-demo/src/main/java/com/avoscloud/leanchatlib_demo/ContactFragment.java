@@ -16,8 +16,8 @@ import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
 
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -25,10 +25,10 @@ import de.greenrobot.event.EventBus;
  */
 public class ContactFragment extends Fragment {
 
-  @InjectView(R.id.contact_fragment_srl_list)
+  @Bind(R.id.contact_fragment_srl_list)
   protected SwipeRefreshLayout refreshLayout;
 
-  @InjectView(R.id.contact_fragment_rv_list)
+  @Bind(R.id.contact_fragment_rv_list)
   protected RecyclerView recyclerView;
 
   private CommonListAdapter<ThirdPartUserUtils.ThirdPartUser> itemAdapter;
@@ -37,7 +37,7 @@ public class ContactFragment extends Fragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.contact_fragment, container, false);
-    ButterKnife.inject(this, view);
+    ButterKnife.bind(this, view);
 
     layoutManager = new LinearLayoutManager(getActivity());
     recyclerView.setLayoutManager(layoutManager);
