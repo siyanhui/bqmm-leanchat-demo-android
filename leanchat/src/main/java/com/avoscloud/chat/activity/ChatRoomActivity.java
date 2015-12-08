@@ -8,12 +8,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.avos.avoscloud.AVGeoPoint;
-import com.avos.avoscloud.im.v2.messages.AVIMImageMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMLocationMessage;
 import com.avoscloud.chat.R;
 import com.avoscloud.leanchatlib.activity.AVChatActivity;
-import com.avoscloud.leanchatlib.controller.MessageHelper;
-import com.avoscloud.leanchatlib.event.ImageItemClickEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarLocationClickEvent;
 import com.avoscloud.leanchatlib.event.LocationItemClickEvent;
 import com.avoscloud.leanchatlib.utils.Constants;
@@ -92,13 +89,6 @@ public class ChatRoomActivity extends AVChatActivity {
       AVIMLocationMessage locationMessage = (AVIMLocationMessage) event.message;
       LocationActivity.startToSeeLocationDetail(this, locationMessage.getLocation().getLatitude(),
         locationMessage.getLocation().getLongitude());
-    }
-  }
-
-  public void onEvent(ImageItemClickEvent event) {
-    if (null != event && null != event.message && event.message instanceof AVIMImageMessage) {
-      AVIMImageMessage imageMessage = (AVIMImageMessage)event.message;
-      ImageBrowserActivity.go(this, MessageHelper.getFilePath(imageMessage), imageMessage.getFileUrl());
     }
   }
 }

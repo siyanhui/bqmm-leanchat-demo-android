@@ -21,7 +21,8 @@
 
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/AVActivity.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +31,10 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main" />
+            android:label="@string/title_activity_main"
+            android:theme="@style/AVActivity.NoActionBar"/>
+
+        <activity android:name="com.avoscloud.leanchatlib.activity.AVChatActivity"/>
 
         <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
             <intent-filter>
@@ -41,6 +45,6 @@
 
         <service android:name="com.avos.avoscloud.PushService" />
 
-        <activity android:name="com.avoscloud.chat.activity.ImageBrowserActivity" />
+        <activity android:name="com.avoscloud.leanchatlib.activity.ImageBrowserActivity" />
     </application>
 </manifest>
