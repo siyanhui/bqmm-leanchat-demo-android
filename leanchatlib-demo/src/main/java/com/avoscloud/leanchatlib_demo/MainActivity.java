@@ -6,8 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.avoscloud.leanchatlib.activity.AVBaseActivity;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,11 +18,22 @@ import de.greenrobot.event.EventBus;
 /**
  * 主页面，包含三个 fragment，会话、联系人、我
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AVBaseActivity {
 
   private Toolbar toolbar;
   private ViewPager viewPager;
   private TabLayout tabLayout;
+
+  /**
+   * 上一次点击 back 键的时间
+   * 用于双击退出的判断
+   */
+  private static long lastBackTime = 0;
+
+  /**
+   * 当双击 back 键在此间隔内是直接触发 onBackPressed
+   */
+  private final int BACK_INTERVAL = 1000;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
     viewPager.setAdapter(adapter);
     viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
       @Override
-      public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+      public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+      }
 
       @Override
       public void onPageSelected(int position) {
@@ -59,10 +73,22 @@ public class MainActivity extends AppCompatActivity {
       }
 
       @Override
-      public void onPageScrollStateChanged(int state) {}
+      public void onPageScrollStateChanged(int state) {
+      }
     });
     tabLayout.setupWithViewPager(viewPager);
     tabLayout.setTabsFromPagerAdapter(adapter);
+  }
+
+  @Override
+  public void onBackPressed() {
+    long currentTime = System.currentTimeMillis();
+    if (currentTime - lastBackTime < BACK_INTERVAL) {
+      super.onBackPressed();
+    } else {
+      showToast("双击 back 退出");
+    }
+    lastBackTime = currentTime;
   }
 
   public class TabFragmentAdapter extends FragmentStatePagerAdapter {
