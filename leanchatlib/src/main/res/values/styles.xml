@@ -12,7 +12,12 @@
 
     <style name="AVActivity" parent="AppTheme"/>
 
-    <style name="AVActivity.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar"/>
+    <style name="AVActivity.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/common_blue</item>
+        <item name="colorPrimaryDark">@color/common_blue</item>
+        <item name="colorAccent">@color/common_blue</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
 
     <style name="AVActivity.FullScreen" >
         <item name="android:windowFullscreen">true</item>
