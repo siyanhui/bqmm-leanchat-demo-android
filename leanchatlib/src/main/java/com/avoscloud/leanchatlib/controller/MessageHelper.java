@@ -1,12 +1,14 @@
 package com.avoscloud.leanchatlib.controller;
 
+import android.text.TextUtils;
+
+import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMLocationMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.avoscloud.leanchatlib.R;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
-import com.avoscloud.leanchatlib.utils.UserCacheUtils;
+import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
 import com.avoscloud.leanchatlib.utils.PathUtils;
 
 import java.util.List;
@@ -29,24 +31,28 @@ public class MessageHelper {
     return String.format("[%s]", s);
   }
 
-  public static CharSequence outlineOfMsg(AVIMTypedMessage msg) {
-    AVIMReservedMessageType type = AVIMReservedMessageType.getAVIMReservedMessageType(msg.getMessageType());
-    switch (type) {
-      case TextMessageType:
-        return EmotionHelper.replace(ChatManager.getContext(), ((AVIMTextMessage) msg).getText());
-      case ImageMessageType:
-        return bracket(ChatManager.getContext().getString(R.string.chat_image));
-      case LocationMessageType:
-        AVIMLocationMessage locMsg = (AVIMLocationMessage) msg;
-        String address = locMsg.getText();
-        if (address == null) {
-          address = "";
-        }
-        return bracket(ChatManager.getContext().getString(R.string.chat_position)) + address;
-      case AudioMessageType:
-        return bracket(ChatManager.getContext().getString(R.string.chat_audio));
+  public static CharSequence outlineOfMsg(AVIMMessage msg) {
+    if (msg instanceof AVIMTypedMessage) {
+      AVIMReservedMessageType type = AVIMReservedMessageType.getAVIMReservedMessageType(((AVIMTypedMessage)msg).getMessageType());
+      switch (type) {
+        case TextMessageType:
+          return EmotionHelper.replace(ChatManager.getContext(), ((AVIMTextMessage) msg).getText());
+        case ImageMessageType:
+          return bracket(ChatManager.getContext().getString(R.string.chat_image));
+        case LocationMessageType:
+          AVIMLocationMessage locMsg = (AVIMLocationMessage) msg;
+          String address = locMsg.getText();
+          if (address == null) {
+            address = "";
+          }
+          return bracket(ChatManager.getContext().getString(R.string.chat_position)) + address;
+        case AudioMessageType:
+          return bracket(ChatManager.getContext().getString(R.string.chat_audio));
+      }
+      return null;
+    } else {
+      return msg.getContent();
     }
-    return null;
   }
 
   public static String nameByUserIds(List<String> userIds) {
@@ -62,11 +68,7 @@ public class MessageHelper {
   }
 
   public static String nameByUserId(String id) {
-    LeanchatUser user = UserCacheUtils.getCachedUser(id);
-    if (user != null) {
-      return user.getUsername();
-    } else {
-      return id;
-    }
+    String userName = ThirdPartUserUtils.getInstance().getUserName(id);
+    return (TextUtils.isEmpty(userName) ? id : userName);
   }
 }

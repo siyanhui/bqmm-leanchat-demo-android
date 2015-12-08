@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.event.GroupItemClickEvent;
-import com.avoscloud.chat.service.ConversationManager;
+import com.avoscloud.leanchatlib.utils.ConversationManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
 

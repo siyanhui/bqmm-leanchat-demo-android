@@ -10,14 +10,14 @@
 
     <include layout="@layout/chat_client_state_view" />
 
-    <com.avoscloud.leanchatlib.view.TwoWaySwipeLayout
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/fragment_near_srl_pullrefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
+        <com.avoscloud.leanchatlib.view.CustomRecyclerView
             android:id="@+id/fragment_near_srl_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-    </com.avoscloud.leanchatlib.view.TwoWaySwipeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

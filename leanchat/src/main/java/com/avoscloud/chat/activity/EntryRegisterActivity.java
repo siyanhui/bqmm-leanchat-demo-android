@@ -11,9 +11,10 @@ import com.avos.avoscloud.SignUpCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
 import com.avoscloud.chat.util.Utils;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 
-public class EntryRegisterActivity extends EntryBaseActivity {
+public class EntryRegisterActivity extends AVBaseActivity {
   View registerButton;
   EditText usernameEdit, passwordEdit, emailEdit;
 
@@ -23,7 +24,7 @@ public class EntryRegisterActivity extends EntryBaseActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.entry_register_activity);
     findView();
-    initActionBar(App.ctx.getString(R.string.register));
+    setTitle(App.ctx.getString(R.string.register));
     registerButton.setOnClickListener(new OnClickListener() {
 
       @Override

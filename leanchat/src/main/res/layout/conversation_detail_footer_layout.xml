@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/name_layout"
+        style="@style/conversation_detail_base_left_layout">
+
+        <TextView
+            style="@style/conversation_detail_base_left_style"
+            android:text="群聊名称"/>
+
+        <include layout="@layout/common_view_right_arrow"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/quit_layout"
+        style="@style/conversation_detail_base_left_layout">
+
+        <TextView
+            style="@style/conversation_detail_base_left_style"
+            android:text="删除并退出"/>
+
+        <include layout="@layout/common_view_right_arrow"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -4,7 +4,7 @@ import android.view.ViewGroup;
 
 import com.avoscloud.chat.viewholder.MemeberCheckableItemHolder;
 import com.avoscloud.leanchatlib.adapter.CommonListAdapter;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
 
 import java.util.ArrayList;

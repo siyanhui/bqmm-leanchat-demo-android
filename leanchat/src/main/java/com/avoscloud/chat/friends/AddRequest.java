@@ -2,7 +2,7 @@ package com.avoscloud.chat.friends;
 
 import com.avos.avoscloud.AVClassName;
 import com.avos.avoscloud.AVObject;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 
 /**
  * Created by lzw on 14-9-27.

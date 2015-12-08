@@ -1,9 +1,9 @@
 package com.avoscloud.chat.fragment;
 
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.widget.Toast;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.view.HeaderLayout;

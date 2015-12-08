@@ -1,49 +1,66 @@
 package com.avoscloud.leanchatlib_demo;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
+import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
-import com.avoscloud.leanchatlib.utils.LogUtils;
+import com.avoscloud.leanchatlib.controller.ConversationEventHandler;
 
+import butterknife.Bind;
+import butterknife.OnClick;
 
-public class LoginActivity extends Activity implements View.OnClickListener {
-  private EditText selfIdEditText;
-  private Button loginButton;
+/**
+ * 登陆页面
+ */
+public class LoginActivity extends AVBaseActivity {
+  @Bind(R.id.activity_login_et_username)
+  protected EditText nameView;
+
+  @Bind(R.id.activity_login_btn_login)
+  protected Button loginButton;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
-    selfIdEditText = (EditText) findViewById(R.id.selfIdEditText);
-    loginButton = (Button) findViewById(R.id.login);
-    loginButton.setOnClickListener(this);
   }
 
-  @Override
-  public void onClick(View view) {
-    String selfId = selfIdEditText.getText().toString();
-    if (!TextUtils.isEmpty(selfId)) {
-      ChatManager chatManager = ChatManager.getInstance();
-      chatManager.setupManagerWithUserId(selfId);
-      chatManager.openClient(new AVIMClientCallback() {
-        @Override
-        public void done(AVIMClient avimClient, AVIMException e) {
-          if (e != null) {
-            LogUtils.logException(e);
-          }
+  @OnClick(R.id.activity_login_btn_login)
+  public void onLoginClick(View view) {
+    String clientId = nameView.getText().toString();
+    if (TextUtils.isEmpty(clientId.trim())) {
+      showToast(R.string.login_null_name_tip);
+      return;
+    }
+    initChatManager(clientId);
+    ChatManager.getInstance().openClient(new AVIMClientCallback() {
+      @Override
+      public void done(AVIMClient avimClient, AVIMException e) {
+        if (null == e) {
+          finish();
           Intent intent = new Intent(LoginActivity.this, MainActivity.class);
           startActivity(intent);
-          finish();
+        } else {
+          showToast(e.toString());
         }
-      });
+      }
+    });
+  }
+
+  private void initChatManager(String userId) {
+    final ChatManager chatManager = ChatManager.getInstance();
+    chatManager.init(this);
+    if (!TextUtils.isEmpty(userId)) {
+      chatManager.setupManagerWithUserId(userId);
     }
+    chatManager.setConversationEventHandler(ConversationEventHandler.getInstance());
   }
 }

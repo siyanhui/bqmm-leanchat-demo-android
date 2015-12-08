@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_item_height"
+        android:background="@drawable/btn_selector"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/common_horizontal_margin"
+        android:paddingRight="@dimen/common_horizontal_margin">
+        <ImageView
+            android:id="@+id/profile_avatar_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/chat_default_user_avatar" />
+
+        <TextView
+            android:id="@+id/profile_username_view"
+            android:layout_marginLeft="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="username"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/profile_logout_btn"
+        style="@style/Button.Logout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/activity_top_margin"
+        android:layout_marginLeft="@dimen/common_horizontal_margin"
+        android:layout_marginRight="@dimen/common_horizontal_margin"
+        android:gravity="center"
+        android:text="注销" />
+</LinearLayout>

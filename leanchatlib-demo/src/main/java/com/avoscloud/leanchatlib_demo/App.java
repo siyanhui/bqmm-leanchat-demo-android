@@ -2,16 +2,32 @@ package com.avoscloud.leanchatlib_demo;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Resources;
+import android.util.Log;
+
 import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.im.v2.AVIMClient;
+import com.avos.avoscloud.im.v2.AVIMConversation;
+import com.avos.avoscloud.im.v2.AVIMMessage;
+import com.avos.avoscloud.im.v2.AVIMMessageHandler;
+import com.avos.avoscloud.im.v2.AVIMMessageManager;
 import com.avoscloud.leanchatlib.controller.ChatManager;
+import com.avoscloud.leanchatlib.controller.MessageHandler;
+import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by lzw on 15/4/27.
  */
 public class App extends Application {
+
+
   public static void initImageLoader(Context context) {
     ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
         context)
@@ -32,5 +48,7 @@ public class App extends Application {
     AVOSCloud.setDebugLogEnabled(true);  // set false when release
     ChatManager.getInstance().init(this);
     initImageLoader(this);
+
+    ThirdPartUserUtils.setThirdPartUserProvider(new CustomUserProvider());
   }
 }

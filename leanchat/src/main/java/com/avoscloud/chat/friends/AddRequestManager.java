@@ -12,7 +12,7 @@ import com.avoscloud.chat.App;
 import com.avoscloud.chat.service.PushManager;
 import com.avoscloud.chat.util.SimpleNetTask;
 import com.avoscloud.chat.util.Utils;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.LogUtils;
 
 import java.util.List;

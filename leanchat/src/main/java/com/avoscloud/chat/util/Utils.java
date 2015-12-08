@@ -311,12 +311,4 @@ public class Utils {
       return true;
     }
   }
-
-  public static void closeQuietly(Closeable closeable) {
-    try {
-      closeable.close();
-    } catch (Exception e) {
-    }
-  }
-
 }

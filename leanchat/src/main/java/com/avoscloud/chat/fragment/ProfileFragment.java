@@ -11,8 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMException;
@@ -23,9 +24,9 @@ import com.avoscloud.chat.service.PushManager;
 import com.avoscloud.chat.service.UpdateService;
 import com.avoscloud.chat.activity.EntryLoginActivity;
 import com.avoscloud.chat.util.PathUtils;
-import com.avoscloud.chat.util.PhotoUtils;
 import com.avoscloud.leanchatlib.controller.ChatManager;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
@@ -37,10 +38,10 @@ public class ProfileFragment extends BaseFragment {
   private static final int IMAGE_PICK_REQUEST = 1;
   private static final int CROP_REQUEST = 2;
 
-  @InjectView(R.id.profile_avatar_view)
+  @Bind(R.id.profile_avatar_view)
   ImageView avatarView;
 
-  @InjectView(R.id.profile_username_view)
+  @Bind(R.id.profile_username_view)
   TextView userNameView;
 
   ChatManager chatManager;
@@ -48,7 +49,7 @@ public class ProfileFragment extends BaseFragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.profile_fragment, container, false);
-    ButterKnife.inject(this, view);
+    ButterKnife.bind(this, view);
     return view;
   }
 

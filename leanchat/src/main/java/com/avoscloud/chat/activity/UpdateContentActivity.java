@@ -8,11 +8,12 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.avoscloud.chat.R;
+import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 
 /**
  * Created by lzw on 14-9-17.
  */
-public class UpdateContentActivity extends BaseActivity {
+public class UpdateContentActivity extends AVBaseActivity {
   public static final String FIELD_NAME = "fieldName";
   public static final String VALUE = "value";
   private TextView fieldNameView;
@@ -45,13 +46,13 @@ public class UpdateContentActivity extends BaseActivity {
   private void init() {
     Intent intent = getIntent();
     String fieldName = intent.getStringExtra(FIELD_NAME);
-    String editHint = ctx.getString(R.string.chat_common_please_input_hint);
-    String changeTitle = ctx.getString(R.string.chat_common_change_title);
+    String editHint = getString(R.string.chat_common_please_input_hint);
+    String changeTitle = getString(R.string.chat_common_change_title);
     editHint = editHint.replace("{0}", fieldName);
     changeTitle = changeTitle.replace("{0}", fieldName);
     fieldNameView.setText(fieldName);
     valueEdit.setHint(editHint);
-    initActionBar(changeTitle);
+    setTitle(changeTitle);
   }
 
   public void updateContent() {
@@ -62,12 +63,12 @@ public class UpdateContentActivity extends BaseActivity {
   }
 
   @Override
-  public boolean onMenuItemSelected(int featureId, MenuItem item) {
+  public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
     if (id == R.id.sure) {
       updateContent();
     }
-    return super.onMenuItemSelected(featureId, item);
+    return super.onOptionsItemSelected(item);
   }
 
   private void findView() {

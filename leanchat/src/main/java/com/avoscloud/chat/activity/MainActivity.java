@@ -1,11 +1,11 @@
 package com.avoscloud.chat.activity;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -22,12 +22,13 @@ import com.avoscloud.chat.friends.ContactFragment;
 import com.avoscloud.chat.fragment.ConversationRecentFragment;
 import com.avoscloud.chat.fragment.DiscoverFragment;
 import com.avoscloud.chat.fragment.ProfileFragment;
+import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.controller.ChatManager;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.LogUtils;
-import com.avoscloud.leanchatlib.utils.UserCacheUtils;
+import com.avoscloud.chat.util.UserCacheUtils;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -37,7 +38,7 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by lzw on 14-9-17.
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends AVBaseActivity {
   public static final int FRAGMENT_N = 4;
   public static final int[] tabsNormalBackIds = new int[]{R.drawable.tabbar_chat,
       R.drawable.tabbar_contacts, R.drawable.tabbar_discover, R.drawable.tabbar_me};
@@ -130,7 +131,7 @@ public class MainActivity extends BaseActivity {
 
   public void onTabSelect(View v) {
     int id = v.getId();
-    FragmentManager manager = getFragmentManager();
+    FragmentManager manager = getSupportFragmentManager();
     FragmentTransaction transaction = manager.beginTransaction();
     hideFragments(manager, transaction);
     setNormalBackgrounds();
@@ -177,7 +178,7 @@ public class MainActivity extends BaseActivity {
   }
 
   private void setTopDrawable(Button v, int resId) {
-    v.setCompoundDrawablesWithIntrinsicBounds(null, ctx.getResources().getDrawable(resId), null, null);
+    v.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(resId), null, null);
   }
 
   private void hideFragments(FragmentManager fragmentManager, FragmentTransaction transaction) {
@@ -229,7 +230,7 @@ public class MainActivity extends BaseActivity {
           + " locType=" + locType + " address=" + location.getAddrStr());
       String currentUserId = LeanchatUser.getCurrentUserId();
       if (!TextUtils.isEmpty(currentUserId)) {
-        PreferenceMap preferenceMap = new PreferenceMap(ctx, currentUserId);
+        PreferenceMap preferenceMap = new PreferenceMap(MainActivity.this, currentUserId);
         AVGeoPoint avGeoPoint = preferenceMap.getLocation();
         if (avGeoPoint != null && avGeoPoint.getLatitude() == location.getLatitude()
             && avGeoPoint.getLongitude() == location.getLongitude()) {

@@ -8,12 +8,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.avos.avoscloud.AVGeoPoint;
-import com.avos.avoscloud.im.v2.messages.AVIMImageMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMLocationMessage;
 import com.avoscloud.chat.R;
 import com.avoscloud.leanchatlib.activity.AVChatActivity;
-import com.avoscloud.leanchatlib.controller.MessageHelper;
-import com.avoscloud.leanchatlib.event.ImageItemClickEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarLocationClickEvent;
 import com.avoscloud.leanchatlib.event.LocationItemClickEvent;
 import com.avoscloud.leanchatlib.utils.Constants;
@@ -41,11 +38,12 @@ public class ChatRoomActivity extends AVChatActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.chat_ativity_menu, menu);
+    alwaysShowMenuItem(menu);
     return super.onCreateOptionsMenu(menu);
   }
 
   @Override
-  public boolean onMenuItemSelected(int featureId, MenuItem item) {
+  public boolean onOptionsItemSelected(MenuItem item) {
     int menuId = item.getItemId();
     if (menuId == R.id.people) {
       if (null != conversation) {
@@ -54,7 +52,7 @@ public class ChatRoomActivity extends AVChatActivity {
         startActivityForResult(intent, QUIT_GROUP_REQUEST);
       }
     }
-    return super.onMenuItemSelected(featureId, item);
+    return super.onOptionsItemSelected(item);
   }
 
   @Override
@@ -91,13 +89,6 @@ public class ChatRoomActivity extends AVChatActivity {
       AVIMLocationMessage locationMessage = (AVIMLocationMessage) event.message;
       LocationActivity.startToSeeLocationDetail(this, locationMessage.getLocation().getLatitude(),
         locationMessage.getLocation().getLongitude());
-    }
-  }
-
-  public void onEvent(ImageItemClickEvent event) {
-    if (null != event && null != event.message && event.message instanceof AVIMImageMessage) {
-      AVIMImageMessage imageMessage = (AVIMImageMessage)event.message;
-      ImageBrowserActivity.go(this, MessageHelper.getFilePath(imageMessage), imageMessage.getFileUrl());
     }
   }
 }

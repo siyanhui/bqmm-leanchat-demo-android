@@ -28,7 +28,7 @@ public class AVChatActivity extends AVBaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_chat);
-    chatFragment = (ChatFragment)getFragmentManager().findFragmentById(R.id.fragment_chat);
+    chatFragment = (ChatFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_chat);
     initByIntent(getIntent());
   }
 

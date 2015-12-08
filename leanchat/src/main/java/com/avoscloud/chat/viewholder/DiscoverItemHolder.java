@@ -12,7 +12,7 @@ import com.avoscloud.chat.R;
 import com.avoscloud.chat.service.PreferenceMap;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.event.DiscoverItemClickEvent;
-import com.avoscloud.leanchatlib.model.LeanchatUser;
+import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
