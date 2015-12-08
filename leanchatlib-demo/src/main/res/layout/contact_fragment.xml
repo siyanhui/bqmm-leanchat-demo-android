@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/contact_fragment_srl_list"
             android:layout_width="match_parent"
@@ -17,13 +18,5 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         </android.support.v4.widget.SwipeRefreshLayout>
-
-        <!--<com.avoscloud.leanchatlib.view.LetterView-->
-            <!--android:id="@+id/contact_fragment_members_letterview"-->
-            <!--android:layout_width="20dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_alignParentRight="true">-->
-
-        <!--</com.avoscloud.leanchatlib.view.LetterView>-->
     </RelativeLayout>
 </LinearLayout>

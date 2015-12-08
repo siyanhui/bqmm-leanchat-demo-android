@@ -1,19 +1,26 @@
 package com.avoscloud.leanchatlib_demo;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.im.v2.AVIMConversation;
+import com.avos.avoscloud.im.v2.AVIMException;
+import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
+import com.avos.avoscloud.im.v2.callback.AVIMSingleMessageQueryCallback;
 import com.avoscloud.leanchatlib.activity.AVChatActivity;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.controller.MessageHelper;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.Constants;
+import com.avoscloud.leanchatlib.utils.ConversationManager;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
 import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
@@ -27,11 +34,13 @@ import java.util.Date;
  */
 public class ConversationItemHolder extends CommonViewHolder {
 
-  ImageView recentAvatarView;
-  TextView recentNameView;
-  TextView recentMsgView;
-  TextView recentTimeView;
-  TextView recentUnreadView;
+  ImageView avatarView;
+  TextView unreadView;
+  TextView messageView;
+  TextView timeView;
+  TextView nameView;
+  RelativeLayout avatarLayout;
+  LinearLayout contentLayout;
 
   public ConversationItemHolder(ViewGroup root) {
     super(root.getContext(), root, R.layout.conversation_item);
@@ -39,11 +48,13 @@ public class ConversationItemHolder extends CommonViewHolder {
   }
 
   public void initView() {
-    recentAvatarView = (ImageView)itemView.findViewById(R.id.iv_recent_avatar);
-    recentNameView = (TextView)itemView.findViewById(R.id.recent_time_text);
-    recentMsgView = (TextView)itemView.findViewById(R.id.recent_msg_text);
-    recentTimeView = (TextView)itemView.findViewById(R.id.recent_teim_text);
-    recentUnreadView = (TextView)itemView.findViewById(R.id.recent_unread);
+    avatarView = (ImageView)itemView.findViewById(R.id.conversation_item_iv_avatar);
+    nameView = (TextView)itemView.findViewById(R.id.conversation_item_tv_name);
+    timeView = (TextView)itemView.findViewById(R.id.conversation_item_tv_time);
+    unreadView = (TextView)itemView.findViewById(R.id.conversation_item_tv_unread);
+    messageView = (TextView)itemView.findViewById(R.id.conversation_item_tv_message);
+    avatarLayout = (RelativeLayout)itemView.findViewById(R.id.conversation_item_layout_avatar);
+    contentLayout = (LinearLayout)itemView.findViewById(R.id.conversation_item_layout_content);
   }
 
 
@@ -54,29 +65,31 @@ public class ConversationItemHolder extends CommonViewHolder {
     if (null != conversation) {
       if (ConversationHelper.typeOfConversation(conversation) == ConversationType.Single) {
         String userId = ConversationHelper.otherIdOfConversation(conversation);
-        ImageLoader.getInstance().displayImage(ThirdPartUserUtils.getInstance().getUserAvatar(userId), recentAvatarView, PhotoUtils.avatarImageOptions);
+        String avatar = ThirdPartUserUtils.getInstance().getUserAvatar(userId);
+        ImageLoader.getInstance().displayImage(avatar, avatarView, PhotoUtils.avatarImageOptions);
       } else {
-//        recentAvatarView.setImageBitmap(ConversationManager.getConversationIcon(conversation));
+        avatarView.setImageBitmap(ConversationManager.getConversationIcon(conversation));
       }
-      recentNameView.setText(ConversationHelper.nameOfConversation(conversation));
+      nameView.setText(ConversationHelper.nameOfConversation(conversation));
 
       int num = room.getUnreadCount();
-      if (num > 0) {
-        recentUnreadView.setVisibility(View.VISIBLE);
-        recentUnreadView.setText(num + "");
-      } else {
-        recentUnreadView.setVisibility(View.GONE);
-      }
+      unreadView.setText(num + "");
+      unreadView.setVisibility(num > 0 ? View.VISIBLE : View.GONE);
 
-      if (room.getLastMessage() != null) {
-        Date date = new Date(room.getLastMessage().getTimestamp());
-        SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
-        recentTimeView.setText(format.format(date));
-
-        //TODO 此处并不一定是 AVIMTypedMessage
-        recentMsgView.setText(MessageHelper.outlineOfMsg((AVIMTypedMessage) room.getLastMessage()));
-      }
-
+      conversation.getLastMessage(new AVIMSingleMessageQueryCallback() {
+        @Override
+        public void done(AVIMMessage avimMessage, AVIMException e) {
+          if (null != avimMessage) {
+            Date date = new Date(avimMessage.getTimestamp());
+            SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
+            timeView.setText(format.format(date));
+            messageView.setText(MessageHelper.outlineOfMsg(avimMessage));
+          } else {
+            timeView.setText("");
+            messageView.setText("");
+          }
+        }
+      });
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
