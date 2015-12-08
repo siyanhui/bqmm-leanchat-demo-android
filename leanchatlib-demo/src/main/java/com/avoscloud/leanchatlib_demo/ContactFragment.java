@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.avoscloud.leanchatlib.adapter.HeaderListAdapter;
 import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
+import com.avoscloud.leanchatlib.view.DividerItemDecoration;
 import com.avoscloud.leanchatlib.view.RefreshableRecyclerView;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class ContactFragment extends Fragment {
     layoutManager = new LinearLayoutManager(getActivity());
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setRelationSwipeLayout(refreshLayout);
+    recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
     itemAdapter = new HeaderListAdapter<ThirdPartUserUtils.ThirdPartUser>(ContactItemHolder.class);
     recyclerView.setAdapter(itemAdapter);
     recyclerView.setRelationAdapter(itemAdapter);
@@ -60,10 +62,10 @@ public class ContactFragment extends Fragment {
   private void getMembers(int skip, int limit, final boolean isRefresh) {
     ThirdPartUserUtils.getInstance().getFriends(skip, limit,
       new ThirdPartUserUtils.FetchUserCallBack() {
-      @Override
-      public void done(List<ThirdPartUserUtils.ThirdPartUser> userList, Exception e) {
-        recyclerView.setLoadComplete(userList.toArray(), isRefresh);
-      }
-    });
+        @Override
+        public void done(List<ThirdPartUserUtils.ThirdPartUser> userList, Exception e) {
+          recyclerView.setLoadComplete(userList.toArray(), isRefresh);
+        }
+      });
   }
 }

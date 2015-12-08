@@ -18,6 +18,7 @@ import com.avoscloud.leanchatlib.adapter.CommonListAdapter;
 import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.ConversationManager;
+import com.avoscloud.leanchatlib.view.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,6 +56,7 @@ public class ConversationFragment extends Fragment {
     refreshLayout.setEnabled(false);
     layoutManager = new LinearLayoutManager(getActivity());
     recyclerView.setLayoutManager(layoutManager);
+    recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
     itemAdapter = new CommonListAdapter<Room>(ConversationItemHolder.class);
     recyclerView.setAdapter(itemAdapter);
     EventBus.getDefault().register(this);
@@ -68,6 +70,12 @@ public class ConversationFragment extends Fragment {
   }
 
   @Override
+  public void onResume() {
+    super.onResume();
+    updateConversationList();
+  }
+
+  @Override
   public void onDestroyView() {
     super.onDestroyView();
     EventBus.getDefault().unregister(this);
@@ -77,15 +85,13 @@ public class ConversationFragment extends Fragment {
     updateConversationList();
   }
 
-  public void updateConversationList() {
+  private void updateConversationList() {
     conversationManager.findAndCacheRooms(new Room.MultiRoomsCallback() {
       @Override
       public void done(List<Room> roomList, AVException exception) {
         if (null == exception) {
-
-          updateLastMessage(roomList);
-
           List<Room> sortedRooms = sortRooms(roomList);
+          updateLastMessage(sortedRooms);
           itemAdapter.setDataList(sortedRooms);
           itemAdapter.notifyDataSetChanged();
         }
