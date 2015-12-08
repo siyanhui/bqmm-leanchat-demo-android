@@ -60,7 +60,7 @@ public class ThirdPartUserUtils {
     thirdPartDataProvider.getFriends(skip, limit, new FetchUserCallBack() {
       @Override
       public void done(List<ThirdPartUser> userList, Exception e) {
-        if (null != e && null != userList) {
+        if (null == e && null != userList) {
           for (ThirdPartUser user : userList) {
             ThirdPartDataCache.getInstance().cacheUser(user.userId, user);
           }
@@ -74,7 +74,7 @@ public class ThirdPartUserUtils {
     thirdPartDataProvider.getFriends(userList, new FetchUserCallBack() {
       @Override
       public void done(List<ThirdPartUser> userList, Exception e) {
-        if (null != e && null != userList) {
+        if (null == e && null != userList) {
           for (ThirdPartUser user : userList) {
             ThirdPartDataCache.getInstance().cacheUser(user.userId, user);
           }

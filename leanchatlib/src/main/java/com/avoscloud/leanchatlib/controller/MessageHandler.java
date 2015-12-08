@@ -54,8 +54,8 @@ public class MessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
             sendNotification(message, conversation);
           }
           ChatManager.getInstance().getRoomsTable().increaseUnreadCount(message.getConversationId());
+          sendEvent(message, conversation);
         }
-        sendEvent(message, conversation);
       }
     }
   }
