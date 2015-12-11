@@ -22,6 +22,8 @@
         <item name="colorPrimary">@color/common_blue</item>
         <item name="colorPrimaryDark">@color/common_blue</item>
         <item name="colorAccent">@color/common_blue</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:editTextStyle">@style/EditTextStyle</item>
     </style>
 
     <style name="AVActivity.FullScreen" >
