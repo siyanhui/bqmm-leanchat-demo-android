@@ -1,6 +1,7 @@
 package com.avoscloud.chat.viewholder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -9,18 +10,17 @@ import android.widget.TextView;
 import com.avos.avoscloud.AVGeoPoint;
 import com.avoscloud.chat.App;
 import com.avoscloud.chat.R;
+import com.avoscloud.chat.friends.ContactPersonInfoActivity;
 import com.avoscloud.chat.service.PreferenceMap;
 import com.avoscloud.chat.util.Utils;
-import com.avoscloud.leanchatlib.event.DiscoverItemClickEvent;
 import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.Date;
-
-import de.greenrobot.event.EventBus;
 
 /**
  * Created by wli on 15/11/24.
@@ -57,7 +57,9 @@ public class DiscoverItemHolder extends CommonViewHolder<LeanchatUser> {
       @Override
       public void onClick(View v) {
         if (null != leanchatUser) {
-          EventBus.getDefault().post(new DiscoverItemClickEvent(leanchatUser.getObjectId()));
+          Intent intent = new Intent(getContext(), ContactPersonInfoActivity.class);
+          intent.putExtra(Constants.LEANCHAT_USER_ID, leanchatUser.getObjectId());
+          getContext().startActivity(intent);
         }
       }
     });

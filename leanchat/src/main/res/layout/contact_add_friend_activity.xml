@@ -35,7 +35,7 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <com.avoscloud.leanchatlib.view.CustomRecyclerView
+    <com.avoscloud.leanchatlib.view.RefreshableRecyclerView
         android:id="@+id/search_user_rv_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

@@ -5,7 +5,7 @@
     android:background="@color/contact_base_bg"
     android:orientation="vertical">
 
-    <com.avoscloud.leanchatlib.view.CustomRecyclerView
+    <com.avoscloud.leanchatlib.view.RefreshableRecyclerView
         android:id="@+id/newfriendList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

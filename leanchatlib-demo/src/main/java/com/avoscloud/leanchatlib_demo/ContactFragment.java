@@ -43,7 +43,6 @@ public class ContactFragment extends Fragment {
     recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
     itemAdapter = new HeaderListAdapter<ThirdPartUserUtils.ThirdPartUser>(ContactItemHolder.class);
     recyclerView.setAdapter(itemAdapter);
-    recyclerView.setRelationAdapter(itemAdapter);
     recyclerView.setOnLoadDataListener(new RefreshableRecyclerView.OnLoadDataListener() {
       @Override
       public void onLoad(int skip, int limit, boolean isRefresh) {
