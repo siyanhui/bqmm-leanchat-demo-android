@@ -153,10 +153,4 @@
         <item name="android:background">@color/chat_common_blue</item>
         <item name="android:titleTextStyle">@style/ActionBarTitleStyle</item>
     </style>
-
-    <style name="ChatMainTheme" parent="android:Theme.Holo.Light">
-        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
-        <item name="android:homeAsUpIndicator">@drawable/chat_common_base_header_back_btn</item>
-        <item name="android:actionMenuTextColor">@color/chat_common_white</item>
-    </style>
 </resources>

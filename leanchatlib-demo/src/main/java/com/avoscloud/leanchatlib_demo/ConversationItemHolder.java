@@ -1,7 +1,6 @@
 package com.avoscloud.leanchatlib_demo;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
-import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMSingleMessageQueryCallback;
 import com.avoscloud.leanchatlib.activity.AVChatActivity;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
@@ -56,7 +54,6 @@ public class ConversationItemHolder extends CommonViewHolder {
     avatarLayout = (RelativeLayout)itemView.findViewById(R.id.conversation_item_layout_avatar);
     contentLayout = (LinearLayout)itemView.findViewById(R.id.conversation_item_layout_content);
   }
-
 
   @Override
   public void bindData(Object o) {
