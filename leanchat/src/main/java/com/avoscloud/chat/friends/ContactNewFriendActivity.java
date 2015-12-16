@@ -4,44 +4,45 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.widget.LinearLayoutManager;
 
 import butterknife.Bind;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.DeleteCallback;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
+import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.event.NewFriendItemClickEvent;
 import com.avoscloud.leanchatlib.controller.ChatManager;
-import com.avoscloud.leanchatlib.controller.MessageAgent;
 import com.avoscloud.chat.service.PreferenceMap;
 import com.avoscloud.chat.event.ContactRefreshEvent;
 import com.avoscloud.chat.viewholder.NewFriendItemHolder;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.adapter.HeaderListAdapter;
 import com.avoscloud.chat.model.LeanchatUser;
-import com.avoscloud.leanchatlib.view.CustomRecyclerView;
-import com.avoscloud.leanchatlib.view.LoadMoreFooterView;
+import com.avoscloud.leanchatlib.model.ConversationType;
+import com.avoscloud.leanchatlib.view.RefreshableRecyclerView;
 
 import de.greenrobot.event.EventBus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ContactNewFriendActivity extends AVBaseActivity {
 
   @Bind(R.id.newfriendList)
-  CustomRecyclerView recyclerView;
+  RefreshableRecyclerView recyclerView;
 
   LinearLayoutManager layoutManager;
 
   private HeaderListAdapter<AddRequest> adapter;
-  Handler handler = new Handler(Looper.getMainLooper());
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -56,51 +57,31 @@ public class ContactNewFriendActivity extends AVBaseActivity {
     layoutManager = new LinearLayoutManager(this);
     recyclerView.setLayoutManager(layoutManager);
     adapter = new HeaderListAdapter<>(NewFriendItemHolder.class);
-    LoadMoreFooterView footerView = new LoadMoreFooterView(this);
-    adapter.setFooterView(footerView);
-    recyclerView.setOnLoadMoreStatusChangedListener(footerView);
-    recyclerView.setAdapter(adapter);
-    recyclerView.setOnLoadMoreListener(new CustomRecyclerView.OnLoadMoreListener() {
+    recyclerView.setOnLoadDataListener(new RefreshableRecyclerView.OnLoadDataListener() {
       @Override
-      public void onLoadMore() {
+      public void onLoad(int skip, int limit, boolean isRefresh) {
         loadMoreAddRequest(false);
       }
     });
+    recyclerView.setAdapter(adapter);
   }
 
     private void loadMoreAddRequest(final boolean isRefresh) {
-      new Thread(new Runnable() {
+      AddRequestManager.getInstance().findAddRequests(isRefresh ? 0 : adapter.getDataList().size(), 20, new FindCallback<AddRequest>() {
         @Override
-        public void run() {
-          try {
-            List<AddRequest> addRequests = AddRequestManager.getInstance().findAddRequests(isRefresh ? 0 : adapter.getDataList().size(), 20);
-            AddRequestManager.getInstance().markAddRequestsRead(addRequests);
-            final List<AddRequest> filters = new ArrayList<AddRequest>();
-            for (AddRequest addRequest : addRequests) {
-              if (addRequest.getFromUser() != null) {
-                filters.add(addRequest);
-              }
+        public void done(List<AddRequest> list, AVException e) {
+          AddRequestManager.getInstance().markAddRequestsRead(list);
+          final List<AddRequest> filters = new ArrayList<AddRequest>();
+          for (AddRequest addRequest : list) {
+            if (addRequest.getFromUser() != null) {
+              filters.add(addRequest);
             }
-            PreferenceMap preferenceMap = new PreferenceMap(ContactNewFriendActivity.this, LeanchatUser.getCurrentUserId());
-            preferenceMap.setAddRequestN(filters.size());
-            handler.post(new Runnable() {
-              @Override
-              public void run() {
-                recyclerView.setLoadComplete();
-                if (isRefresh) {
-                  adapter.setDataList(filters);
-                } else {
-                  adapter.addDataList(filters);
-                }
-                adapter.notifyDataSetChanged();
-              }
-            });
-
-          } catch (AVException e) {
-            e.printStackTrace();
           }
+          PreferenceMap preferenceMap = new PreferenceMap(ContactNewFriendActivity.this, LeanchatUser.getCurrentUserId());
+          preferenceMap.setAddRequestN(filters.size());
+          recyclerView.setLoadComplete(list.toArray(), isRefresh);
         }
-      }).start();
+      });
     }
 
   public void onEvent(NewFriendItemClickEvent event) {
@@ -130,16 +111,18 @@ public class ContactNewFriendActivity extends AVBaseActivity {
   }
 
   public void sendWelcomeMessage(String toUserId) {
-    ChatManager.getInstance().fetchConversationWithUserId(toUserId,
-      new AVIMConversationCreatedCallback() {
-        @Override
-        public void done(AVIMConversation avimConversation, AVIMException e) {
-          if (e == null) {
-            MessageAgent agent = new MessageAgent(avimConversation);
-            agent.sendText(getString(R.string.message_when_agree_request));
-          }
+    Map<String, Object> attrs = new HashMap<>();
+    attrs.put(ConversationType.TYPE_KEY, ConversationType.Single.getValue());
+    ChatManager.getInstance().getImClient().createConversation(Arrays.asList(toUserId), "", attrs, false, true, new AVIMConversationCreatedCallback() {
+      @Override
+      public void done(AVIMConversation avimConversation, AVIMException e) {
+        if (e == null) {
+          AVIMTextMessage message = new AVIMTextMessage();
+          message.setText(getString(R.string.message_when_agree_request));
+          avimConversation.sendMessage(message, null);
         }
-      });
+      }
+    });
   }
 
   private void deleteAddRequest(final AddRequest addRequest) {

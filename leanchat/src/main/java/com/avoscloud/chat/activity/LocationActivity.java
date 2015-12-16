@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.avoscloud.chat.R;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
-import com.avoscloud.leanchatlib.utils.Logger;
+import com.avoscloud.leanchatlib.utils.LogUtils;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -147,7 +147,7 @@ public class LocationActivity extends AVBaseActivity implements
       toast(getString(R.string.chat_cannotFindResult));
       return;
     }
-    Logger.d(getString(R.string.chat_reverseGeoCodeResultIs) + result.getAddress());
+    LogUtils.d(getString(R.string.chat_reverseGeoCodeResultIs) + result.getAddress());
     lastLocation.setAddrStr(result.getAddress());
   }
 
@@ -210,14 +210,14 @@ public class LocationActivity extends AVBaseActivity implements
         if (lastLocation.getLatitude() == location.getLatitude()
             && lastLocation.getLongitude() == location
             .getLongitude()) {
-          Logger.d(getString(R.string.chat_geoIsSame));// 若两次请求获取到的地理位置坐标是相同的，则不再定位
+          LogUtils.d(getString(R.string.chat_geoIsSame));// 若两次请求获取到的地理位置坐标是相同的，则不再定位
           locClient.stop();
           return;
         }
       }
       lastLocation = location;
 
-      Logger.d("lontitude = " + location.getLongitude() + ",latitude = "
+      LogUtils.d("lontitude = " + location.getLongitude() + ",latitude = "
           + location.getLatitude() + "," + getString(R.string.chat_position) + " = "
           + lastLocation.getAddrStr());
 

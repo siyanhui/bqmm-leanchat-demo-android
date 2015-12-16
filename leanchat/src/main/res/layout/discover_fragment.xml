@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.avoscloud.leanchatlib.view.CustomRecyclerView
+        <com.avoscloud.leanchatlib.view.RefreshableRecyclerView
             android:id="@+id/fragment_near_srl_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

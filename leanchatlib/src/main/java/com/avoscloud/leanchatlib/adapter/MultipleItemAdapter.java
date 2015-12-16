@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
-import com.avoscloud.leanchatlib.controller.MessageHelper;
+import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.viewholder.ChatItemAudioHolder;
 import com.avoscloud.leanchatlib.viewholder.ChatItemHolder;
 import com.avoscloud.leanchatlib.viewholder.ChatItemImageHolder;
@@ -111,7 +111,7 @@ public class MultipleItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     AVIMMessage message = messageList.get(position);
     if (null != message && message instanceof AVIMTypedMessage) {
       AVIMTypedMessage typedMessage = (AVIMTypedMessage) message;
-      boolean isMe = MessageHelper.fromMe(typedMessage);
+      boolean isMe = fromMe(typedMessage);
       if (typedMessage.getMessageType() == AVIMReservedMessageType.TextMessageType.getType()) {
         return isMe ? ITEM_RIGHT_TEXT : ITEM_LEFT_TEXT;
       } else if (typedMessage.getMessageType() == AVIMReservedMessageType.AudioMessageType.getType()) {
@@ -160,5 +160,11 @@ public class MultipleItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     recyclerView.getRecycledViewPool().setMaxRecycledViews(ITEM_RIGHT_IMAGE, 10);
     recyclerView.getRecycledViewPool().setMaxRecycledViews(ITEM_RIGHT_AUDIO, 15);
     recyclerView.getRecycledViewPool().setMaxRecycledViews(ITEM_RIGHT_LOCATION, 10);
+  }
+
+  private boolean fromMe(AVIMTypedMessage msg) {
+    ChatManager chatManager = ChatManager.getInstance();
+    String selfId = chatManager.getSelfId();
+    return msg.getFrom() != null && msg.getFrom().equals(selfId);
   }
 }

@@ -2,7 +2,6 @@ package com.avoscloud.leanchatlib.activity;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -28,7 +27,6 @@ import com.avos.avoscloud.im.v2.messages.AVIMImageMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.adapter.MultipleItemAdapter;
-import com.avoscloud.leanchatlib.controller.MessageAgent;
 import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
 import com.avoscloud.leanchatlib.event.ImTypeMessageResendEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarEvent;
@@ -55,7 +53,6 @@ public class ChatFragment extends android.support.v4.app.Fragment {
   private static final int GALLERY_KITKAT_REQUEST = 3;
 
   protected AVIMConversation imConversation;
-  protected MessageAgent messageAgent;
 
   protected MultipleItemAdapter itemAdapter;
   protected RecyclerView recyclerView;
@@ -63,7 +60,7 @@ public class ChatFragment extends android.support.v4.app.Fragment {
   protected SwipeRefreshLayout refreshLayout;
   protected InputBottomBar inputBottomBar;
 
-  protected String localCameraPath = PathUtils.getPicturePathByCurrentTime();
+  protected String localCameraPath = PathUtils.getPicturePathByCurrentTime(getContext());
 
   @Nullable
   @Override
@@ -141,7 +138,6 @@ public class ChatFragment extends android.support.v4.app.Fragment {
     inputBottomBar.setTag(imConversation.getConversationId());
     fetchMessages();
     NotificationUtils.addTag(conversation.getConversationId());
-    messageAgent = new MessageAgent(conversation);
   }
 
   public void showUserName(boolean isShow) {
@@ -332,7 +328,6 @@ public class ChatFragment extends android.support.v4.app.Fragment {
     }
   }
 
-  //TODO messageAgent
   private void sendText(String content) {
     AVIMTextMessage message = new AVIMTextMessage();
     message.setText(content);

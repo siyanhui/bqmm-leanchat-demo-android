@@ -11,10 +11,13 @@ import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
-import com.avoscloud.leanchatlib.event.EmptyEvent;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.LogUtils;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by wli on 15/9/18.
@@ -63,8 +66,6 @@ public class AVChatActivity extends AVBaseActivity {
     }
   }
 
-  public void onEvent(EmptyEvent emptyEvent) {}
-
   protected void updateConversation(AVIMConversation conversation) {
     if (null != conversation) {
       this.conversation = conversation;
@@ -79,9 +80,11 @@ public class AVChatActivity extends AVBaseActivity {
    * 如果存在，则直接赋值给 ChatFragment，否者创建后再赋值
    */
   private void getConversation(final String memberId) {
-    ChatManager.getInstance().fetchConversationWithUserId(memberId, new AVIMConversationCreatedCallback() {
+    Map<String, Object> attrs = new HashMap<>();
+    attrs.put(ConversationType.TYPE_KEY, ConversationType.Single.getValue());
+    ChatManager.getInstance().getImClient().createConversation(Arrays.asList(memberId), "", attrs, false, true, new AVIMConversationCreatedCallback() {
       @Override
-      public void done(AVIMConversation conversation, AVIMException e) {
+      public void done(AVIMConversation avimConversation, AVIMException e) {
         if (filterException(e)) {
           ChatManager.getInstance().getRoomsTable().insertRoom(conversation.getConversationId());
           updateConversation(conversation);

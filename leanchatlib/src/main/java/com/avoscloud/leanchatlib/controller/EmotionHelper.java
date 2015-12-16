@@ -130,10 +130,10 @@ public class EmotionHelper {
     return spannableString;
   }
 
-  public static void isEmojiDrawableAvailable() {
+  public static void isEmojiDrawableAvailable(Context context) {
     for (String emojiCode : emojiCodes) {
       String code = emojiCode.substring(1, emojiCode.length() - 1);
-      Bitmap bitmap = getDrawableByName(ChatManager.getContext(), code);
+      Bitmap bitmap = getDrawableByName(context, code);
       if (bitmap == null) {
         LogUtils.i("not available test " + code);
       }

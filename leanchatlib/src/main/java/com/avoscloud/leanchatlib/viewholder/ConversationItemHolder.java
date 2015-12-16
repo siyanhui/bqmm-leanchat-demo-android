@@ -1,7 +1,5 @@
-package com.avoscloud.leanchatlib_demo;
+package com.avoscloud.leanchatlib.viewholder;
 
-import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,22 +10,22 @@ import android.widget.TextView;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
-import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMSingleMessageQueryCallback;
-import com.avoscloud.leanchatlib.activity.AVChatActivity;
+import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
-import com.avoscloud.leanchatlib.controller.MessageHelper;
+import com.avoscloud.leanchatlib.event.ConversationItemClickEvent;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.Room;
-import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.ConversationManager;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
-import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
+import com.avoscloud.leanchatlib.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by wli on 15/10/8.
@@ -57,7 +55,6 @@ public class ConversationItemHolder extends CommonViewHolder {
     contentLayout = (LinearLayout)itemView.findViewById(R.id.conversation_item_layout_content);
   }
 
-
   @Override
   public void bindData(Object o) {
     final Room room = (Room) o;
@@ -83,7 +80,7 @@ public class ConversationItemHolder extends CommonViewHolder {
             Date date = new Date(avimMessage.getTimestamp());
             SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
             timeView.setText(format.format(date));
-            messageView.setText(MessageHelper.outlineOfMsg(avimMessage));
+            messageView.setText(Utils.getMessageeShorthand(getContext(), avimMessage));
           } else {
             timeView.setText("");
             messageView.setText("");
@@ -93,9 +90,7 @@ public class ConversationItemHolder extends CommonViewHolder {
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-          Intent intent = new Intent(getContext(), AVChatActivity.class);
-          intent.putExtra(Constants.CONVERSATION_ID, room.getConversationId());
-          getContext().startActivity(intent);
+          EventBus.getDefault().post(new ConversationItemClickEvent(room.getConversationId()));
         }
       });
     }

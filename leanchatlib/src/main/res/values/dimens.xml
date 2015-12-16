@@ -13,11 +13,11 @@
     <dimen name="divider_line_height">1px</dimen>
 
     <!-- textsize -->
-    <dimen name="textsize_small">18sp</dimen>
-    <dimen name="textsize_normal">20sp</dimen>
-    <dimen name="textsize_large">22sp</dimen>
-    <dimen name="textsize_larger">24sp</dimen>
-    <dimen name="textsize_largest">26sp</dimen>
+    <dimen name="textsize_small">16sp</dimen>
+    <dimen name="textsize_normal">18sp</dimen>
+    <dimen name="textsize_large">20sp</dimen>
+    <dimen name="textsize_larger">22sp</dimen>
+    <dimen name="textsize_largest">24sp</dimen>
 
     <!-- button -->
     <dimen name="button_big_height">50dp</dimen>

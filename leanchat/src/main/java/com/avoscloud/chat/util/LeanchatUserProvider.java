@@ -16,7 +16,8 @@ import java.util.List;
 public class LeanchatUserProvider implements ThirdPartUserUtils.ThirdPartDataProvider {
   @Override
   public ThirdPartUserUtils.ThirdPartUser getSelf() {
-    return null;
+    return new ThirdPartUserUtils.ThirdPartUser("daweibayu", "daweibayu",
+      "http://ac-x3o016bx.clouddn.com/CsaX0GuXL7gXWBkaBFXfBWZPlcanClEESzHxSq2T.jpg");
   }
 
   @Override
@@ -44,7 +45,7 @@ public class LeanchatUserProvider implements ThirdPartUserUtils.ThirdPartDataPro
   }
 
   @Override
-  public void getFriends(final ThirdPartUserUtils.FetchUserCallBack callBack) {
+  public void getFriends(int skip, int limit, final ThirdPartUserUtils.FetchUserCallBack callBack) {
     FriendsManager.fetchFriends(false, new FindCallback<LeanchatUser>() {
       @Override
       public void done(List<LeanchatUser> list, AVException e) {

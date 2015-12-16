@@ -3,7 +3,6 @@ package com.avoscloud.leanchatlib.controller;
 import android.content.Context;
 
 import com.avos.avoscloud.im.v2.AVIMClient;
-import com.avos.avoscloud.im.v2.AVIMClientEventHandler;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMConversationEventHandler;
 import com.avos.avoscloud.im.v2.AVIMConversationQuery;
@@ -12,63 +11,33 @@ import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMMessageManager;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMMessagesQueryCallback;
-import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.LogUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 /**
  * 该类来负责处理接收消息、聊天服务连接状态管理、查找对话、获取最近对话列表最后一条消息
  * Created by lzw on 15/2/10.
  */
-public class ChatManager extends AVIMClientEventHandler {
-  private static final String KEY_UPDATED_AT = "updatedAt";
+public class ChatManager {
   private static ChatManager chatManager;
-  private static Context context;
 
-  /**
-   * 默认的聊天连接状态监听器
-   */
-  private static ConnectionListener defaultConnectListener = new ConnectionListener() {
-    @Override
-    public void onConnectionChanged(boolean connect) {
-    }
-  };
-
-  private ConnectionListener connectionListener = defaultConnectListener;
   private volatile AVIMClient imClient;
   private volatile String selfId;
-  private volatile boolean connect = false;
+
   private RoomsTable roomsTable;
 
-  private ChatManager() {
-  }
+  private ChatManager() {}
 
-  /**
-   * 获取 ChatManager 单例
-   *
-   * @return
-   */
   public static synchronized ChatManager getInstance() {
     if (chatManager == null) {
       chatManager = new ChatManager();
     }
     return chatManager;
-  }
-
-  public static Context getContext() {
-    return context;
   }
 
   /**
@@ -88,9 +57,8 @@ public class ChatManager extends AVIMClientEventHandler {
    * @param context
    */
   public void init(Context context) {
-    this.context = context;
     AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, new MessageHandler(context));
-    AVIMClient.setClientEventHandler(this);
+    AVIMClient.setClientEventHandler(LeanchatClientEventHandler.getInstance());
     //签名
     //AVIMClient.setSignatureFactory(new SignatureFactory());
   }
@@ -109,19 +77,9 @@ public class ChatManager extends AVIMClientEventHandler {
    *
    * @param userId 应用用户系统当前用户的 userId
    */
-  public void setupManagerWithUserId(String userId) {
+  public void setupManagerWithUserId(Context context, String userId) {
     this.selfId = userId;
-    roomsTable = RoomsTable.getInstanceByUserId(userId);
-  }
-
-  /**
-   * 监听聊天服务连接状态 ，这里不用 SDK 的 AVIMClientHandler
-   * 是因为 SDK 在 open 的时候没有回调 onConnectResume ，不方便统一处理
-   *
-   * @param connectionListener
-   */
-  public void setConnectionListener(ConnectionListener connectionListener) {
-    this.connectionListener = connectionListener;
+    roomsTable = RoomsTable.getInstanceByUserId(context.getApplicationContext(), userId);
   }
 
   public String getSelfId() {
@@ -150,9 +108,9 @@ public class ChatManager extends AVIMClientEventHandler {
       @Override
       public void done(AVIMClient avimClient, AVIMException e) {
         if (e != null) {
-          setConnectAndNotify(false);
+          LeanchatClientEventHandler.getInstance().setConnectAndNotify(false);
         } else {
-          setConnectAndNotify(true);
+          LeanchatClientEventHandler.getInstance().setConnectAndNotify(true);
         }
         if (callback != null) {
           callback.done(avimClient, e);
@@ -184,36 +142,6 @@ public class ChatManager extends AVIMClientEventHandler {
   }
 
   /**
-   * 获取和 userId 的对话，先去服务器查之前两人有没创建过对话，没有的话，创建一个
-   *
-   * @param userId
-   * @param callback
-   */
-  public void fetchConversationWithUserId(final String userId, final AVIMConversationCreatedCallback callback) {
-    AVIMConversationQuery query = imClient.getQuery();
-    query.withMembers(Arrays.asList(userId, selfId));
-    query.whereEqualTo(ConversationType.ATTR_TYPE_KEY, ConversationType.Single.getValue());
-    query.orderByDescending(KEY_UPDATED_AT);
-    query.limit(1);
-    query.findInBackground(new AVIMConversationQueryCallback() {
-      @Override
-      public void done(List<AVIMConversation> conversations, AVIMException e) {
-        if (e != null) {
-          callback.done(null, e);
-        } else {
-          if (conversations.size() > 0) {
-            callback.done(conversations.get(0), null);
-          } else {
-            Map<String, Object> attrs = new HashMap<>();
-            attrs.put(ConversationType.TYPE_KEY, ConversationType.Single.getValue());
-            imClient.createConversation(Arrays.asList(userId, selfId), attrs, callback);
-          }
-        }
-      }
-    });
-  }
-
-  /**
    * 获取 AVIMConversationQuery，用来查询对话
    *
    * @return
@@ -222,56 +150,9 @@ public class ChatManager extends AVIMClientEventHandler {
     return imClient.getQuery();
   }
 
-  /**
-   * 创建对话，为了不暴露 AVIMClient，这里封装一下
-   *
-   * @param members    成员，需要包含自己
-   * @param attributes 对话的附加属性
-   * @param callback   AVException 聊天服务断开时抛出
-   */
-  public void createConversation(List<String> members, Map<String, Object> attributes,
-                                 AVIMConversationCreatedCallback callback) {
-    imClient.createConversation(members, attributes, callback);
-  }
-
-  public AVIMConversation getConversation(String conversationId) {
-    return imClient.getConversation(conversationId);
-  }
-
-  @Override
-  public void onConnectionPaused(AVIMClient client) {
-    setConnectAndNotify(false);
-  }
-
-  @Override
-  public void onConnectionResume(AVIMClient client) {
-    setConnectAndNotify(true);
-  }
-
-  @Override
-  public void onClientOffline(AVIMClient avimClient, int i) {}
-
-  public void setConnectAndNotify(boolean connect) {
-    this.connect = connect;
-    connectionListener.onConnectionChanged(connect);
-  }
-
-  /**
-   * 是否连上聊天服务
-   *
-   * @return
-   */
-  public boolean isConnect() {
-    return connect;
-  }
-
   //ChatUser
   public List<Room> findRecentRooms() {
     return ChatManager.getInstance().getRoomsTable().selectRooms();
-  }
-
-  public interface ConnectionListener {
-    void onConnectionChanged(boolean connect);
   }
 
   List<AVIMTypedMessage> filterTypedMessages(List<AVIMMessage> messages) {

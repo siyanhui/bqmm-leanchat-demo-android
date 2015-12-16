@@ -1,6 +1,7 @@
 package com.avoscloud.leanchatlib.controller;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
@@ -44,10 +45,10 @@ public class RoomsTable {
     this.dbHelper = dbHelper;
   }
 
-  public synchronized static RoomsTable getInstanceByUserId(String userId) {
+  public synchronized static RoomsTable getInstanceByUserId(Context context, String userId) {
     RoomsTable roomsTable = roomsTableInstances.get(userId);
     if (roomsTable == null) {
-      roomsTable = new RoomsTable(new DBHelper(ChatManager.getContext(), userId));
+      roomsTable = new RoomsTable(new DBHelper(context, userId));
     }
     return roomsTable;
   }
@@ -78,6 +79,7 @@ public class RoomsTable {
       rooms.add(room);
     }
     c.close();
+    db.close();
     return rooms;
   }
 

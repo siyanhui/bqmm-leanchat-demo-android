@@ -1,10 +1,8 @@
 package com.avoscloud.leanchatlib.controller;
 
-import android.widget.Toast;
 import com.avos.avoscloud.AVCloud;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.Signature;
-import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -74,9 +72,6 @@ public class SignatureFactory implements com.avos.avoscloud.SignatureFactory {
     try {
       result = AVCloud.callFunction("conv_sign", map);
     } catch (AVException e) {
-      if (e.getCode() == AVException.INVALID_JSON) {
-        Toast.makeText(ChatManager.getContext(), R.string.chat_cloudCodeNotDeployTips, Toast.LENGTH_SHORT).show();
-      }
       throw new SignatureException(e.getCode(), e.getMessage());
     }
     return createSignatureByResult(result, targetIds);

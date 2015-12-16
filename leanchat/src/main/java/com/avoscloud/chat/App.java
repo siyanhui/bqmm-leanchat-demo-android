@@ -13,7 +13,6 @@ import com.avoscloud.chat.model.UpdateInfo;
 import com.avoscloud.chat.service.PushManager;
 import com.avoscloud.chat.util.LeanchatUserProvider;
 import com.avoscloud.leanchatlib.controller.ConversationEventHandler;
-import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.chat.model.LeanchatUser;
@@ -22,6 +21,7 @@ import com.baidu.mapapi.SDKInitializer;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+
 
 /**
  * Created by lzw on 14-5-29.
@@ -66,12 +66,6 @@ public class App extends Application {
 
     ThirdPartUserUtils.setThirdPartUserProvider(new LeanchatUserProvider());
     initChatManager();
-
-    if (App.debug) {
-      Logger.level = Logger.VERBOSE;
-    } else {
-      Logger.level = Logger.NONE;
-    }
   }
 
   private void initChatManager() {
@@ -79,7 +73,7 @@ public class App extends Application {
     chatManager.init(this);
     String currentUserId = LeanchatUser.getCurrentUserId();
     if (!TextUtils.isEmpty(currentUserId)) {
-      chatManager.setupManagerWithUserId(currentUserId);
+      chatManager.setupManagerWithUserId(this, currentUserId);
     }
     chatManager.setConversationEventHandler(ConversationEventHandler.getInstance());
     ChatManager.setDebugEnabled(App.debug);

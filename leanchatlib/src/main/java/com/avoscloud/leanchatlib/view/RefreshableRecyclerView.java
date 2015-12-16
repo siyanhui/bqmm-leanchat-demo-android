@@ -14,6 +14,12 @@ import java.util.Arrays;
 
 /**
  * Created by wli on 15/12/7.
+ * 支持下拉刷新以及上滑加载更多的 RecyclerView
+ *
+ * 下拉刷新需要配合 SwipeRefreshLayout 使用，需要在初始化 RefreshableRecyclerView后
+ * 调用 setRelationSwipeLayout 来设置关联
+ *
+ * 因为下拉加载需要有 footer，所以需要配合 HeaderListAdapter 使用
  */
 public class RefreshableRecyclerView extends RecyclerView {
   private final int DEFAULT_PAGE_NUM = 5;
@@ -27,7 +33,6 @@ public class RefreshableRecyclerView extends RecyclerView {
   public boolean enableLoadMore = true;
 
   private SwipeRefreshLayout swipeRefreshLayout;
-  private HeaderListAdapter headerListAdapter;
   private LoadMoreFooterView loadMoreFooterView;
   private OnLoadDataListener onLoadDataListener;
 
@@ -46,21 +51,51 @@ public class RefreshableRecyclerView extends RecyclerView {
     initView();
   }
 
+  /**
+   * 设置关联的 SwipeRefreshLayout， 下拉刷新时使用
+   * @param relationSwipeLayout
+   */
   public void setRelationSwipeLayout(SwipeRefreshLayout relationSwipeLayout) {
     swipeRefreshLayout = relationSwipeLayout;
-    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-      @Override
-      public void onRefresh() {
-        startRefresh();
+    if (null != swipeRefreshLayout) {
+      swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+          startRefresh();
+        }
+      });
+    } else {
+      throw new IllegalArgumentException("SwipeRefreshLayout can not be null");
+    }
+  }
+
+  /**
+   * RefreshableRecyclerView 需要配合 HeaderListAdapter 使用
+   * @param adapter
+   */
+  @Override
+  public void setAdapter(Adapter adapter) {
+    super.setAdapter(adapter);
+    if (null != adapter) {
+      if (adapter instanceof HeaderListAdapter) {
+        ((HeaderListAdapter)adapter).setFooterView(loadMoreFooterView);
+      } else {
+        throw new IllegalArgumentException("adapter should be HeaderListAdapter");
       }
-    });
+    } else {
+      throw new IllegalArgumentException("adapter can not be null");
+    }
   }
 
-  public void setRelationAdapter(HeaderListAdapter adapter) {
-    headerListAdapter = adapter;
-    headerListAdapter.setFooterView(loadMoreFooterView);
+  @Override
+  public HeaderListAdapter getAdapter() {
+    return (HeaderListAdapter)super.getAdapter();
   }
 
+  /**
+   * 设置加载页的大小，默认为 DEFAULT_PAGE_NUM
+   * @param pageNum
+   */
   public void setPageNum(int pageNum) {
     this.pageNum = pageNum;
   }
@@ -112,15 +147,20 @@ public class RefreshableRecyclerView extends RecyclerView {
 
   private void startLoad() {
     if (STATUS_LAOD_MORE != getLoadStatus()) {
-      if (null != onLoadDataListener) {
+      HeaderListAdapter adapter = getAdapter();
+      if (null != onLoadDataListener && null != adapter) {
         setLoadStatus(STATUS_LAOD_MORE);
-        onLoadDataListener.onLoad(headerListAdapter.getDataList().size(), pageNum, false);
+        onLoadDataListener.onLoad(adapter.getDataList().size(), pageNum, false);
       } else {
         setLoadStatus(STATUS_NORMAL);
       }
     }
   }
 
+  /**
+   * 设置是否可用上滑加载
+   * @param enable
+   */
   public void setEnableLoadMore(boolean enable) {
     enableLoadMore = enable;
   }
@@ -130,6 +170,9 @@ public class RefreshableRecyclerView extends RecyclerView {
     loadMoreFooterView.onLoadStatusChanged(status);
   }
 
+  /**
+   * 设置刷新完毕
+   */
   public void setLoadComplete() {
     setLoadStatus(STATUS_NORMAL);
     if (null != swipeRefreshLayout) {
@@ -141,17 +184,29 @@ public class RefreshableRecyclerView extends RecyclerView {
     return loadStatus;
   }
 
+  /**
+   * 设置刷新完毕，如果 isRefresh 为 true，则清空所有数据，设置为 datas
+   * 如果 isReresh 为 false，则把 datas 叠加到现有数据中
+   * @param datas
+   * @param isRefresh
+   */
   public void setLoadComplete(Object[] datas, boolean isRefresh) {
     setLoadStatus(STATUS_NORMAL);
-    if (isRefresh) {
-      headerListAdapter.setDataList(Arrays.asList(datas));
-      headerListAdapter.notifyDataSetChanged();
-      swipeRefreshLayout.setRefreshing(false);
-    } else{
-      headerListAdapter.addDataList(Arrays.asList(datas));
-      headerListAdapter.notifyDataSetChanged();
+    HeaderListAdapter adapter = getAdapter();
+    if (null != adapter) {
+      if (isRefresh) {
+        adapter.setDataList(Arrays.asList(datas));
+        adapter.notifyDataSetChanged();
+        if (null != swipeRefreshLayout) {
+          swipeRefreshLayout.setRefreshing(false);
+        }
+      } else {
+        adapter.addDataList(Arrays.asList(datas));
+        adapter.notifyDataSetChanged();
+      }
     }
   }
+
 
   public interface OnLoadDataListener {
     public void onLoad(int skip, int limit, boolean isRefresh);

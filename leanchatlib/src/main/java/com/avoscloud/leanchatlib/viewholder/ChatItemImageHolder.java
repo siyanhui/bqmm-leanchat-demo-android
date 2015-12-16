@@ -11,8 +11,8 @@ import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMImageMessage;
 import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.activity.ImageBrowserActivity;
-import com.avoscloud.leanchatlib.controller.MessageHelper;
 import com.avoscloud.leanchatlib.utils.Constants;
+import com.avoscloud.leanchatlib.utils.PathUtils;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -43,7 +43,7 @@ public class ChatItemImageHolder extends ChatItemHolder {
       @Override
       public void onClick(View v) {
           Intent intent = new Intent(getContext(), ImageBrowserActivity.class);
-          intent.putExtra(Constants.IMAGE_LOCAL_PATH, MessageHelper.getFilePath((AVIMImageMessage)message));
+          intent.putExtra(Constants.IMAGE_LOCAL_PATH, PathUtils.getChatFilePath(getContext(), message.getMessageId()));
           intent.putExtra(Constants.IMAGE_URL, ((AVIMImageMessage)message).getFileUrl());
           getContext().startActivity(intent);
       }
@@ -61,7 +61,7 @@ public class ChatItemImageHolder extends ChatItemHolder {
       if (!TextUtils.isEmpty(localFilePath)) {
         ImageLoader.getInstance().displayImage("file://" + localFilePath, contentView);
       } else {
-        PhotoUtils.displayImageCacheElseNetwork(contentView, MessageHelper.getFilePath(imageMsg),
+        PhotoUtils.displayImageCacheElseNetwork(contentView, PathUtils.getChatFilePath(getContext(), imageMsg.getMessageId()),
           imageMsg.getFileUrl());
       }
     }

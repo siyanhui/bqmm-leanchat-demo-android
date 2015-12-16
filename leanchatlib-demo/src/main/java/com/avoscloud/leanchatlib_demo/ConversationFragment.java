@@ -1,5 +1,6 @@
 package com.avoscloud.leanchatlib_demo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,11 +15,15 @@ import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMSingleMessageQueryCallback;
+import com.avoscloud.leanchatlib.activity.AVChatActivity;
 import com.avoscloud.leanchatlib.adapter.CommonListAdapter;
+import com.avoscloud.leanchatlib.event.ConversationItemClickEvent;
 import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
 import com.avoscloud.leanchatlib.model.Room;
+import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.ConversationManager;
 import com.avoscloud.leanchatlib.view.DividerItemDecoration;
+import com.avoscloud.leanchatlib.viewholder.ConversationItemHolder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -136,6 +141,12 @@ public class ConversationFragment extends Fragment {
       });
     }
     return sortedList;
+  }
+
+  public void onEvent(ConversationItemClickEvent clickEvent) {
+    Intent intent = new Intent(getContext(), AVChatActivity.class);
+    intent.putExtra(Constants.CONVERSATION_ID, clickEvent.conversationId);
+    getContext().startActivity(intent);
   }
 
   public void onEvent(ConversationFragmentUpdateEvent updateEvent) {

@@ -1,5 +1,6 @@
 package com.avoscloud.leanchatlib.utils;
 
+import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
 
@@ -29,12 +30,12 @@ public class PathUtils {
    * 依赖于包名。所以不同应用使用该库也没问题，要有点理想。
    * @return
    */
-  private static File getAvailableCacheDir() {
+  private static File getAvailableCacheDir(Context context) {
     if (isExternalStorageWritable()) {
-      return ChatManager.getContext().getExternalCacheDir();
+      return context.getExternalCacheDir();
     } else {
       // 只有此应用才能访问。拍照的时候有问题，因为拍照的应用写入不了该文件
-      return ChatManager.getContext().getCacheDir();
+      return context.getCacheDir();
     }
   }
 
@@ -44,8 +45,8 @@ public class PathUtils {
    * @param id
    * @return
    */
-  public static String getChatFilePath(String id) {
-    return (TextUtils.isEmpty(id) ? null : new File(getAvailableCacheDir(), id).getAbsolutePath());
+  public static String getChatFilePath(Context context, String id) {
+    return (TextUtils.isEmpty(id) ? null : new File(getAvailableCacheDir(context), id).getAbsolutePath());
   }
 
   /**
@@ -53,8 +54,8 @@ public class PathUtils {
    *
    * @return
    */
-  public static String getRecordPathByCurrentTime() {
-    return new File(getAvailableCacheDir(), "record_" + System.currentTimeMillis()).getAbsolutePath();
+  public static String getRecordPathByCurrentTime(Context context) {
+    return new File(getAvailableCacheDir(context), "record_" + System.currentTimeMillis()).getAbsolutePath();
   }
 
   /**
@@ -62,8 +63,8 @@ public class PathUtils {
    *
    * @return
    */
-  public static String getPicturePathByCurrentTime() {
-    String path = new File(getAvailableCacheDir(), "picture_" + System.currentTimeMillis()).getAbsolutePath();
+  public static String getPicturePathByCurrentTime(Context context) {
+    String path = new File(getAvailableCacheDir(context), "picture_" + System.currentTimeMillis()).getAbsolutePath();
 //    LogUtils.d("picture path ", path);
     return path;
   }

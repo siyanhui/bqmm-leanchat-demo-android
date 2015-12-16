@@ -59,7 +59,7 @@ public class LoginActivity extends AVBaseActivity {
     final ChatManager chatManager = ChatManager.getInstance();
     chatManager.init(this);
     if (!TextUtils.isEmpty(userId)) {
-      chatManager.setupManagerWithUserId(userId);
+      chatManager.setupManagerWithUserId(this, userId);
     }
     chatManager.setConversationEventHandler(ConversationEventHandler.getInstance());
   }

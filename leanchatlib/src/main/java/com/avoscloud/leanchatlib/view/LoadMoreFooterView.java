@@ -12,7 +12,7 @@ import com.avoscloud.leanchatlib.R;
 /**
  * Created by wli on 15/11/26.
  */
-public class LoadMoreFooterView extends LinearLayout implements CustomRecyclerView.OnLoadMoreStatusListener {
+public class LoadMoreFooterView extends LinearLayout {
   private Context mContext;
   private View mProgressBar;
   private TextView mHintView;
@@ -37,9 +37,8 @@ public class LoadMoreFooterView extends LinearLayout implements CustomRecyclerVi
     mHintView = (TextView) moreView.findViewById(R.id.load_more_footer_hint_textview);
   }
 
-  @Override
   public void onLoadStatusChanged(int staus) {
-    if (staus == CustomRecyclerView.STATUS_LAOD_MORE) {
+    if (staus == RefreshableRecyclerView.STATUS_LAOD_MORE) {
       mProgressBar.setVisibility(View.VISIBLE);
       mHintView.setVisibility(GONE);
     } else {

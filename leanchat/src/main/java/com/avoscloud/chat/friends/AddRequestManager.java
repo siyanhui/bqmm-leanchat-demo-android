@@ -5,6 +5,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.CountCallback;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.FollowCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avoscloud.chat.R;
@@ -89,7 +90,7 @@ class AddRequestManager {
     }
   }
 
-  public List<AddRequest> findAddRequests(int skip, int limit) throws AVException {
+  public void findAddRequests(int skip, int limit, FindCallback findCallback) {
     LeanchatUser user = LeanchatUser.getCurrentUser();
     AVQuery<AddRequest> q = AVObject.getQuery(AddRequest.class);
     q.include(AddRequest.FROM_USER);
@@ -98,7 +99,7 @@ class AddRequestManager {
     q.whereEqualTo(AddRequest.TO_USER, user);
     q.orderByDescending(AVObject.CREATED_AT);
     q.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
-    return q.find();
+    q.findInBackground(findCallback);
   }
 
   public void agreeAddRequest(final AddRequest addRequest, final SaveCallback saveCallback) {
