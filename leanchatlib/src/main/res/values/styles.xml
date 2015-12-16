@@ -114,6 +114,24 @@
         <item name="android:paddingLeft">@dimen/common_horizontal_margin</item>
     </style>
 
+    <!-- Avatar -->
+    <style name="Avatar">
+        <item name="android:layout_width">45dp</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:src">@drawable/chat_default_user_avatar</item>
+    </style>
+
+    <style name="Avatar.Large">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+    </style>
+
+    <style name="Avatar.Small">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+    </style>
+
     <!-- 以下代码需要整理 -->
     <style name="chat_text_date_style">
         <item name="android:padding">2dp</item>
@@ -141,15 +159,6 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@drawable/chat_record_button_round_background</item>
-    </style>
-
-    <style name="chat_avatar">
-        <item name="android:layout_width">@dimen/chat_style_avatar_userHead</item>
-        <item name="android:layout_height">@dimen/chat_style_avatar_userHead</item>
-        <item name="android:clickable">true</item>
-        <item name="android:visibility">visible</item>
-        <item name="android:layout_gravity">bottom</item>
-        <item name="android:src">@drawable/chat_default_user_avatar</item>
     </style>
 
     <style name="chat_item_layout">

@@ -13,9 +13,7 @@
         android:paddingRight="@dimen/common_horizontal_margin">
         <ImageView
             android:id="@+id/profile_avatar_view"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/chat_default_user_avatar" />
+            style="@style/Avatar.Large"/>
 
         <TextView
             android:id="@+id/profile_username_view"
