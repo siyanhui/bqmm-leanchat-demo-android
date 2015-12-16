@@ -17,6 +17,7 @@ import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMSingleMessageQueryCallback;
 import com.avoscloud.chat.R;
+import com.avoscloud.leanchatlib.event.ConnectionChangeEvent;
 import com.avoscloud.leanchatlib.utils.ConversationManager;
 import com.avoscloud.leanchatlib.event.ConversationItemClickEvent;
 import com.avoscloud.chat.activity.ChatRoomActivity;
@@ -40,7 +41,7 @@ import java.util.List;
 /**
  * Created by lzw on 14-9-17.
  */
-public class ConversationRecentFragment extends BaseFragment implements ChatManager.ConnectionListener {
+public class ConversationRecentFragment extends BaseFragment {
 
   @Bind(R.id.im_client_state_view)
   View imClientStateView;
@@ -183,8 +184,7 @@ public class ConversationRecentFragment extends BaseFragment implements ChatMana
     return sortedList;
   }
 
-  @Override
-  public void onConnectionChanged(boolean connect) {
-    imClientStateView.setVisibility(connect ? View.GONE : View.VISIBLE);
+  public void onEvent(ConnectionChangeEvent event) {
+    imClientStateView.setVisibility(event.isConnect ? View.GONE : View.VISIBLE);
   }
 }

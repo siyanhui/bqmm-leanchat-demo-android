@@ -11,6 +11,8 @@ import de.greenrobot.event.EventBus;
 
 /**
  * Created by wli on 15/12/1.
+ * 和 Conversation 相关的事件的 handler
+ * 需要应用主动调用  AVIMMessageManager.setConversationEventHandler
  */
 public class ConversationEventHandler extends AVIMConversationEventHandler {
 
