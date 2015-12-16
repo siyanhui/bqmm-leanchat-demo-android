@@ -277,7 +277,7 @@ public class InputBottomBar extends LinearLayout {
    * 初始化录音按钮
    */
   private void initRecordBtn() {
-    recordBtn.setSavePath(com.avoscloud.leanchatlib.utils.PathUtils.getRecordPathByCurrentTime());
+    recordBtn.setSavePath(com.avoscloud.leanchatlib.utils.PathUtils.getRecordPathByCurrentTime(getContext()));
     recordBtn.setRecordEventListener(new RecordButton.RecordEventListener() {
       @Override
       public void onFinishedRecord(final String audioPath, int secs) {

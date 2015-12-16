@@ -80,7 +80,7 @@ public class ConversationItemHolder extends CommonViewHolder {
             Date date = new Date(avimMessage.getTimestamp());
             SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
             timeView.setText(format.format(date));
-            messageView.setText(Utils.getMessageeShorthand(avimMessage));
+            messageView.setText(Utils.getMessageeShorthand(getContext(), avimMessage));
           } else {
             timeView.setText("");
             messageView.setText("");

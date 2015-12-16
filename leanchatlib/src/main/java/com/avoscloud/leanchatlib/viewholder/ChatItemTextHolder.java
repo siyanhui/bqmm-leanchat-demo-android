@@ -40,7 +40,7 @@ public class ChatItemTextHolder extends ChatItemHolder {
     AVIMMessage message = (AVIMMessage)o;
     if (message instanceof AVIMTextMessage) {
       AVIMTextMessage textMessage = (AVIMTextMessage) message;
-      contentView.setText(EmotionHelper.replace(ChatManager.getContext(), textMessage.getText()));
+      contentView.setText(EmotionHelper.replace(getContext(), textMessage.getText()));
     }
   }
 }

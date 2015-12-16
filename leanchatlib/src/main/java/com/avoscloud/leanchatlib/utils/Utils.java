@@ -1,5 +1,7 @@
 package com.avoscloud.leanchatlib.utils;
 
+import android.content.Context;
+
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
@@ -36,12 +38,12 @@ public class Utils {
     }
   }
 
-  public static CharSequence getMessageeShorthand(AVIMMessage message) {
+  public static CharSequence getMessageeShorthand(Context context, AVIMMessage message) {
     if (message instanceof AVIMTypedMessage) {
       AVIMReservedMessageType type = AVIMReservedMessageType.getAVIMReservedMessageType(((AVIMTypedMessage) message).getMessageType());
       switch (type) {
         case TextMessageType:
-          return EmotionHelper.replace(ChatManager.getContext(), ((AVIMTextMessage) message).getText());
+          return EmotionHelper.replace(context, ((AVIMTextMessage) message).getText());
         case ImageMessageType:
           return "[图片]";
         case LocationMessageType:

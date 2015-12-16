@@ -68,7 +68,7 @@ public class MainActivity extends AVBaseActivity {
     eventBus.post(new LoginFinishEvent());
 
     ChatManager chatManager = ChatManager.getInstance();
-    chatManager.setupManagerWithUserId(LeanchatUser.getCurrentUserId());
+    chatManager.setupManagerWithUserId(fromActivity, LeanchatUser.getCurrentUserId());
     chatManager.openClient(null);
     Intent intent = new Intent(fromActivity, MainActivity.class);
     fromActivity.startActivity(intent);

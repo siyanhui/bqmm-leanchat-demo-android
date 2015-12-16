@@ -46,7 +46,7 @@ public class ChatItemAudioHolder extends ChatItemHolder {
       if (!TextUtils.isEmpty(localFilePath)) {
         playButton.setPath(localFilePath);
       } else {
-        String path = PathUtils.getChatFilePath(audioMessage.getMessageId());
+        String path = PathUtils.getChatFilePath(getContext(), audioMessage.getMessageId());
         playButton.setPath(path);
         LocalCacheUtils.downloadFileAsync(audioMessage.getFileUrl(), path);
       }

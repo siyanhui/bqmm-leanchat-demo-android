@@ -60,7 +60,7 @@ public class ChatFragment extends android.support.v4.app.Fragment {
   protected SwipeRefreshLayout refreshLayout;
   protected InputBottomBar inputBottomBar;
 
-  protected String localCameraPath = PathUtils.getPicturePathByCurrentTime();
+  protected String localCameraPath = PathUtils.getPicturePathByCurrentTime(getContext());
 
   @Nullable
   @Override

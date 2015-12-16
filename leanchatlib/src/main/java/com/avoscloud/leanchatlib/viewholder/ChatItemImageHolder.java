@@ -43,7 +43,7 @@ public class ChatItemImageHolder extends ChatItemHolder {
       @Override
       public void onClick(View v) {
           Intent intent = new Intent(getContext(), ImageBrowserActivity.class);
-          intent.putExtra(Constants.IMAGE_LOCAL_PATH, PathUtils.getChatFilePath(message.getMessageId()));
+          intent.putExtra(Constants.IMAGE_LOCAL_PATH, PathUtils.getChatFilePath(getContext(), message.getMessageId()));
           intent.putExtra(Constants.IMAGE_URL, ((AVIMImageMessage)message).getFileUrl());
           getContext().startActivity(intent);
       }
@@ -61,7 +61,7 @@ public class ChatItemImageHolder extends ChatItemHolder {
       if (!TextUtils.isEmpty(localFilePath)) {
         ImageLoader.getInstance().displayImage("file://" + localFilePath, contentView);
       } else {
-        PhotoUtils.displayImageCacheElseNetwork(contentView, PathUtils.getChatFilePath(imageMsg.getMessageId()),
+        PhotoUtils.displayImageCacheElseNetwork(contentView, PathUtils.getChatFilePath(getContext(), imageMsg.getMessageId()),
           imageMsg.getFileUrl());
       }
     }

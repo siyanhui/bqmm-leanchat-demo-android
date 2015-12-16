@@ -30,7 +30,7 @@ public class MessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
   private Context context;
 
   public MessageHandler(Context context) {
-    this.context = context;
+    this.context = context.getApplicationContext();
   }
 
   @Override

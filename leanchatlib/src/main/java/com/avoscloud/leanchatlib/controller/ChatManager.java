@@ -25,8 +25,6 @@ import java.util.concurrent.CountDownLatch;
  */
 public class ChatManager {
   private static ChatManager chatManager;
-  private static Context context;
-
 
   private volatile AVIMClient imClient;
   private volatile String selfId;
@@ -40,10 +38,6 @@ public class ChatManager {
       chatManager = new ChatManager();
     }
     return chatManager;
-  }
-
-  public static Context getContext() {
-    return context;
   }
 
   /**
@@ -63,7 +57,6 @@ public class ChatManager {
    * @param context
    */
   public void init(Context context) {
-    this.context = context;
     AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, new MessageHandler(context));
     AVIMClient.setClientEventHandler(LeanchatClientEventHandler.getInstance());
     //签名
@@ -84,9 +77,9 @@ public class ChatManager {
    *
    * @param userId 应用用户系统当前用户的 userId
    */
-  public void setupManagerWithUserId(String userId) {
+  public void setupManagerWithUserId(Context context, String userId) {
     this.selfId = userId;
-    roomsTable = RoomsTable.getInstanceByUserId(userId);
+    roomsTable = RoomsTable.getInstanceByUserId(context.getApplicationContext(), userId);
   }
 
   public String getSelfId() {

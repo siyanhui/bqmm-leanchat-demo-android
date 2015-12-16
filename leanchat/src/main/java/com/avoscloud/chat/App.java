@@ -73,7 +73,7 @@ public class App extends Application {
     chatManager.init(this);
     String currentUserId = LeanchatUser.getCurrentUserId();
     if (!TextUtils.isEmpty(currentUserId)) {
-      chatManager.setupManagerWithUserId(currentUserId);
+      chatManager.setupManagerWithUserId(this, currentUserId);
     }
     chatManager.setConversationEventHandler(ConversationEventHandler.getInstance());
     ChatManager.setDebugEnabled(App.debug);
