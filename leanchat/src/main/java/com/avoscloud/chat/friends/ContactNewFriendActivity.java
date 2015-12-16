@@ -14,10 +14,10 @@ import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
+import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.event.NewFriendItemClickEvent;
 import com.avoscloud.leanchatlib.controller.ChatManager;
-import com.avoscloud.leanchatlib.controller.MessageAgent;
 import com.avoscloud.chat.service.PreferenceMap;
 import com.avoscloud.chat.event.ContactRefreshEvent;
 import com.avoscloud.chat.viewholder.NewFriendItemHolder;
@@ -112,8 +112,9 @@ public class ContactNewFriendActivity extends AVBaseActivity {
         @Override
         public void done(AVIMConversation avimConversation, AVIMException e) {
           if (e == null) {
-            MessageAgent agent = new MessageAgent(avimConversation);
-            agent.sendText(getString(R.string.message_when_agree_request));
+            AVIMTextMessage message = new AVIMTextMessage();
+            message.setText(getString(R.string.message_when_agree_request));
+            avimConversation.sendMessage(message, null);
           }
         }
       });
