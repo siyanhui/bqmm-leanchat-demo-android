@@ -97,7 +97,7 @@
         <item name="android:textColor">@color/common_gray</item>
     </style>
 
-    <style name="TextAppearance.small"/>
+    <style name="TextAppearance.Small"/>
 
 
 
