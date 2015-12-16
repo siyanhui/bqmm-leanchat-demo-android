@@ -11,18 +11,12 @@ import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMMessageManager;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMMessagesQueryCallback;
-import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.LogUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -30,7 +24,6 @@ import java.util.concurrent.CountDownLatch;
  * Created by lzw on 15/2/10.
  */
 public class ChatManager {
-  private static final String KEY_UPDATED_AT = "updatedAt";
   private static ChatManager chatManager;
   private static Context context;
 
@@ -156,58 +149,12 @@ public class ChatManager {
   }
 
   /**
-   * 获取和 userId 的对话，先去服务器查之前两人有没创建过对话，没有的话，创建一个
-   *
-   * @param userId
-   * @param callback
-   */
-  public void fetchConversationWithUserId(final String userId, final AVIMConversationCreatedCallback callback) {
-    AVIMConversationQuery query = imClient.getQuery();
-    query.withMembers(Arrays.asList(userId, selfId));
-    query.whereEqualTo(ConversationType.ATTR_TYPE_KEY, ConversationType.Single.getValue());
-    query.orderByDescending(KEY_UPDATED_AT);
-    query.limit(1);
-    query.findInBackground(new AVIMConversationQueryCallback() {
-      @Override
-      public void done(List<AVIMConversation> conversations, AVIMException e) {
-        if (e != null) {
-          callback.done(null, e);
-        } else {
-          if (conversations.size() > 0) {
-            callback.done(conversations.get(0), null);
-          } else {
-            Map<String, Object> attrs = new HashMap<>();
-            attrs.put(ConversationType.TYPE_KEY, ConversationType.Single.getValue());
-            imClient.createConversation(Arrays.asList(userId, selfId), attrs, callback);
-          }
-        }
-      }
-    });
-  }
-
-  /**
    * 获取 AVIMConversationQuery，用来查询对话
    *
    * @return
    */
   public AVIMConversationQuery getConversationQuery() {
     return imClient.getQuery();
-  }
-
-  /**
-   * 创建对话，为了不暴露 AVIMClient，这里封装一下
-   *
-   * @param members    成员，需要包含自己
-   * @param attributes 对话的附加属性
-   * @param callback   AVException 聊天服务断开时抛出
-   */
-  public void createConversation(List<String> members, Map<String, Object> attributes,
-                                 AVIMConversationCreatedCallback callback) {
-    imClient.createConversation(members, attributes, callback);
-  }
-
-  public AVIMConversation getConversation(String conversationId) {
-    return imClient.getConversation(conversationId);
   }
 
   //ChatUser

@@ -94,7 +94,7 @@ public class ConversationManager {
     Map<String, Object> map = new HashMap<String, Object>();
     map.put(ConversationType.TYPE_KEY, ConversationType.Group.getValue());
     map.put("name", getConversationName(members));
-    ChatManager.getInstance().createConversation(members, map, callback);
+    ChatManager.getInstance().getImClient().createConversation(members, map, callback);
   }
 
   public static Bitmap getConversationIcon(AVIMConversation conversation) {

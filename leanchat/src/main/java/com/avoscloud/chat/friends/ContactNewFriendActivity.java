@@ -24,12 +24,16 @@ import com.avoscloud.chat.viewholder.NewFriendItemHolder;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.adapter.HeaderListAdapter;
 import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.view.RefreshableRecyclerView;
 
 import de.greenrobot.event.EventBus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ContactNewFriendActivity extends AVBaseActivity {
 
@@ -107,17 +111,18 @@ public class ContactNewFriendActivity extends AVBaseActivity {
   }
 
   public void sendWelcomeMessage(String toUserId) {
-    ChatManager.getInstance().fetchConversationWithUserId(toUserId,
-      new AVIMConversationCreatedCallback() {
-        @Override
-        public void done(AVIMConversation avimConversation, AVIMException e) {
-          if (e == null) {
-            AVIMTextMessage message = new AVIMTextMessage();
-            message.setText(getString(R.string.message_when_agree_request));
-            avimConversation.sendMessage(message, null);
-          }
+    Map<String, Object> attrs = new HashMap<>();
+    attrs.put(ConversationType.TYPE_KEY, ConversationType.Single.getValue());
+    ChatManager.getInstance().getImClient().createConversation(Arrays.asList(toUserId), "", attrs, false, true, new AVIMConversationCreatedCallback() {
+      @Override
+      public void done(AVIMConversation avimConversation, AVIMException e) {
+        if (e == null) {
+          AVIMTextMessage message = new AVIMTextMessage();
+          message.setText(getString(R.string.message_when_agree_request));
+          avimConversation.sendMessage(message, null);
         }
-      });
+      }
+    });
   }
 
   private void deleteAddRequest(final AddRequest addRequest) {
