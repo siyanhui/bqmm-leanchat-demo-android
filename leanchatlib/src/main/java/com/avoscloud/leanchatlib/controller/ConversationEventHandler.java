@@ -26,14 +26,20 @@ public class ConversationEventHandler extends AVIMConversationEventHandler {
   private ConversationEventHandler() {}
 
   @Override
+  public void onOfflineMessagesUnread(AVIMClient client, AVIMConversation conversation, int unreadCount) {
+    Logger.i("onOfflineMessagesUnread");
+    super.onOfflineMessagesUnread(client, conversation, unreadCount);
+  }
+
+  @Override
   public void onMemberLeft(AVIMClient client, AVIMConversation conversation, List<String> members, String kickedBy) {
-    Logger.i(MessageHelper.nameByUserIds(members) + " left, kicked by " + MessageHelper.nameByUserId(kickedBy));
+    Logger.i("onMemberLeft");
     refreshCacheAndNotify(conversation);
   }
 
   @Override
   public void onMemberJoined(AVIMClient client, AVIMConversation conversation, List<String> members, String invitedBy) {
-    Logger.i(MessageHelper.nameByUserIds(members) + " joined , invited by " + MessageHelper.nameByUserId(invitedBy));
+    Logger.i("onMemberJoined");
     refreshCacheAndNotify(conversation);
   }
 
@@ -44,13 +50,13 @@ public class ConversationEventHandler extends AVIMConversationEventHandler {
 
   @Override
   public void onKicked(AVIMClient client, AVIMConversation conversation, String kickedBy) {
-    Logger.i("you are kicked by " + MessageHelper.nameByUserId(kickedBy));
+    Logger.i("onKicked");
     refreshCacheAndNotify(conversation);
   }
 
   @Override
   public void onInvited(AVIMClient client, AVIMConversation conversation, String operator) {
-    Logger.i("you are invited by " + MessageHelper.nameByUserId(operator));
+    Logger.i("onInvited");
     refreshCacheAndNotify(conversation);
   }
 }

@@ -1,4 +1,4 @@
-package com.avoscloud.leanchatlib_demo;
+package com.avoscloud.leanchatlib.viewholder;
 
 import android.content.Intent;
 import android.view.View;
@@ -12,16 +12,16 @@ import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMSingleMessageQueryCallback;
+import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.activity.AVChatActivity;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
-import com.avoscloud.leanchatlib.controller.MessageHelper;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.ConversationManager;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
-import com.avoscloud.leanchatlib.viewholder.CommonViewHolder;
+import com.avoscloud.leanchatlib.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.SimpleDateFormat;
@@ -80,7 +80,7 @@ public class ConversationItemHolder extends CommonViewHolder {
             Date date = new Date(avimMessage.getTimestamp());
             SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
             timeView.setText(format.format(date));
-            messageView.setText(MessageHelper.outlineOfMsg(avimMessage));
+            messageView.setText(Utils.getMessageeShorthand(avimMessage));
           } else {
             timeView.setText("");
             messageView.setText("");

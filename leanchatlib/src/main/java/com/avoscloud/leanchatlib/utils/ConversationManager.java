@@ -1,6 +1,7 @@
 package com.avoscloud.leanchatlib.utils;
 
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.im.v2.AVIMConversation;
@@ -10,7 +11,6 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationQueryCallback;
 import com.avoscloud.leanchatlib.controller.ChatManager;
-import com.avoscloud.leanchatlib.controller.MessageHelper;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.Room;
 
@@ -26,7 +26,8 @@ import java.util.Map;
 public class ConversationManager {
   private static ConversationManager conversationManager;
 
-  public ConversationManager() {}
+  public ConversationManager() {
+  }
 
   public static synchronized ConversationManager getInstance() {
     if (conversationManager == null) {
@@ -92,12 +93,27 @@ public class ConversationManager {
   public void createGroupConversation(List<String> members, final AVIMConversationCreatedCallback callback) {
     Map<String, Object> map = new HashMap<String, Object>();
     map.put(ConversationType.TYPE_KEY, ConversationType.Group.getValue());
-    final String name = MessageHelper.nameByUserIds(members);
-    map.put("name", name);
+    map.put("name", getConversationName(members));
     ChatManager.getInstance().createConversation(members, map, callback);
   }
 
   public static Bitmap getConversationIcon(AVIMConversation conversation) {
     return ColoredBitmapProvider.getInstance().createColoredBitmapByHashString(conversation.getConversationId());
+  }
+
+  private String getConversationName(List<String> userIds) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < userIds.size(); i++) {
+      String id = userIds.get(i);
+      if (i != 0) {
+        sb.append(",");
+      }
+      sb.append(ThirdPartUserUtils.getInstance().getUserName(id));
+    }
+    if (sb.length() > 50) {
+      return sb.subSequence(0, 50).toString();
+    } else {
+      return sb.toString();
+    }
   }
 }

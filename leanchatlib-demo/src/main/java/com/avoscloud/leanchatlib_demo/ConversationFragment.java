@@ -19,6 +19,7 @@ import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.ConversationManager;
 import com.avoscloud.leanchatlib.view.DividerItemDecoration;
+import com.avoscloud.leanchatlib.viewholder.ConversationItemHolder;
 
 import java.util.ArrayList;
 import java.util.Collections;
