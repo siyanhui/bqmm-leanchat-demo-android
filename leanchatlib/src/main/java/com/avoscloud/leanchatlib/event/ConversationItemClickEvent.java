@@ -6,4 +6,7 @@ package com.avoscloud.leanchatlib.event;
  */
 public class ConversationItemClickEvent {
   public String conversationId;
+  public ConversationItemClickEvent(String conversationId) {
+    this.conversationId = conversationId;
+  }
 }

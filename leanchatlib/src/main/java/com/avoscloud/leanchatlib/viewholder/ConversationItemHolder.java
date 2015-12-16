@@ -1,6 +1,5 @@
 package com.avoscloud.leanchatlib.viewholder;
 
-import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,11 +12,10 @@ import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMSingleMessageQueryCallback;
 import com.avoscloud.leanchatlib.R;
-import com.avoscloud.leanchatlib.activity.AVChatActivity;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
+import com.avoscloud.leanchatlib.event.ConversationItemClickEvent;
 import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.model.Room;
-import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.ConversationManager;
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
@@ -26,6 +24,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by wli on 15/10/8.
@@ -90,9 +90,7 @@ public class ConversationItemHolder extends CommonViewHolder {
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-          Intent intent = new Intent(getContext(), AVChatActivity.class);
-          intent.putExtra(Constants.CONVERSATION_ID, room.getConversationId());
-          getContext().startActivity(intent);
+          EventBus.getDefault().post(new ConversationItemClickEvent(room.getConversationId()));
         }
       });
     }
