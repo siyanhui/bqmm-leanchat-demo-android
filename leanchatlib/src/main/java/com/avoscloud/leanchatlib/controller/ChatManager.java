@@ -40,14 +40,8 @@ public class ChatManager {
 
   private RoomsTable roomsTable;
 
-  private ChatManager() {
-  }
+  private ChatManager() {}
 
-  /**
-   * 获取 ChatManager 单例
-   *
-   * @return
-   */
   public static synchronized ChatManager getInstance() {
     if (chatManager == null) {
       chatManager = new ChatManager();

@@ -23,7 +23,6 @@ import com.avoscloud.chat.fragment.ConversationRecentFragment;
 import com.avoscloud.chat.fragment.DiscoverFragment;
 import com.avoscloud.chat.fragment.ProfileFragment;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
-import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.chat.model.LeanchatUser;
@@ -33,6 +32,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+
 import de.greenrobot.event.EventBus;
 
 /**
@@ -207,9 +207,9 @@ public class MainActivity extends AVBaseActivity {
             } else {
               AVGeoPoint avGeoPoint = user.getAVGeoPoint(LeanchatUser.LOCATION);
               if (avGeoPoint == null) {
-                Logger.e("avGeopoint is null");
+                LogUtils.e("avGeopoint is null");
               } else {
-                Logger.v("save location succeed latitude " + avGeoPoint.getLatitude()
+                LogUtils.v("save location succeed latitude " + avGeoPoint.getLatitude()
                   + " longitude " + avGeoPoint.getLongitude());
               }
             }
@@ -226,7 +226,7 @@ public class MainActivity extends AVBaseActivity {
       double latitude = location.getLatitude();
       double longitude = location.getLongitude();
       int locType = location.getLocType();
-      Logger.d("onReceiveLocation latitude=" + latitude + " longitude=" + longitude
+      LogUtils.d("onReceiveLocation latitude=" + latitude + " longitude=" + longitude
           + " locType=" + locType + " address=" + location.getAddrStr());
       String currentUserId = LeanchatUser.getCurrentUserId();
       if (!TextUtils.isEmpty(currentUserId)) {

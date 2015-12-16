@@ -6,7 +6,7 @@ import android.preference.PreferenceManager;
 import com.avos.avoscloud.AVGeoPoint;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
-import com.avoscloud.leanchatlib.utils.Logger;
+import com.avoscloud.leanchatlib.utils.LogUtils;
 import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
 
@@ -33,7 +33,7 @@ public class PreferenceMap {
     this.cxt = cxt.getApplicationContext();
     pref = PreferenceManager.getDefaultSharedPreferences(cxt);
     editor = pref.edit();
-    Logger.d("PreferenceMap init no specific user");
+    LogUtils.d("PreferenceMap init no specific user");
   }
 
   public PreferenceMap(Context cxt, String prefName) {

@@ -21,10 +21,10 @@ import com.avoscloud.chat.App;
 import com.avoscloud.leanchatlib.adapter.HeaderListAdapter;
 import com.avoscloud.chat.util.UserCacheUtils;
 import com.avoscloud.chat.service.PreferenceMap;
-import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.viewholder.DiscoverItemHolder;
 import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
+import com.avoscloud.leanchatlib.utils.LogUtils;
 import com.avoscloud.leanchatlib.view.RefreshableRecyclerView;
 
 import java.util.List;
@@ -95,7 +95,7 @@ public class DiscoverFragment extends BaseFragment {
     PreferenceMap preferenceMap = PreferenceMap.getCurUserPrefDao(App.ctx);
     AVGeoPoint geoPoint = preferenceMap.getLocation();
     if (geoPoint == null) {
-      Logger.i("geo point is null");
+      LogUtils.i("geo point is null");
       return;
     }
     AVQuery<LeanchatUser> q = LeanchatUser.getQuery(LeanchatUser.class);

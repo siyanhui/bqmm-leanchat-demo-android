@@ -14,7 +14,6 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.model.UpdateInfo;
-import com.avoscloud.leanchatlib.utils.Logger;
 import com.avoscloud.chat.util.NetAsyncTask;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.utils.LogUtils;
@@ -77,7 +76,7 @@ public class UpdateService {
         } catch (AVException e) {
           LogUtils.logException(e);
         }
-        Logger.d("createUpdateInfo");
+        LogUtils.d("createUpdateInfo");
       }
     }).start();
   }
