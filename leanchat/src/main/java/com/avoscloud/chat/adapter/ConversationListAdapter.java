@@ -2,9 +2,7 @@ package com.avoscloud.chat.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
-
-import com.avoscloud.chat.viewholder.ConversationItemHolder;
-
+import com.avoscloud.leanchatlib.viewholder.ConversationItemHolder;
 import java.util.ArrayList;
 import java.util.List;
 
