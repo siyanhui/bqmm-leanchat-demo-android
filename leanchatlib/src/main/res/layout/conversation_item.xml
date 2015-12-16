@@ -15,12 +15,9 @@
 
         <ImageView
             android:id="@+id/conversation_item_iv_avatar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:scaleType="centerCrop"
+            style="@style/Avatar.Large"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/chat_default_user_avatar"/>
+            android:layout_alignParentLeft="true"/>
 
         <TextView
             android:id="@+id/conversation_item_tv_unread"

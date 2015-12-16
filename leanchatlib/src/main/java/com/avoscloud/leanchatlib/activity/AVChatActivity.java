@@ -86,8 +86,8 @@ public class AVChatActivity extends AVBaseActivity {
       @Override
       public void done(AVIMConversation avimConversation, AVIMException e) {
         if (filterException(e)) {
-          ChatManager.getInstance().getRoomsTable().insertRoom(conversation.getConversationId());
-          updateConversation(conversation);
+          ChatManager.getInstance().getRoomsTable().insertRoom(avimConversation.getConversationId());
+          updateConversation(avimConversation);
         }
       }
     });

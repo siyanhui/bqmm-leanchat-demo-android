@@ -24,7 +24,7 @@
 
         <ImageView
             android:id="@+id/chat_left_iv_avatar"
-            style="@style/chat_avatar"
+            style="@style/Avatar"
             android:layout_marginRight="10dp"
             android:layout_alignParentBottom="true"/>
 
@@ -69,7 +69,7 @@
     <TextView
         android:id="@+id/chat_left_tv_name"
         android:layout_height="wrap_content"
-        android:layout_width="@dimen/chat_style_avatar_userHead"
+        android:layout_width="45dp"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="3dp"
         android:singleLine="true"
