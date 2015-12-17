@@ -111,9 +111,7 @@ public class ContactNewFriendActivity extends AVBaseActivity {
   }
 
   public void sendWelcomeMessage(String toUserId) {
-    Map<String, Object> attrs = new HashMap<>();
-    attrs.put(ConversationType.TYPE_KEY, ConversationType.Single.getValue());
-    ChatManager.getInstance().getImClient().createConversation(Arrays.asList(toUserId), "", attrs, false, true, new AVIMConversationCreatedCallback() {
+    ChatManager.getInstance().createSingleConversation(toUserId, new AVIMConversationCreatedCallback() {
       @Override
       public void done(AVIMConversation avimConversation, AVIMException e) {
         if (e == null) {

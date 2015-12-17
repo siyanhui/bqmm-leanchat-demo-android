@@ -48,7 +48,7 @@ public class RoomsTable {
   public synchronized static RoomsTable getInstanceByUserId(Context context, String userId) {
     RoomsTable roomsTable = roomsTableInstances.get(userId);
     if (roomsTable == null) {
-      roomsTable = new RoomsTable(new DBHelper(context, userId));
+      roomsTable = new RoomsTable(new DBHelper(context.getApplicationContext(), userId));
     }
     return roomsTable;
   }

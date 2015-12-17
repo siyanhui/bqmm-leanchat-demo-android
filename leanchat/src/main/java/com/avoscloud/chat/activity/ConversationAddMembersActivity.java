@@ -18,7 +18,6 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.adapter.MemeberAddAdapter;
 import com.avoscloud.chat.friends.FriendsManager;
-import com.avoscloud.leanchatlib.utils.ConversationManager;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
@@ -111,7 +110,7 @@ public class ConversationAddMembersActivity extends AVBaseActivity {
         List<String> members = new ArrayList<String>();
         members.addAll(checkedUsers);
         members.addAll(conversation.getMembers());
-        ConversationManager.getInstance().createGroupConversation(members, new AVIMConversationCreatedCallback() {
+        ChatManager.getInstance().createGroupConversation(members, new AVIMConversationCreatedCallback() {
           @Override
           public void done(final AVIMConversation conversation, AVIMException e) {
             if (filterException(e)) {

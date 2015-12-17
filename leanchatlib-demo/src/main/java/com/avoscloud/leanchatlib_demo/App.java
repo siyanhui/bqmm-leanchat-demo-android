@@ -23,7 +23,7 @@ public class App extends Application {
     ChatManager.setDebugEnabled(true);// tag leanchatlib
     AVOSCloud.setDebugLogEnabled(true);  // set false when release
     initImageLoader(this);
-
+    ChatManager.getInstance().init(this);
     ThirdPartUserUtils.setThirdPartUserProvider(new CustomUserProvider());
   }
 
