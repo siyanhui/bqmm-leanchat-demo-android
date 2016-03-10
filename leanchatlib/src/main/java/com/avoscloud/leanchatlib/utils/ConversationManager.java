@@ -90,30 +90,7 @@ public class ConversationManager {
     }
   }
 
-  public void createGroupConversation(List<String> members, final AVIMConversationCreatedCallback callback) {
-    Map<String, Object> map = new HashMap<String, Object>();
-    map.put(ConversationType.TYPE_KEY, ConversationType.Group.getValue());
-    map.put("name", getConversationName(members));
-    ChatManager.getInstance().getImClient().createConversation(members, map, callback);
-  }
-
   public static Bitmap getConversationIcon(AVIMConversation conversation) {
     return ColoredBitmapProvider.getInstance().createColoredBitmapByHashString(conversation.getConversationId());
-  }
-
-  private String getConversationName(List<String> userIds) {
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < userIds.size(); i++) {
-      String id = userIds.get(i);
-      if (i != 0) {
-        sb.append(",");
-      }
-      sb.append(ThirdPartUserUtils.getInstance().getUserName(id));
-    }
-    if (sb.length() > 50) {
-      return sb.subSequence(0, 50).toString();
-    } else {
-      return sb.toString();
-    }
   }
 }
