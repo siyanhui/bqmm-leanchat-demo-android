@@ -1,5 +1,6 @@
 package com.avoscloud.chat.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -8,11 +9,15 @@ import android.widget.EditText;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.SignUpCallback;
+import com.avos.avoscloud.im.v2.AVIMClient;
+import com.avos.avoscloud.im.v2.AVIMException;
+import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
+import com.avoscloud.leanchatlib.controller.ChatManager;
 
 public class EntryRegisterActivity extends AVBaseActivity {
   View registerButton;
@@ -67,7 +72,20 @@ public class EntryRegisterActivity extends AVBaseActivity {
           Utils.toast(App.ctx.getString(R.string.registerFailed) + e.getMessage());
         } else {
           Utils.toast(R.string.registerSucceed);
-          MainActivity.goMainActivityFromActivity(EntryRegisterActivity.this);
+          imLogin();
+        }
+      }
+    });
+  }
+
+  private void imLogin() {
+    ChatManager.getInstance().openClient(this, LeanchatUser.getCurrentUserId(), new AVIMClientCallback() {
+      @Override
+      public void done(AVIMClient avimClient, AVIMException e) {
+        if (filterException(e)) {
+          Intent intent = new Intent(EntryRegisterActivity.this, MainActivity.class);
+          startActivity(intent);
+          finish();
         }
       }
     });

@@ -8,10 +8,14 @@ import android.view.View;
 import android.widget.EditText;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.LogInCallback;
+import com.avos.avoscloud.im.v2.AVIMClient;
+import com.avos.avoscloud.im.v2.AVIMException;
+import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
+import com.avoscloud.leanchatlib.controller.ChatManager;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -63,9 +67,26 @@ public class EntryLoginActivity extends AVBaseActivity {
       public void done(LeanchatUser avUser, AVException e) {
         dialog.dismiss();
         if (filterException(e)) {
-          MainActivity.goMainActivityFromActivity(EntryLoginActivity.this);
+          imLogin();
         }
       }
     }, LeanchatUser.class);
+  }
+
+  /**
+   * 因为 leancloud 实时通讯与账户体系是完全解耦的，所以此处需要先 LeanchatUser.logInInBackground
+   * 如果验证账号密码成功，然后再 openClient 进行实时通讯
+   */
+  public void imLogin() {
+    ChatManager.getInstance().openClient(this, LeanchatUser.getCurrentUserId(), new AVIMClientCallback() {
+      @Override
+      public void done(AVIMClient avimClient, AVIMException e) {
+        if (filterException(e)) {
+          Intent intent = new Intent(EntryLoginActivity.this, MainActivity.class);
+          startActivity(intent);
+          finish();
+        }
+      }
+    });
   }
 }

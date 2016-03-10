@@ -40,8 +40,8 @@ public class LoginActivity extends AVBaseActivity {
       showToast(R.string.login_null_name_tip);
       return;
     }
-    initChatManager(clientId);
-    ChatManager.getInstance().openClient(new AVIMClientCallback() {
+
+    ChatManager.getInstance().openClient(this, clientId, new AVIMClientCallback() {
       @Override
       public void done(AVIMClient avimClient, AVIMException e) {
         if (null == e) {
@@ -53,14 +53,5 @@ public class LoginActivity extends AVBaseActivity {
         }
       }
     });
-  }
-
-  private void initChatManager(String userId) {
-    final ChatManager chatManager = ChatManager.getInstance();
-    chatManager.init(this);
-    if (!TextUtils.isEmpty(userId)) {
-      chatManager.setupManagerWithUserId(this, userId);
-    }
-    chatManager.setConversationEventHandler(ConversationEventHandler.getInstance());
   }
 }

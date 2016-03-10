@@ -1,6 +1,5 @@
 package com.avoscloud.chat.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,25 +8,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.avoscloud.chat.R;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
+import com.avoscloud.leanchatlib.utils.Constants;
 
 /**
  * Created by lzw on 14-9-17.
  */
 public class UpdateContentActivity extends AVBaseActivity {
-  public static final String FIELD_NAME = "fieldName";
-  public static final String VALUE = "value";
   private TextView fieldNameView;
   private EditText valueEdit;
-
-  public static void goActivityForResult(Activity activity, String fieldName, int requestCode) {
-    Intent intent = new Intent(activity, UpdateContentActivity.class);
-    intent.putExtra(FIELD_NAME, fieldName);
-    activity.startActivityForResult(intent, requestCode);
-  }
-
-  public static String getResultValue(Intent data) {
-    return data.getStringExtra(VALUE);
-  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +33,7 @@ public class UpdateContentActivity extends AVBaseActivity {
 
   private void init() {
     Intent intent = getIntent();
-    String fieldName = intent.getStringExtra(FIELD_NAME);
+    String fieldName = intent.getStringExtra(Constants.INTENT_KEY);
     String editHint = getString(R.string.chat_common_please_input_hint);
     String changeTitle = getString(R.string.chat_common_change_title);
     editHint = editHint.replace("{0}", fieldName);
@@ -57,7 +45,7 @@ public class UpdateContentActivity extends AVBaseActivity {
 
   public void updateContent() {
     Intent i = new Intent();
-    i.putExtra(VALUE, valueEdit.getText().toString());
+    i.putExtra(Constants.INTENT_VALUE, valueEdit.getText().toString());
     setResult(RESULT_OK, i);
     finish();
   }

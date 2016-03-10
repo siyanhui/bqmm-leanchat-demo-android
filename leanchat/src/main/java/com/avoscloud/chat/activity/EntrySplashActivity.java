@@ -4,9 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+
+import com.avos.avoscloud.im.v2.AVIMClient;
+import com.avos.avoscloud.im.v2.AVIMException;
+import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
+import com.avoscloud.leanchatlib.controller.ChatManager;
 
 public class EntrySplashActivity extends AVBaseActivity {
   public static final int SPLASH_DURATION = 2000;
@@ -18,8 +23,7 @@ public class EntrySplashActivity extends AVBaseActivity {
     public void handleMessage(Message msg) {
       switch (msg.what) {
         case GO_MAIN_MSG:
-          MainActivity.goMainActivityFromActivity(EntrySplashActivity.this);
-          finish();
+          imLogin();
           break;
         case GO_LOGIN_MSG:
           Intent intent = new Intent(EntrySplashActivity.this, EntryLoginActivity.class);
@@ -41,5 +45,18 @@ public class EntrySplashActivity extends AVBaseActivity {
     } else {
       handler.sendEmptyMessageDelayed(GO_LOGIN_MSG, SPLASH_DURATION);
     }
+  }
+
+  private void imLogin() {
+    ChatManager.getInstance().openClient(this, LeanchatUser.getCurrentUserId(), new AVIMClientCallback() {
+      @Override
+      public void done(AVIMClient avimClient, AVIMException e) {
+        if (filterException(e)) {
+          Intent intent = new Intent(EntrySplashActivity.this, MainActivity.class);
+          startActivity(intent);
+          finish();
+        }
+      }
+    });
   }
 }

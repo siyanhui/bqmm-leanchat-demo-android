@@ -59,7 +59,6 @@ public class ConversationDetailActivity extends AVBaseActivity {
   private AVIMConversation conversation;
   private ConversationType conversationType;
   private ConversationManager conversationManager;
-  private boolean isOwner;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -147,7 +146,6 @@ public class ConversationDetailActivity extends AVBaseActivity {
 
   private void initData() {
     conversationManager = ConversationManager.getInstance();
-    isOwner = conversation.getCreator().equals(LeanchatUser.getCurrentUserId());
     conversationType = ConversationHelper.typeOfConversation(conversation);
   }
 
@@ -166,7 +164,9 @@ public class ConversationDetailActivity extends AVBaseActivity {
   }
 
   private void gotoModifyNameActivity() {
-    UpdateContentActivity.goActivityForResult(this, App.ctx.getString(R.string.conversation_name), INTENT_NAME);
+    Intent intent = new Intent(this, UpdateContentActivity.class);
+    intent.putExtra(Constants.INTENT_KEY, getString(R.string.conversation_name));
+    startActivityForResult(intent, INTENT_NAME);
   }
 
   private void removeMemeber(final String memberId) {
@@ -224,7 +224,7 @@ public class ConversationDetailActivity extends AVBaseActivity {
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (resultCode == RESULT_OK) {
       if (requestCode == INTENT_NAME) {
-        String newName = UpdateContentActivity.getResultValue(data);
+        String newName = data.getStringExtra(Constants.INTENT_VALUE);
         conversationManager.updateName(conversation, newName, new AVIMConversationCallback() {
           @Override
           public void done(AVIMException e) {

@@ -1,7 +1,5 @@
 package com.avoscloud.chat.activity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,14 +15,12 @@ import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
 import com.avoscloud.chat.service.PreferenceMap;
 import com.avoscloud.chat.service.UpdateService;
-import com.avoscloud.chat.event.LoginFinishEvent;
 import com.avoscloud.chat.friends.ContactFragment;
 import com.avoscloud.chat.fragment.ConversationRecentFragment;
 import com.avoscloud.chat.fragment.DiscoverFragment;
 import com.avoscloud.chat.fragment.ProfileFragment;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.chat.util.Utils;
-import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.LogUtils;
 import com.avoscloud.chat.util.UserCacheUtils;
@@ -32,8 +28,6 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-
-import de.greenrobot.event.EventBus;
 
 /**
  * Created by lzw on 14-9-17.
@@ -63,19 +57,6 @@ public class MainActivity extends AVBaseActivity {
   Button[] tabs;
   View recentTips, contactTips;
 
-  public static void goMainActivityFromActivity(Activity fromActivity) {
-    EventBus eventBus = EventBus.getDefault();
-    eventBus.post(new LoginFinishEvent());
-
-    ChatManager chatManager = ChatManager.getInstance();
-    chatManager.setupManagerWithUserId(fromActivity, LeanchatUser.getCurrentUserId());
-    chatManager.openClient(null);
-    Intent intent = new Intent(fromActivity, MainActivity.class);
-    fromActivity.startActivity(intent);
-
-    updateUserLocation();
-  }
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -88,7 +69,7 @@ public class MainActivity extends AVBaseActivity {
     conversationBtn.performClick();
     //discoverBtn.performClick();
     initBaiduLocClient();
-
+    updateUserLocation();
     UserCacheUtils.cacheUser(LeanchatUser.getCurrentUser());
   }
 

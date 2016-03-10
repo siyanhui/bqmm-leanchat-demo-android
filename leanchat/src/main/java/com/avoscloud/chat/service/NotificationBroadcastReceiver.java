@@ -20,7 +20,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
   @Override
   public void onReceive(Context context, Intent intent) {
-    if (ChatManager.getInstance().getImClient() == null) {
+    if (!ChatManager.getInstance().isLogin()) {
       gotoLoginActivity(context);
     } else {
       String tag = intent.getStringExtra(Constants.NOTOFICATION_TAG);

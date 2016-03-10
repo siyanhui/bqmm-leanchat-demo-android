@@ -80,9 +80,7 @@ public class AVChatActivity extends AVBaseActivity {
    * 如果存在，则直接赋值给 ChatFragment，否者创建后再赋值
    */
   private void getConversation(final String memberId) {
-    Map<String, Object> attrs = new HashMap<>();
-    attrs.put(ConversationType.TYPE_KEY, ConversationType.Single.getValue());
-    ChatManager.getInstance().getImClient().createConversation(Arrays.asList(memberId), "", attrs, false, true, new AVIMConversationCreatedCallback() {
+    ChatManager.getInstance().createSingleConversation(memberId, new AVIMConversationCreatedCallback() {
       @Override
       public void done(AVIMConversation avimConversation, AVIMException e) {
         if (filterException(e)) {

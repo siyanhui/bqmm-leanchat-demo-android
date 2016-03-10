@@ -11,6 +11,7 @@ public class Constants {
   public static final String CREATED_AT = "createdAt";
   public static final String UPDATED_AT = "updatedAt";
 
+
   //TODO 还不知道这俩货是干嘛的
   public static final int ORDER_UPDATED_AT = 1;
   public static final int ORDER_DISTANCE = 0;
@@ -23,6 +24,10 @@ public class Constants {
   public static final String LEANCHAT_USER_ID = getPrefixConstant("leanchat_user_id");
 
   public static final String ACTIVITY_TITLE = getPrefixConstant("activity_title");
+
+  public static final String INTENT_KEY = getPrefixConstant("intent_key");
+  public static final String INTENT_VALUE = getPrefixConstant("intent_value");
+  public static final String INTENT_DATA = getPrefixConstant("intent_data");
 
 
 
