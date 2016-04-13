@@ -29,6 +29,7 @@ import com.avoscloud.leanchatlib.R;
 import com.avoscloud.leanchatlib.adapter.MultipleItemAdapter;
 import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
 import com.avoscloud.leanchatlib.event.ImTypeMessageResendEvent;
+import com.avoscloud.leanchatlib.event.InputBottomBarEmojiEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarRecordEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarTextEvent;
@@ -172,6 +173,16 @@ public class ChatFragment extends android.support.v4.app.Fragment {
       if (!TextUtils.isEmpty(textEvent.sendContent) && imConversation.getConversationId().equals(textEvent.tag)) {
         sendText(textEvent.sendContent);
       }
+    }
+  }
+
+  /**
+   * 输入事件处理，处理构造好的AVIMTextMessage 然后发送
+   * 因为不排除某些特殊情况会受到其他页面过来的无效消息，所以此处加了 tag 判断
+   */
+  public void onEvent(InputBottomBarEmojiEvent textEvent) {
+    if (null != imConversation && null != textEvent) {
+      sendMessage(textEvent.avimTextMessage);
     }
   }
 

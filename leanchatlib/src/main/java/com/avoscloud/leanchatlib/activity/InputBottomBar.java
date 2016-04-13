@@ -2,37 +2,37 @@ package com.avoscloud.leanchatlib.activity;
 
 import android.content.Context;
 import android.os.Handler;
-import android.support.v4.view.ViewPager;
 import android.text.Editable;
-import android.text.Selection;
-import android.text.Spannable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.avoscloud.leanchatlib.R;
-import com.avoscloud.leanchatlib.adapter.ChatEmotionGridAdapter;
-import com.avoscloud.leanchatlib.adapter.ChatEmotionPagerAdapter;
-import com.avoscloud.leanchatlib.controller.EmotionHelper;
+import com.avoscloud.leanchatlib.event.InputBottomBarEmojiEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarLocationClickEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarRecordEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarTextEvent;
 import com.avoscloud.leanchatlib.utils.SoftInputUtils;
-import com.avoscloud.leanchatlib.view.EmotionEditText;
 import com.avoscloud.leanchatlib.view.RecordButton;
+import com.melink.bqmmsdk.sdk.BQMM;
+import com.melink.bqmmsdk.sdk.BQMMMessageHelper;
+import com.melink.bqmmsdk.sdk.IBqmmSendMessageListener;
+import com.melink.bqmmsdk.task.BQMMPopupViewTask;
+import com.melink.bqmmsdk.ui.keyboard.BQMMKeyboard;
+import com.melink.bqmmsdk.widget.BQMMEditView;
+import com.melink.bqmmsdk.widget.BQMMSendButton;
 
-import java.util.ArrayList;
+import org.json.JSONArray;
+
+import java.util.HashMap;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
-
 
 /**
  * Created by wli on 15/7/24.
@@ -54,12 +54,12 @@ public class InputBottomBar extends LinearLayout {
   /**
    * 文本输入框
    */
-  private EmotionEditText contentEditText;
+  private BQMMEditView contentEditText;
 
   /**
    * 发送文本的Button
    */
-  private View sendTextBtn;
+  private BQMMSendButton sendTextBtn;
 
   /**
    * 切换到语音输入的 Button
@@ -79,9 +79,7 @@ public class InputBottomBar extends LinearLayout {
   /**
    * 表情 layout
    */
-  private View emotionLayout;
-
-  private ViewPager emotionPager;
+  private BQMMKeyboard emotionLayout;
 
   /**
    * 录音按钮
@@ -100,6 +98,13 @@ public class InputBottomBar extends LinearLayout {
    * 最小间隔时间为 1 秒，避免多次点击
    */
   private final int MIN_INTERVAL_SEND_MESSAGE = 1000;
+
+  /**
+   * 两种表情消息类型，前者为图文混排表情，后者为大表情
+   */
+  public static final String EMOJITYPE = "emojitype";
+  public static final String FACETYPE = "facetype";
+
 
   public InputBottomBar(Context context) {
     super(context);
@@ -125,13 +130,12 @@ public class InputBottomBar extends LinearLayout {
     View.inflate(context, R.layout.chat_input_bottom_bar_layout, this);
     actionBtn = findViewById(R.id.input_bar_btn_action);
     emotionBtn = findViewById(R.id.input_bar_btn_motion);
-    contentEditText = (EmotionEditText) findViewById(R.id.input_bar_et_emotion);
-    sendTextBtn = findViewById(R.id.input_bar_btn_send_text);
+    contentEditText = (BQMMEditView) findViewById(R.id.input_bar_et_emotion);
+    sendTextBtn = (BQMMSendButton) findViewById(R.id.input_bar_btn_send_text);
     voiceBtn = findViewById(R.id.input_bar_btn_voice);
     keyboardBtn = findViewById(R.id.input_bar_btn_keyboard);
     moreLayout = findViewById(R.id.input_bar_layout_more);
-    emotionLayout = findViewById(R.id.input_bar_layout_emotion);
-    emotionPager = (ViewPager)findViewById(R.id.input_bar_viewpager_emotin);
+    emotionLayout = (BQMMKeyboard) findViewById(R.id.input_bar_layout_emotion);
     recordBtn = (RecordButton) findViewById(R.id.input_bar_btn_record);
 
     actionLayout = findViewById(R.id.input_bar_layout_action);
@@ -140,9 +144,52 @@ public class InputBottomBar extends LinearLayout {
     pictureBtn = findViewById(R.id.input_bar_btn_picture);
 
     setEditTextChangeListener();
-    initEmotionPager();
     initRecordBtn();
 
+        BQMM.getInstance().setEditView(contentEditText);
+        BQMM.getInstance().setSendButton(sendTextBtn);
+        BQMM.getInstance().setKeyboard(emotionLayout);
+        BQMM.getInstance().load();
+        moreLayout.setVisibility(GONE);
+        /**
+         * 用于处理消息发送的回调
+         */
+        BQMM.getInstance().setBqmmSendMsgListener(new IBqmmSendMessageListener() {
+            @Override
+            public void onSendMixedMessage(List<Object> emojis, boolean isMixedMessage) {
+                String content = contentEditText.getText().toString();
+                if (TextUtils.isEmpty(content)) {
+                    Toast.makeText(getContext(), R.string.message_is_null, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                contentEditText.setText("");
+
+                String msgString = BQMMMessageHelper.getMixedMessageString(emojis);
+                //判断一下是纯文本还是富文本
+                if (isMixedMessage) {
+                    JSONArray msgCodes = BQMMMessageHelper.getMixedMessageData(emojis);
+                    sendFaceText(msgString, msgCodes, EMOJITYPE);
+                } else {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendTextBtn.setEnabled(true);
+                        }
+                    }, MIN_INTERVAL_SEND_MESSAGE);
+
+                    EventBus.getDefault().post(
+                            new InputBottomBarTextEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_TEXT_ACTION, msgString, getTag()));
+
+                }
+            }
+
+            @Override
+            public void onSendFace(com.melink.bqmmsdk.bean.Emoji emoji) {
+                JSONArray msgCodes = BQMMMessageHelper.getFaceMessageData(emoji);
+                sendFaceText(BQMMMessageHelper.getFaceMessageString(emoji), msgCodes, FACETYPE);
+            }
+        });
     actionBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -174,6 +221,10 @@ public class InputBottomBar extends LinearLayout {
         SoftInputUtils.showSoftInput(getContext(), contentEditText);
       }
     });
+      /**
+       * 解决进入聊天页面后第一次打开软键盘时不会调用上面这个回调的问题
+       */
+    contentEditText.requestFocus();
 
     keyboardBtn.setOnClickListener(new OnClickListener() {
       @Override
@@ -189,27 +240,6 @@ public class InputBottomBar extends LinearLayout {
       }
     });
 
-    sendTextBtn.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        String content = contentEditText.getText().toString();
-        if (TextUtils.isEmpty(content)) {
-          Toast.makeText(getContext(), R.string.message_is_null, Toast.LENGTH_SHORT).show();
-          return;
-        }
-
-        contentEditText.setText("");
-        new Handler().postDelayed(new Runnable() {
-          @Override
-          public void run() {
-            sendTextBtn.setEnabled(true);
-          }
-        }, MIN_INTERVAL_SEND_MESSAGE);
-
-        EventBus.getDefault().post(
-          new InputBottomBarTextEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_TEXT_ACTION, content, getTag()));
-      }
-    });
 
     pictureBtn.setOnClickListener(new OnClickListener() {
       @Override
@@ -233,45 +263,34 @@ public class InputBottomBar extends LinearLayout {
     });
   }
 
-  /**
-   * 初始化 emotionPager
-   */
-  private void initEmotionPager() {
-    List<View> views = new ArrayList<View>();
-    for (int i = 0; i < EmotionHelper.emojiGroups.size(); i++) {
-      views.add(getEmotionGridView(i));
-    }
-    ChatEmotionPagerAdapter pagerAdapter = new ChatEmotionPagerAdapter(views);
-    emotionPager.setOffscreenPageLimit(3);
-    emotionPager.setAdapter(pagerAdapter);
-  }
 
-  private View getEmotionGridView(int pos) {
-    LayoutInflater inflater = LayoutInflater.from(getContext());
-    View emotionView = inflater.inflate(R.layout.chat_emotion_gridview, null, false);
-    GridView gridView = (GridView) emotionView.findViewById(R.id.gridview);
-    final ChatEmotionGridAdapter chatEmotionGridAdapter = new ChatEmotionGridAdapter(getContext());
-    List<String> pageEmotions = EmotionHelper.emojiGroups.get(pos);
-    chatEmotionGridAdapter.setDatas(pageEmotions);
-    gridView.setAdapter(chatEmotionGridAdapter);
-    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-      @Override
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String emotionText = (String) parent.getAdapter().getItem(position);
-        int start = contentEditText.getSelectionStart();
-        StringBuffer sb = new StringBuffer(contentEditText.getText());
-        sb.replace(contentEditText.getSelectionStart(), contentEditText.getSelectionEnd(), emotionText);
-        contentEditText.setText(sb.toString());
+    /**
+     * 发送表情文本
+     *
+     * @param content message content
+     * @param msgData 由getMixedMessageCodes()返回
+     * @param type    FACETYPE和EMOJITYPE之一
+     */
+    public void sendFaceText(String content, JSONArray msgData, String type) {
+        AVIMTextMessage avimTextMessage = new AVIMTextMessage();
+        if (content.length() > 0) {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("txt_msgType", type);
+            params.put("msg_data", msgData.toString());
+            avimTextMessage.setAttrs(params);
+            avimTextMessage.setText(content);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    sendTextBtn.setEnabled(true);
+                }
+            }, MIN_INTERVAL_SEND_MESSAGE);
 
-        CharSequence info = contentEditText.getText();
-        if (info instanceof Spannable) {
-          Spannable spannable = (Spannable) info;
-          Selection.setSelection(spannable, start + emotionText.length());
+            EventBus.getDefault().post(
+                    new InputBottomBarEmojiEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_TEXT_ACTION, avimTextMessage, getTag()));
+
         }
-      }
-    });
-    return gridView;
-  }
+    }
 
   /**
    * 初始化录音按钮
@@ -330,7 +349,21 @@ public class InputBottomBar extends LinearLayout {
         keyboardBtn.setVisibility(!showSend ? View.VISIBLE : GONE);
         sendTextBtn.setVisibility(showSend ? View.VISIBLE : GONE);
         voiceBtn.setVisibility(View.GONE);
-      }
+                /**
+                 * 显示输入联想弹窗
+                 */
+                BQMMPopupViewTask popTask = BQMMPopupViewTask.create(getContext());
+                popTask.setEmojiEmoText(charSequence.toString());
+                popTask.setPopupViewAnchor(emotionBtn);
+                BQMM.getInstance().startEmojiPopupView(popTask);
+                if (sendTextBtn != null) {
+                    if (TextUtils.isEmpty(charSequence)) {
+                        sendTextBtn.setVisibility(View.GONE);
+                    } else {
+                        sendTextBtn.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
 
       @Override
       public void afterTextChanged(Editable editable) {}

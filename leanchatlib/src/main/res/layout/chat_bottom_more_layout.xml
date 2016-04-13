@@ -13,18 +13,13 @@
         android:background="@color/chat_msg_emote_divider"
         android:focusable="false" />
 
-    <LinearLayout
+    <com.melink.bqmmsdk.ui.keyboard.BQMMKeyboard
+        android:visibility="gone"
         android:id="@+id/input_bar_layout_emotion"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/chat_bottom_more_height"
+        android:layout_height="250dp"
         android:orientation="vertical"
-        android:visibility="gone">
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/input_bar_viewpager_emotin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:padding="0dp" />
 
     <include layout="@layout/chat_bottom_add_layout" />
 </LinearLayout>

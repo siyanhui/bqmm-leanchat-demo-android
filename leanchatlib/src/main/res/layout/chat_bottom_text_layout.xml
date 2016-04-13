@@ -21,7 +21,7 @@
             android:text="@string/chat_bottom_record_layout_pressToRecord"
             android:visibility="gone"/>
 
-        <com.avoscloud.leanchatlib.view.EmotionEditText
+        <com.melink.bqmmsdk.widget.BQMMEditView
             android:id="@+id/input_bar_et_emotion"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -46,7 +46,7 @@
             android:layout_margin="@dimen/chat_BottomBtnMargin"
             android:background="@drawable/chat_btn_keyboard" />
 
-        <Button
+        <com.melink.bqmmsdk.widget.BQMMSendButton
             android:id="@+id/input_bar_btn_send_text"
             android:layout_width="@dimen/chat_BottomBtnSize"
             android:layout_height="@dimen/chat_BottomBtnSize"

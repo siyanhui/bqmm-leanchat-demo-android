@@ -3,21 +3,20 @@ package com.avoscloud.chat;
 import android.app.Application;
 import android.content.Context;
 import android.os.StrictMode;
-import android.text.TextUtils;
 
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
 import com.avoscloud.chat.friends.AddRequest;
+import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.chat.model.UpdateInfo;
 import com.avoscloud.chat.service.PushManager;
 import com.avoscloud.chat.util.LeanchatUserProvider;
-import com.avoscloud.leanchatlib.controller.ConversationEventHandler;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.controller.ChatManager;
-import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
 import com.baidu.mapapi.SDKInitializer;
+import com.melink.bqmmsdk.sdk.BQMM;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
@@ -45,6 +44,7 @@ public class App extends Application {
 
     AVOSCloud.initialize(this, appId, appKey);
 
+    BQMM.getInstance().initConfig(getApplicationContext(), "15e0710942ec49a29d2224a6af4460ee", "b11e0936a9d04be19300b1d6eec0ccd5");
     // 节省流量
     AVOSCloud.setLastModifyEnabled(true);
 

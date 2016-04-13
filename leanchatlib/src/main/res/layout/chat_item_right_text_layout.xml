@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
-    android:id="@+id/chat_right_text_tv_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/chat_right_qp"
-    android:textColor="@android:color/white"
-    android:gravity="center_vertical"/>
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/chat_right_text_tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/chat_right_qp"
+        android:gravity="center_vertical"
+        android:textColor="@android:color/white" />
+
+    <com.melink.bqmmsdk.widget.GifMovieView
+        android:id="@+id/emoji_view"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:gravity="center_vertical|left"
+        android:visibility="gone" />
+</FrameLayout>
