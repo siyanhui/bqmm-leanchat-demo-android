@@ -18,8 +18,8 @@ import android.widget.TextView;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.avoscloud.leanchatlib.R;
-import com.avoscloud.leanchatlib.activity.InputBottomBar;
 import com.avoscloud.leanchatlib.controller.EmotionHelper;
+import com.avoscloud.leanchatlib.utils.Constants;
 import com.melink.baseframe.bitmap.BitmapCreate;
 import com.melink.baseframe.utils.DensityUtils;
 import com.melink.baseframe.utils.StringUtils;
@@ -77,60 +77,40 @@ public class ChatItemTextHolder extends ChatItemHolder {
       if (!TextUtils.isEmpty(textMessage.getText())) {
         if (textMessage.getAttrs() != null) {
           HashMap<String, Object> params = (HashMap) textMessage.getAttrs();
-          if (params.get("txt_msgType") != null) {
+          if (params.get(Constants.TXT_MSGTYPE) != null) {
             setPic(getContext(), params);
-          } else {
-            contentView.setVisibility(View.VISIBLE);
-            emojiView.setVisibility(View.GONE);
-            contentView.setText(EmotionHelper.replace(getContext(), textMessage.getText()));
+              return;
           }
-        } else {
+        }
           contentView.setVisibility(View.VISIBLE);
           emojiView.setVisibility(View.GONE);
           contentView.setText(EmotionHelper.replace(getContext(), textMessage.getText()));
-        }
       }
-
     }
   }
 
     private void setPic(final Context context, HashMap<String, Object> params) {
-        String msgType = (String) params.get("txt_msgType");
-        JSONArray jsonArray = null;
+        String msgType = (String) params.get(Constants.TXT_MSGTYPE);
+        JSONArray jsonArray;
         try {
-            jsonArray = new JSONArray(params.get("msg_data").toString());
+            jsonArray = new JSONArray(params.get(Constants.MSG_DATA).toString());
         } catch (JSONException e) {
             e.printStackTrace();
+            Glide.with(context).load(R.drawable.bqmm_emoji_loadfail).into(emojiView);
+            return;
         }
         switch (msgType) {
-            case InputBottomBar.FACETYPE:
+            case Constants.FACETYPE:
                 contentView.setVisibility(View.GONE);
                 // 展示默认图片
-                Glide.with(context).load(R.drawable.bqmm_emoji_loadfail).into(emojiView);
+                Glide.with(context).load(R.drawable.bqmm_emoji_loading).placeholder(R.drawable.bqmm_emoji_loading).into(emojiView);
 
                 BQMM.getInstance().fetchBigEmojiByCodeList(context, BQMMMessageHelper.parseFaceMsgData(jsonArray), new IFetchEmojisByCodeListCallback() {
                     @Override
                     public void onSuccess(List<Emoji> emojis) {
-                        // 错误的表情Code
-                        if (emojis == null || emojis.size() <= 0) {
-                            // 展示下载失败的默认图片
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                public void run() {
-                                    Glide.with(context).load(R.drawable.bqmm_emoji_loadfail).into(emojiView);
-                                }
-                            });
-                            return;
-                        }
+
                         final Emoji emoji = emojis.get(0);
-                        // 错误的表情Code
-                        if (emoji.getGuid() == null || emoji.getGuid().equals("")) {
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                public void run() {
-                                    Glide.with(context).load(R.drawable.bqmm_emoji_loadfail).into(emojiView);
-                                }
-                            });
-                            return;
-                        }
+
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             public void run() {
                                 //holder.emojiView.setClickable(true);
@@ -168,12 +148,17 @@ public class ChatItemTextHolder extends ChatItemHolder {
 
                     @Override
                     public void onError(Throwable arg0) {
-
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            public void run() {
+                                Glide.with(context).load(R.drawable.bqmm_emoji_loadfail).into(emojiView);
+                            }
+                        });
+                        return;
                     }
                 });
 
                 break;
-            case InputBottomBar.EMOJITYPE:
+            case Constants.EMOJITYPE:
                 contentView.setVisibility(View.VISIBLE);
                 emojiView.setVisibility(View.GONE);
                 // 表情如果未下载，则下载表情进行展示
@@ -208,9 +193,23 @@ public class ChatItemTextHolder extends ChatItemHolder {
                         });
                     }
 
+                    /**
+                     * 当获取表情失败时，展示纯文本字符串
+                     * @param arg0
+                     */
                     @Override
                     public void onError(Throwable arg0) {
-
+                        SpannableStringBuilder sb = new SpannableStringBuilder();
+                        for (int i = 0; i < messagecontent.size(); i++) {
+                            if (messagecontent.get(i).getClass().equals(Emoji.class)) {
+                                Emoji item = (Emoji) messagecontent.get(i);
+                                String tempText = "[" + item.getEmoCode() + "]";
+                                sb.append(tempText);
+                            } else {
+                                sb.append(messagecontent.get(i).toString());
+                            }
+                        }
+                        tv_chatcontent.setText(sb);
                     }
                 });
     }
@@ -236,8 +235,8 @@ public class ChatItemTextHolder extends ChatItemHolder {
                         }
                     } else {
                         try {
-                            // 判断缓存中是否以及有�?
-                            InputStream is = null;
+                            // 判断缓存中是否已经有了这张图片?
+                            InputStream is ;
                             is = new FileInputStream(item.getPathofImage());
                             sb.setSpan(new AnimatedImageSpan(new AnimatedGifDrawable(is, item.getPathofImage(),
                                     new UpdateListener() {

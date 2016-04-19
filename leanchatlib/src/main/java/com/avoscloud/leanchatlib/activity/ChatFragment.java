@@ -119,6 +119,10 @@ public class ChatFragment extends android.support.v4.app.Fragment {
     if (null != imConversation) {
       NotificationUtils.addTag(imConversation.getConversationId());
     }
+    /**
+     * 表情键盘打开时，按home键，然后再进入页面会同时显示键盘和表情键盘，所以要收起表情键盘
+     */
+    inputBottomBar.hideMoreLayout();
   }
 
   @Override

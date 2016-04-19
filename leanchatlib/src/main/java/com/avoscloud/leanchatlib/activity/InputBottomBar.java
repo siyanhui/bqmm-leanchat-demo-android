@@ -17,6 +17,7 @@ import com.avoscloud.leanchatlib.event.InputBottomBarEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarLocationClickEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarRecordEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarTextEvent;
+import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.SoftInputUtils;
 import com.avoscloud.leanchatlib.view.RecordButton;
 import com.melink.bqmmsdk.sdk.BQMM;
@@ -99,11 +100,6 @@ public class InputBottomBar extends LinearLayout {
    */
   private final int MIN_INTERVAL_SEND_MESSAGE = 1000;
 
-  /**
-   * 两种表情消息类型，前者为图文混排表情，后者为大表情
-   */
-  public static final String EMOJITYPE = "emojitype";
-  public static final String FACETYPE = "facetype";
 
 
   public InputBottomBar(Context context) {
@@ -169,7 +165,7 @@ public class InputBottomBar extends LinearLayout {
                 //判断一下是纯文本还是富文本
                 if (isMixedMessage) {
                     JSONArray msgCodes = BQMMMessageHelper.getMixedMessageData(emojis);
-                    sendFaceText(msgString, msgCodes, EMOJITYPE);
+                    sendFaceText(msgString, msgCodes, Constants.EMOJITYPE);
                 } else {
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -187,7 +183,7 @@ public class InputBottomBar extends LinearLayout {
             @Override
             public void onSendFace(com.melink.bqmmsdk.bean.Emoji emoji) {
                 JSONArray msgCodes = BQMMMessageHelper.getFaceMessageData(emoji);
-                sendFaceText(BQMMMessageHelper.getFaceMessageString(emoji), msgCodes, FACETYPE);
+                sendFaceText(BQMMMessageHelper.getFaceMessageString(emoji), msgCodes, Constants.FACETYPE);
             }
         });
     actionBtn.setOnClickListener(new OnClickListener() {
@@ -215,17 +211,16 @@ public class InputBottomBar extends LinearLayout {
     });
 
     contentEditText.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        moreLayout.setVisibility(View.GONE);
-        SoftInputUtils.showSoftInput(getContext(), contentEditText);
-      }
+        @Override
+        public void onClick(View v) {
+            moreLayout.setVisibility(View.GONE);
+            SoftInputUtils.showSoftInput(getContext(), contentEditText);
+        }
     });
       /**
        * 解决进入聊天页面后第一次打开软键盘时不会调用上面这个回调的问题
        */
     contentEditText.requestFocus();
-
     keyboardBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -275,8 +270,8 @@ public class InputBottomBar extends LinearLayout {
         AVIMTextMessage avimTextMessage = new AVIMTextMessage();
         if (content.length() > 0) {
             HashMap<String, Object> params = new HashMap<>();
-            params.put("txt_msgType", type);
-            params.put("msg_data", msgData.toString());
+            params.put(Constants.TXT_MSGTYPE, type);
+            params.put(Constants.MSG_DATA, msgData.toString());
             avimTextMessage.setAttrs(params);
             avimTextMessage.setText(content);
             new Handler().postDelayed(new Runnable() {
