@@ -40,5 +40,8 @@
         <activity
             android:name="com.melink.bqmmsdk.ui.store.ServiceDeclaration"
             android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.melink.bqmmsdk.ui.store.EmojiPackageSort"
+            android:screenOrientation="portrait"></activity>
     </application>
 </manifest>

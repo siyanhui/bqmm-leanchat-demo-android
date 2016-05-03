@@ -23,7 +23,6 @@ import com.avoscloud.leanchatlib.view.RecordButton;
 import com.melink.bqmmsdk.sdk.BQMM;
 import com.melink.bqmmsdk.sdk.BQMMMessageHelper;
 import com.melink.bqmmsdk.sdk.IBqmmSendMessageListener;
-import com.melink.bqmmsdk.task.BQMMPopupViewTask;
 import com.melink.bqmmsdk.ui.keyboard.BQMMKeyboard;
 import com.melink.bqmmsdk.widget.BQMMEditView;
 import com.melink.bqmmsdk.widget.BQMMSendButton;
@@ -347,10 +346,7 @@ public class InputBottomBar extends LinearLayout {
                 /**
                  * 显示输入联想弹窗
                  */
-                BQMMPopupViewTask popTask = BQMMPopupViewTask.create(getContext());
-                popTask.setEmojiEmoText(charSequence.toString());
-                popTask.setPopupViewAnchor(emotionBtn);
-                BQMM.getInstance().startEmojiPopupView(popTask);
+                BQMM.getInstance().startShortcutPopupWindow(getContext(),charSequence.toString(),emotionBtn);
                 if (sendTextBtn != null) {
                     if (TextUtils.isEmpty(charSequence)) {
                         sendTextBtn.setVisibility(View.GONE);
