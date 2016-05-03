@@ -2,13 +2,12 @@
 
 ## 简介
 
-LeanChat 是 [LeanCloud](http://leancloud.cn) [实时通信](https://leancloud.cn/docs/realtime.html) 组件的 Demo，通过该应用你可以学习和了解 LeanCloud 实时通信功能。
+这个示例项目全面展示了 LeanCloud 实时通讯功能的应用，该版本集成了表情 mm SDK（表情mm SDK是上海似颜绘科技有限公司提供的表情商店SDK, 开发者可以利用此SDK集成丰富的表情。 ）帮助用户在使用实时通信服务的同时，更方便的加入表情功能。 
 
-应用体验下载地址：[http://fir.im/leanchat](http://fir.im/leanchat)
 
 ## 效果
 
-![leanchat-android1](https://cloud.githubusercontent.com/assets/5022872/7362725/665a7f14-eda0-11e4-8fc5-e7ea5dea0618.gif)
+![表情 mm](https://camo.githubusercontent.com/29376ff08b6534084d674a87f6b31d5b0d79a9b2/68747470733a2f2f646e2d6c687a6f377a39362e71626f782e6d652f31343631323137333534343534)
 
 ## 下载
 请直接点击 Github 上的`Download Zip`，如图所示，这样只下载最新版本。如果是 `git clone`，则可能非常慢，因为含杂很大的提交历史。某次测试两者是1.5M:40M。
@@ -56,7 +55,5 @@ LeanChat Android 客户端依赖 LeanCloud Android SDK 如下组件：
 ## 技术支持
 
 关于此项目遇到的问题可提 [issue](https://github.com/leancloud/leanchat-android/issues)。
-
-
 
 
