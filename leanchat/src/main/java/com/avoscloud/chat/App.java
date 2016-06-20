@@ -44,6 +44,10 @@ public class App extends Application {
 
     AVOSCloud.initialize(this, appId, appKey);
 
+    /**
+     * BQMM集成
+     * 初始化BQMM
+     */
     BQMM.getInstance().initConfig(getApplicationContext(), "d494bd2fb60048f0adc3305613dc7ca2", "9d512fd35e2c498aa1f63c0fc9dadf80");
     // 节省流量
     AVOSCloud.setLastModifyEnabled(true);

@@ -52,11 +52,13 @@ public class InputBottomBar extends LinearLayout {
   private View emotionBtn;
 
   /**
+   * BQMM集成
    * 文本输入框
    */
   private BQMMEditView contentEditText;
 
   /**
+   * BQMM集成
    * 发送文本的Button
    */
   private BQMMSendButton sendTextBtn;
@@ -77,6 +79,7 @@ public class InputBottomBar extends LinearLayout {
   private View moreLayout;
 
   /**
+   * BQMM集成
    * 表情 layout
    */
   private BQMMKeyboard emotionLayout;
@@ -125,11 +128,23 @@ public class InputBottomBar extends LinearLayout {
     View.inflate(context, R.layout.chat_input_bottom_bar_layout, this);
     actionBtn = findViewById(R.id.input_bar_btn_action);
     emotionBtn = findViewById(R.id.input_bar_btn_motion);
+      /**
+       * BQMM集成
+       * 更改类型
+       */
     contentEditText = (BQMMEditView) findViewById(R.id.input_bar_et_emotion);
+      /**
+       * BQMM集成
+       * 更改类型
+       */
     sendTextBtn = (BQMMSendButton) findViewById(R.id.input_bar_btn_send_text);
     voiceBtn = findViewById(R.id.input_bar_btn_voice);
     keyboardBtn = findViewById(R.id.input_bar_btn_keyboard);
     moreLayout = findViewById(R.id.input_bar_layout_more);
+      /**
+       * BQMM集成
+       * 更改类型
+       */
     emotionLayout = (BQMMKeyboard) findViewById(R.id.input_bar_layout_emotion);
     recordBtn = (RecordButton) findViewById(R.id.input_bar_btn_record);
 
@@ -141,12 +156,17 @@ public class InputBottomBar extends LinearLayout {
     setEditTextChangeListener();
     initRecordBtn();
 
+      /**
+       * BQMM集成
+       * 以下是用于初始化BQMM的代码
+       */
         BQMM.getInstance().setEditView(contentEditText);
         BQMM.getInstance().setSendButton(sendTextBtn);
         BQMM.getInstance().setKeyboard(emotionLayout);
         BQMM.getInstance().load();
         moreLayout.setVisibility(GONE);
         /**
+         * BQMM集成
          * 用于处理消息发送的回调
          */
         BQMM.getInstance().setBqmmSendMsgListener(new IBqmmSendMessageListener() {
@@ -217,6 +237,7 @@ public class InputBottomBar extends LinearLayout {
         }
     });
       /**
+       * BQMM集成
        * 解决进入聊天页面后第一次打开软键盘时不会调用上面这个回调的问题
        */
     contentEditText.requestFocus();
@@ -234,6 +255,10 @@ public class InputBottomBar extends LinearLayout {
       }
     });
 
+      /**
+       * BQMM集成
+       * 这里需要删去给sendTextBtn设置OnClickListener的代码
+       */
 
     pictureBtn.setOnClickListener(new OnClickListener() {
       @Override
@@ -259,6 +284,7 @@ public class InputBottomBar extends LinearLayout {
 
 
     /**
+     * BQMM集成
      * 发送表情文本
      *
      * @param content message content
@@ -344,6 +370,7 @@ public class InputBottomBar extends LinearLayout {
         sendTextBtn.setVisibility(showSend ? View.VISIBLE : GONE);
         voiceBtn.setVisibility(View.GONE);
                 /**
+                 * BQMM集成
                  * 显示输入联想弹窗
                  */
                 BQMM.getInstance().startShortcutPopupWindow(getContext(),charSequence.toString(),emotionBtn);

@@ -120,6 +120,7 @@ public class ChatFragment extends android.support.v4.app.Fragment {
       NotificationUtils.addTag(imConversation.getConversationId());
     }
     /**
+     * BQMM集成
      * 表情键盘打开时，按home键，然后再进入页面会同时显示键盘和表情键盘，所以要收起表情键盘
      */
     inputBottomBar.hideMoreLayout();
@@ -181,8 +182,8 @@ public class ChatFragment extends android.support.v4.app.Fragment {
   }
 
   /**
+   * BQMM集成
    * 输入事件处理，处理构造好的AVIMTextMessage 然后发送
-   * 因为不排除某些特殊情况会受到其他页面过来的无效消息，所以此处加了 tag 判断
    */
   public void onEvent(InputBottomBarEmojiEvent textEvent) {
     if (null != imConversation && null != textEvent) {

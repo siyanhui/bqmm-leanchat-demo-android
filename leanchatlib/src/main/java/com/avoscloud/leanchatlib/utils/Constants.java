@@ -43,15 +43,18 @@ public class Constants {
 
 
   /**
+   * BQMM集成
    * 两种表情消息类型，前者为图文混排表情，后者为大表情
    */
   public static final String EMOJITYPE = "emojitype";
   public static final String FACETYPE = "facetype";
   /**
+   * BQMM集成
    * 用于在消息的附加信息里表示类型
    */
   public static final String TXT_MSGTYPE="txt_msgType";
   /**
+   * BQMM集成
    * 用于在消息的附加信息里表示信息的实际内容
    */
   public static final String MSG_DATA="msg_data";
