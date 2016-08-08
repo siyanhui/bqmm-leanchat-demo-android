@@ -1,6 +1,7 @@
 package com.avoscloud.leanchatlib.viewholder;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by wli on 15/9/17.
@@ -55,15 +57,22 @@ public class ChatItemTextHolder extends ChatItemHolder {
       String msgType = "";
       JSONArray msgData = null;
       String messageID = textMessage.getText();//这里把文字消息的内容作为消息ID
+      if (messageID == null) {
+        messageID = UUID.randomUUID().toString();
+      }
       Map attrs = textMessage.getAttrs();
       try {
         msgType = (String) attrs.get(Constants.TXT_MSGTYPE);
       } catch (NullPointerException | ClassCastException ignored) {
       }
+      if (msgType == null) {
+        msgType = "";
+      }
       try {
         msgData = new JSONArray((String) attrs.get(Constants.MSG_DATA));
       } catch (JSONException | NullPointerException | ClassCastException ignored) {
       }
+      if (!TextUtils.isEmpty(msgType) && msgData == null) return;
       contentView.showMessage(messageID, textMessage.getText(), msgType, msgData);
     }
   }
