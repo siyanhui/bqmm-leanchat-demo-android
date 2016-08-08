@@ -42,6 +42,7 @@ public class ChatItemTextHolder extends ChatItemHolder {
       conventLayout.addView(View.inflate(getContext(), R.layout.chat_item_right_text_layout, null));
       contentView = (BQMMMessageText) itemView.findViewById(R.id.chat_right_text_tv_content);
     }
+    contentView.setStickerSize(getContext().getResources().getDimensionPixelSize(R.dimen.bqmm_sticker_size));
   }
 
   @Override

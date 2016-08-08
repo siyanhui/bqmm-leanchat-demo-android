@@ -44,4 +44,6 @@
     <dimen name="chat_horizontal_margin">15dp</dimen>
     <dimen name="chat_horizontal_big_margin">40dp</dimen>
 
+    <!--BQMM集成 指定大表情的显示大小-->
+    <dimen name="bqmm_sticker_size">100dp</dimen>
 </resources>
