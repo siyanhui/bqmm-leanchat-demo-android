@@ -20,6 +20,7 @@ import com.melink.bqmmsdk.sdk.BQMM;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.tencent.bugly.crashreport.CrashReport;
 
 
 /**
@@ -64,6 +65,7 @@ public class App extends Application {
     ThirdPartUserUtils.setThirdPartUserProvider(new LeanchatUserProvider());
     ChatManager.getInstance().init(this);
     ChatManager.getInstance().setDebugEnabled(App.debug);
+    CrashReport.initCrashReport(getApplicationContext());
   }
 
   public void openStrictMode() {

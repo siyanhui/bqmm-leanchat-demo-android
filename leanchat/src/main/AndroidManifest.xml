@@ -167,5 +167,18 @@
         <!--<meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="PUT3u7lIPY49Ck0bqceFA3ue" />-->
+
+        <meta-data
+            android:name="BUGLY_APPID"
+            android:value="0e8f0cf8b4" />
+        <meta-data
+            android:name="BUGLY_APP_VERSION"
+            android:value="1.7.1" />
+        <meta-data
+            android:name="BUGLY_APP_CHANNEL"
+            android:value="alpha" />
+        <meta-data
+            android:name="BUGLY_ENABLE_DEBUG"
+            android:value="true" />
     </application>
 </manifest>
