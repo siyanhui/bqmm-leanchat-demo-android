@@ -3,6 +3,7 @@
 	<color name="bqmm_background_tab_pressed">#6633B5E5</color>
  	<color name="bqmm_pop_bg">#eeffffff</color>
  	<color name="bqmm_transparent">#00000000</color>
+	<color name="bqmm_ui_image_bg">#ffcfcfcf</color>
     
     <!-- 商店标题栏背景颜色 -->
     <color name="bqmm_titlebar_bg">#ff2e2e2e</color>
