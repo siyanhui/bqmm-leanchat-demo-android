@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
 dependencies {
-    compile files('libs/bqmm_v1.7.10.jar')
+    compile files('libs/bqmm_v1.7.11.jar')
 }
 
 android {
