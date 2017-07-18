@@ -15,7 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created by wli on 15/9/17.
@@ -57,10 +56,6 @@ public class ChatItemTextHolder extends ChatItemHolder {
        */
       String msgType = "";
       JSONArray msgData = null;
-      String messageID = textMessage.getText();//这里把文字消息的内容作为消息ID
-      if (messageID == null) {
-        messageID = UUID.randomUUID().toString();
-      }
       Map attrs = textMessage.getAttrs();
       try {
         msgType = (String) attrs.get(Constants.TXT_MSGTYPE);
@@ -74,7 +69,16 @@ public class ChatItemTextHolder extends ChatItemHolder {
       } catch (JSONException | NullPointerException | ClassCastException ignored) {
       }
       if (!TextUtils.isEmpty(msgType) && msgData == null) return;
-      contentView.showMessage(messageID, textMessage.getText(), msgType, msgData);
+      if(Constants.FACETYPE.equals(msgType)){
+        contentView.setBackgroundResource(0);
+      }else {
+        if(isLeft){
+          contentView.setBackgroundResource(R.drawable.chat_left_qp);
+        }else {
+          contentView.setBackgroundResource(R.drawable.chat_right_qp);
+        }
+      }
+      contentView.showMessage(textMessage.getText(), msgType, msgData);
     }
   }
 }
