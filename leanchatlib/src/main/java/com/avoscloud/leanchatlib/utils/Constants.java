@@ -49,6 +49,10 @@ public class Constants {
   public static final String EMOJITYPE = "emojitype";
   public static final String FACETYPE = "facetype";
   /**
+   * BQMM 2.0.0版本后新增GIf消息类型
+   */
+  public static final String WEBTYPE = "webtype";
+  /**
    * BQMM集成
    * 用于在消息的附加信息里表示类型
    */

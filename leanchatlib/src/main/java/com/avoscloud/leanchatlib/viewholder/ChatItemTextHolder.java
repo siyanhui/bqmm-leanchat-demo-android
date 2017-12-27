@@ -2,6 +2,7 @@ package com.avoscloud.leanchatlib.viewholder;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,6 +14,7 @@ import com.melink.bqmmsdk.widget.BQMMMessageText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -56,6 +58,7 @@ public class ChatItemTextHolder extends ChatItemHolder {
        */
       String msgType = "";
       JSONArray msgData = null;
+      JSONObject gifMsgData = null;
       Map attrs = textMessage.getAttrs();
       try {
         msgType = (String) attrs.get(Constants.TXT_MSGTYPE);
@@ -65,11 +68,16 @@ public class ChatItemTextHolder extends ChatItemHolder {
         msgType = "";
       }
       try {
-        msgData = new JSONArray((String) attrs.get(Constants.MSG_DATA));
+        if (TextUtils.equals(msgType,Constants.WEBTYPE)){
+          gifMsgData = new JSONObject((String) attrs.get(Constants.MSG_DATA));
+        }else {
+          msgData = new JSONArray((String) attrs.get(Constants.MSG_DATA));
+        }
       } catch (JSONException | NullPointerException | ClassCastException ignored) {
+        Log.d("darren","error:"+ignored);
       }
-      if (!TextUtils.isEmpty(msgType) && msgData == null) return;
-      if(Constants.FACETYPE.equals(msgType)){
+      if (!TextUtils.isEmpty(msgType) && msgData == null && gifMsgData == null ) return;
+      if(Constants.FACETYPE.equals(msgType) || Constants.WEBTYPE.equals(msgType)){
         contentView.setBackgroundResource(0);
       }else {
         if(isLeft){
@@ -78,7 +86,12 @@ public class ChatItemTextHolder extends ChatItemHolder {
           contentView.setBackgroundResource(R.drawable.chat_right_qp);
         }
       }
-      contentView.showMessage(textMessage.getText(), msgType, msgData);
+      if (TextUtils.equals(msgType, Constants.WEBTYPE)) {
+        contentView.showBQMMGif(gifMsgData.optString("data_id"), gifMsgData.optString("sticker_url"), gifMsgData.optInt("w"), gifMsgData.optInt("h"), gifMsgData.optInt("is_gif"));
+      } else {
+        contentView.showMessage(textMessage.getText(), msgType, msgData);
+      }
+      
     }
   }
 }

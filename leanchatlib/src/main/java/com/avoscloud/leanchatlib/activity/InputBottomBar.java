@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.avoscloud.leanchatlib.R;
+import com.avoscloud.leanchatlib.bqmmgif.BQMMGifManager;
+import com.avoscloud.leanchatlib.bqmmgif.IBqmmSendGifListener;
 import com.avoscloud.leanchatlib.event.InputBottomBarEmojiEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarEvent;
 import com.avoscloud.leanchatlib.event.InputBottomBarLocationClickEvent;
@@ -20,14 +22,18 @@ import com.avoscloud.leanchatlib.event.InputBottomBarTextEvent;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.SoftInputUtils;
 import com.avoscloud.leanchatlib.view.RecordButton;
+import com.melink.bqmmsdk.bean.BQMMGif;
 import com.melink.bqmmsdk.sdk.BQMM;
 import com.melink.bqmmsdk.sdk.BQMMMessageHelper;
 import com.melink.bqmmsdk.sdk.IBqmmSendMessageListener;
 import com.melink.bqmmsdk.ui.keyboard.BQMMKeyboard;
+import com.melink.bqmmsdk.ui.keyboard.IGifButtonClickListener;
 import com.melink.bqmmsdk.widget.BQMMEditView;
 import com.melink.bqmmsdk.widget.BQMMSendButton;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -162,8 +168,22 @@ public class InputBottomBar extends LinearLayout {
        */
         BQMM.getInstance().setEditView(contentEditText);
         BQMM.getInstance().setSendButton(sendTextBtn);
-        BQMM.getInstance().setKeyboard(emotionLayout);
+        BQMM.getInstance().setKeyboard(emotionLayout, new IGifButtonClickListener() {
+            @Override
+            public void didClickGifTab() {
+                moreLayout.setVisibility(View.GONE);
+                contentEditText.requestFocus();
+                SoftInputUtils.showSoftInput(getContext(), contentEditText);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        BQMMGifManager.getInstance(getContext()).showTrending();
+                    }
+                },300);
+            }
+        });
         BQMM.getInstance().load();
+        BQMMGifManager.getInstance(getContext()).addEditViewListeners();
         moreLayout.setVisibility(GONE);
         /**
          * BQMM集成
@@ -205,9 +225,42 @@ public class InputBottomBar extends LinearLayout {
                 sendFaceText(BQMMMessageHelper.getFaceMessageString(emoji), msgCodes, Constants.FACETYPE);
             }
         });
+        BQMMGifManager.getInstance(getContext()).setBQMMSendGifListener(new IBqmmSendGifListener() {
+            @Override
+            public void onSendBQMMGif(BQMMGif bqmmGif) {
+                AVIMTextMessage avimTextMessage = new AVIMTextMessage();
+                String content = "[" + bqmmGif.getText() + "]";
+                JSONObject gifJsonObject = new JSONObject();
+                try {
+                    gifJsonObject.put("data_id",bqmmGif.getSticker_id());
+                    gifJsonObject.put("h",bqmmGif.getSticker_height());
+                    gifJsonObject.put("w",bqmmGif.getSticker_width());
+                    gifJsonObject.put("sticker_url",bqmmGif.getSticker_url());
+                    gifJsonObject.put("is_gif",bqmmGif.getIs_gif());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                HashMap<String, Object> params = new HashMap<>();
+                params.put(Constants.TXT_MSGTYPE, Constants.WEBTYPE);
+                params.put(Constants.MSG_DATA, gifJsonObject.toString());
+                avimTextMessage.setAttrs(params);
+                avimTextMessage.setText(content);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        sendTextBtn.setEnabled(true);
+                    }
+                }, MIN_INTERVAL_SEND_MESSAGE);
+
+                EventBus.getDefault().post(
+                        new InputBottomBarEmojiEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_TEXT_ACTION, avimTextMessage, getTag()));
+
+            }
+        });
     actionBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+          BQMMGifManager.getInstance(getContext()).updateSearchModeAndSearchUIWithStatus(BQMMGifManager.BQMM_SEARCH_MODE_STATUS_KEYBOARD_HIDE);
         boolean showActionView =
           (GONE == moreLayout.getVisibility() || GONE == actionLayout.getVisibility());
         moreLayout.setVisibility(showActionView ? VISIBLE : GONE);
@@ -220,6 +273,7 @@ public class InputBottomBar extends LinearLayout {
     emotionBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+          BQMMGifManager.getInstance(getContext()).updateSearchModeAndSearchUIWithStatus(BQMMGifManager.BQMM_SEARCH_MODE_STATUS_KEYBOARD_HIDE);
         boolean showEmotionView =
           (GONE == moreLayout.getVisibility() || GONE == emotionLayout.getVisibility());
         moreLayout.setVisibility(showEmotionView ? VISIBLE : GONE);
@@ -369,11 +423,6 @@ public class InputBottomBar extends LinearLayout {
         keyboardBtn.setVisibility(!showSend ? View.VISIBLE : GONE);
         sendTextBtn.setVisibility(showSend ? View.VISIBLE : GONE);
         voiceBtn.setVisibility(View.GONE);
-                /**
-                 * BQMM集成
-                 * 显示输入联想弹窗
-                 */
-                BQMM.getInstance().startShortcutPopupWindow(getContext(),charSequence.toString(),emotionBtn);
                 if (sendTextBtn != null) {
                     if (TextUtils.isEmpty(charSequence)) {
                         sendTextBtn.setVisibility(View.GONE);
