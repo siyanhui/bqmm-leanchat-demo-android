@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
@@ -38,13 +38,13 @@ import de.greenrobot.event.EventBus;
  * Created by wli on 15/12/4.
  */
 public class ConversationFragment extends Fragment {
-  @Bind(R.id.im_client_state_view)
+  @BindView(R.id.im_client_state_view)
   View imClientStateView;
 
-  @Bind(R.id.fragment_conversation_srl_pullrefresh)
+  @BindView(R.id.fragment_conversation_srl_pullrefresh)
   protected SwipeRefreshLayout refreshLayout;
 
-  @Bind(R.id.fragment_conversation_srl_view)
+  @BindView(R.id.fragment_conversation_srl_view)
   protected RecyclerView recyclerView;
 
   protected CommonListAdapter<Room> itemAdapter;

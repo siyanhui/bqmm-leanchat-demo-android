@@ -9,25 +9,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVGeoPoint;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
-import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
-import com.avoscloud.leanchatlib.adapter.HeaderListAdapter;
-import com.avoscloud.chat.util.UserCacheUtils;
-import com.avoscloud.chat.service.PreferenceMap;
-import com.avoscloud.chat.viewholder.DiscoverItemHolder;
+import com.avoscloud.chat.R;
 import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.chat.service.PreferenceMap;
+import com.avoscloud.chat.util.UserCacheUtils;
+import com.avoscloud.chat.viewholder.DiscoverItemHolder;
+import com.avoscloud.leanchatlib.adapter.HeaderListAdapter;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.LogUtils;
 import com.avoscloud.leanchatlib.view.RefreshableRecyclerView;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by lzw on 14-9-17.
@@ -37,10 +37,10 @@ public class DiscoverFragment extends BaseFragment {
   private final SortDialogListener distanceListener = new SortDialogListener(Constants.ORDER_DISTANCE);
   private final SortDialogListener updatedAtListener = new SortDialogListener(Constants.ORDER_UPDATED_AT);
 
-  @Bind(R.id.fragment_near_srl_pullrefresh)
+  @BindView(R.id.fragment_near_srl_pullrefresh)
   protected SwipeRefreshLayout refreshLayout;
 
-  @Bind(R.id.fragment_near_srl_view)
+  @BindView(R.id.fragment_near_srl_view)
   protected RefreshableRecyclerView recyclerView;
 
   protected LinearLayoutManager layoutManager;

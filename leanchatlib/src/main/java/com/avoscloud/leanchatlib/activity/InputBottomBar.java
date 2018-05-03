@@ -177,13 +177,13 @@ public class InputBottomBar extends LinearLayout {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        BQMMGifManager.getInstance(getContext()).showTrending();
+                        BQMMGifManager.getInstance().showTrending();
                     }
                 },300);
             }
         });
         BQMM.getInstance().load();
-        BQMMGifManager.getInstance(getContext()).addEditViewListeners();
+        BQMMGifManager.getInstance().addEditViewListeners();
         moreLayout.setVisibility(GONE);
         /**
          * BQMM集成
@@ -225,7 +225,7 @@ public class InputBottomBar extends LinearLayout {
                 sendFaceText(BQMMMessageHelper.getFaceMessageString(emoji), msgCodes, Constants.FACETYPE);
             }
         });
-        BQMMGifManager.getInstance(getContext()).setBQMMSendGifListener(new IBqmmSendGifListener() {
+        BQMMGifManager.getInstance().setBQMMSendGifListener(new IBqmmSendGifListener() {
             @Override
             public void onSendBQMMGif(BQMMGif bqmmGif) {
                 AVIMTextMessage avimTextMessage = new AVIMTextMessage();
@@ -260,7 +260,7 @@ public class InputBottomBar extends LinearLayout {
     actionBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-          BQMMGifManager.getInstance(getContext()).updateSearchModeAndSearchUIWithStatus(BQMMGifManager.BQMM_SEARCH_MODE_STATUS_KEYBOARD_HIDE);
+          BQMMGifManager.getInstance().updateSearchModeAndSearchUIWithStatus(BQMMGifManager.BQMM_SEARCH_MODE_STATUS_KEYBOARD_HIDE);
         boolean showActionView =
           (GONE == moreLayout.getVisibility() || GONE == actionLayout.getVisibility());
         moreLayout.setVisibility(showActionView ? VISIBLE : GONE);
@@ -273,7 +273,7 @@ public class InputBottomBar extends LinearLayout {
     emotionBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-          BQMMGifManager.getInstance(getContext()).updateSearchModeAndSearchUIWithStatus(BQMMGifManager.BQMM_SEARCH_MODE_STATUS_KEYBOARD_HIDE);
+          BQMMGifManager.getInstance().updateSearchModeAndSearchUIWithStatus(BQMMGifManager.BQMM_SEARCH_MODE_STATUS_KEYBOARD_HIDE);
         boolean showEmotionView =
           (GONE == moreLayout.getVisibility() || GONE == emotionLayout.getVisibility());
         moreLayout.setVisibility(showEmotionView ? VISIBLE : GONE);

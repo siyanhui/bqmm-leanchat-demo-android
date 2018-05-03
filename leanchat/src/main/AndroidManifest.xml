@@ -53,14 +53,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.melink.bqmmsdk.ui.store.EmojiPackageDown"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="com.melink.bqmmsdk.ui.store.EmojiPackageMyCollection"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name="com.melink.bqmmsdk.ui.store.EmojiPackageSetting"
             android:screenOrientation="portrait" />
 
@@ -71,8 +63,13 @@
         <activity
             android:name="com.melink.bqmmsdk.ui.store.ServiceDeclaration"
             android:screenOrientation="portrait" />
+
         <activity
             android:name="com.melink.bqmmsdk.ui.store.EmojiPackageSort"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.melink.bqmmsdk.ui.store.AuthorDetail"
             android:screenOrientation="portrait" />
 
         <activity
@@ -173,7 +170,7 @@
             android:value="0e8f0cf8b4" />
         <meta-data
             android:name="BUGLY_APP_VERSION"
-            android:value="1.7.12" />
+            android:value="2.1.0" />
         <meta-data
             android:name="BUGLY_APP_CHANNEL"
             android:value="alpha" />

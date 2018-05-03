@@ -30,7 +30,8 @@ import com.avoscloud.leanchatlib.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 /**
  * 群聊对话拉人页面
  * Created by lzw on 14-10-11.
@@ -38,7 +39,7 @@ import butterknife.Bind;
  */
 public class ConversationAddMembersActivity extends AVBaseActivity {
 
-  @Bind(R.id.member_add_rv_list)
+  @BindView(R.id.member_add_rv_list)
   protected RecyclerView recyclerView;
 
   private LinearLayoutManager layoutManager;

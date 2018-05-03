@@ -3,7 +3,7 @@ package com.avoscloud.leanchatlib.bqmmgif;
 import com.melink.bqmmsdk.bean.BQMMGif;
 
 /**
- * Created by darrenfantasy on 2017/12/11.
+ * Created by syh on 2017/12/11.
  */
 
 public interface IBqmmSendGifListener {

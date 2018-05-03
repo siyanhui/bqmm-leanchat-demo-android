@@ -14,17 +14,17 @@ import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationEventHandler;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
  * 登陆页面
  */
 public class LoginActivity extends AVBaseActivity {
-  @Bind(R.id.activity_login_et_username)
+  @BindView(R.id.activity_login_et_username)
   protected EditText nameView;
 
-  @Bind(R.id.activity_login_btn_login)
+  @BindView(R.id.activity_login_btn_login)
   protected Button loginButton;
 
   @Override

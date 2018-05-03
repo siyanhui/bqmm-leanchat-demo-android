@@ -9,47 +9,46 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMSingleMessageQueryCallback;
 import com.avoscloud.chat.R;
-import com.avoscloud.leanchatlib.event.ConnectionChangeEvent;
-import com.avoscloud.leanchatlib.utils.ConversationManager;
-import com.avoscloud.leanchatlib.event.ConversationItemClickEvent;
 import com.avoscloud.chat.activity.ChatRoomActivity;
 import com.avoscloud.chat.adapter.ConversationListAdapter;
-import com.avoscloud.leanchatlib.controller.ChatManager;
+import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.chat.util.UserCacheUtils;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
+import com.avoscloud.leanchatlib.event.ConnectionChangeEvent;
+import com.avoscloud.leanchatlib.event.ConversationItemClickEvent;
 import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
 import com.avoscloud.leanchatlib.model.ConversationType;
-import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.model.Room;
-import com.avoscloud.chat.util.UserCacheUtils;
 import com.avoscloud.leanchatlib.utils.Constants;
-
-import de.greenrobot.event.EventBus;
+import com.avoscloud.leanchatlib.utils.ConversationManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
+
 /**
  * Created by lzw on 14-9-17.
  */
 public class ConversationRecentFragment extends BaseFragment {
 
-  @Bind(R.id.im_client_state_view)
+  @BindView(R.id.im_client_state_view)
   View imClientStateView;
 
-  @Bind(R.id.fragment_conversation_srl_pullrefresh)
+  @BindView(R.id.fragment_conversation_srl_pullrefresh)
   protected SwipeRefreshLayout refreshLayout;
 
-  @Bind(R.id.fragment_conversation_srl_view)
+  @BindView(R.id.fragment_conversation_srl_view)
   protected RecyclerView recyclerView;
 
   protected ConversationListAdapter<Room> itemAdapter;

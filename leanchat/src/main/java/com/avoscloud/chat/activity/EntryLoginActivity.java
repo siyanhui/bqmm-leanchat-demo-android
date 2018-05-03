@@ -6,27 +6,28 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.LogInCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avoscloud.chat.R;
-import com.avoscloud.chat.util.Utils;
 import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.chat.util.Utils;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
 public class EntryLoginActivity extends AVBaseActivity {
 
-  @Bind(R.id.activity_login_et_username)
+  @BindView(R.id.activity_login_et_username)
   public EditText userNameView;
 
-  @Bind(R.id.activity_login_et_password)
+  @BindView(R.id.activity_login_et_password)
   public EditText passwordView;
 
   @Override

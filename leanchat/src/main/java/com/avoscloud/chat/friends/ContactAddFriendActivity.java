@@ -5,34 +5,34 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.EditText;
 
-import butterknife.Bind;
-import butterknife.OnClick;
-
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
-import com.avoscloud.chat.R;
 import com.avoscloud.chat.App;
+import com.avoscloud.chat.R;
+import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.chat.util.UserCacheUtils;
 import com.avoscloud.chat.viewholder.SearchUserItemHolder;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.adapter.HeaderListAdapter;
-import com.avoscloud.chat.model.LeanchatUser;
 import com.avoscloud.leanchatlib.utils.Constants;
-import com.avoscloud.chat.util.UserCacheUtils;
 import com.avoscloud.leanchatlib.view.RefreshableRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 查找好友页面
  */
 public class ContactAddFriendActivity extends AVBaseActivity {
 
-  @Bind(R.id.search_user_rv_layout)
+  @BindView(R.id.search_user_rv_layout)
   protected RefreshableRecyclerView recyclerView;
 
-  @Bind(R.id.searchNameEdit)
+  @BindView(R.id.searchNameEdit)
   EditText searchNameEdit;
 
   private HeaderListAdapter<LeanchatUser> adapter;

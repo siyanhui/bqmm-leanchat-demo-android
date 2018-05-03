@@ -17,7 +17,7 @@ import com.avoscloud.leanchatlib.utils.PhotoUtils;
 import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -27,10 +27,10 @@ import butterknife.OnClick;
  */
 public class PersonalProfileFragment extends Fragment {
 
-  @Bind(R.id.profile_avatar_view)
+  @BindView(R.id.profile_avatar_view)
   protected ImageView avavtarView;
 
-  @Bind(R.id.profile_username_view)
+  @BindView(R.id.profile_username_view)
   protected TextView nameView;
 
 

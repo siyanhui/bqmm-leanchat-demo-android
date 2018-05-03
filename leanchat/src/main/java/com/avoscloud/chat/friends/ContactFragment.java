@@ -22,20 +22,20 @@ import com.avos.avoscloud.SaveCallback;
 import com.avoscloud.chat.App;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.activity.ChatRoomActivity;
-import com.avoscloud.chat.fragment.BaseFragment;
 import com.avoscloud.chat.activity.ConversationGroupListActivity;
 import com.avoscloud.chat.adapter.ContactsAdapter;
 import com.avoscloud.chat.event.ContactItemClickEvent;
 import com.avoscloud.chat.event.ContactItemLongClickEvent;
 import com.avoscloud.chat.event.ContactRefreshEvent;
 import com.avoscloud.chat.event.InvitationEvent;
-import com.avoscloud.leanchatlib.event.MemberLetterEvent;
+import com.avoscloud.chat.fragment.BaseFragment;
 import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.leanchatlib.event.MemberLetterEvent;
 import com.avoscloud.leanchatlib.utils.Constants;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
@@ -49,10 +49,10 @@ import de.greenrobot.event.EventBus;
 
 public class ContactFragment extends BaseFragment {
 
-  @Bind(R.id.activity_square_members_srl_list)
+  @BindView(R.id.activity_square_members_srl_list)
   protected SwipeRefreshLayout refreshLayout;
 
-  @Bind(R.id.activity_square_members_rv_list)
+  @BindView(R.id.activity_square_members_rv_list)
   protected RecyclerView recyclerView;
 
   private View headerView;

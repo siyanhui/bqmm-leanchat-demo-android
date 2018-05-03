@@ -1,6 +1,8 @@
 package com.avoscloud.leanchatlib.bqmmgif;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -15,6 +17,7 @@ import com.melink.bqmmsdk.sdk.BQMM;
 import com.melink.bqmmsdk.sdk.IBQMMGifCallback;
 import com.melink.bqmmsdk.sdk.IBQMMGifManager;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,8 +25,8 @@ import java.util.List;
  */
 
 public class BQMMGifManager implements IBQMMGifManager {
-    public final static int LOADSIZE = 20;
-    public final static int LOAD_DATA = 101, DISMISS_POPUP = 102;
+    private final static int PAGE_SIZE = 20;
+    private final static int LOAD_DATA = 101, DISMISS_POPUP = 102;
 
     private static BQMMGifManager mInstance;
     private boolean mSearchEnabled = false;
@@ -35,15 +38,16 @@ public class BQMMGifManager implements IBQMMGifManager {
     private int mCurrentPage = 0;
     private boolean mNeedLoadMore = true;
     private boolean mIsLoading = false;
+    private boolean mDidSearch;
     private IBqmmSendGifListener mIBqmmSendGifListener;
 
     public final static int BQMM_SEARCH_MODE_STATUS_KEYBOARD_HIDE = 10001;//收起软键盘
     public final static int BQMM_SEARCH_MODE_STATUS_INPUT_TEXT_CHANGE = 10002;//输入框变化
     public final static int BQMM_SEARCH_MODE_STATUS_INPUT_BECOME_EMPTY = 10003;//清空输入框
     public final static int BQMM_SEARCH_MODE_STATUS_GIF_MESSAGE_SENT = 10004;//发送了gif消息
-    public final static int BQMM_SEARCH_MODE_STATUS_SHOWTRENDING_TRIGGERED = 10005;//触发了流行表情
-    public final static int BQMM_SEARCH_MODE_STATUS_GIFS_DATA_RECEIVED_WITH_RESULT = 10006;//搜索收到gif数据
-    public final static int BQMM_SEARCH_MODE_STATUS_GIFS_DATA_RECEIVED_WITH_EMPTY_RESULT = 10007;//搜索结果为空
+    public final static int BQMM_SEARCH_MODE_STATUS_SHOW_TRENDING_TRIGGERED = 10005;//触发了流行表情
+    public final static int BQMM_SEARCH_MODE_STATUS_GIF_DATA_RECEIVED_WITH_RESULT = 10006;//搜索收到gif数据
+    public final static int BQMM_SEARCH_MODE_STATUS_GIF_DATA_RECEIVED_WITH_EMPTY_RESULT = 10007;//搜索结果为空
 
     private Handler mainHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -51,11 +55,10 @@ public class BQMMGifManager implements IBQMMGifManager {
             switch (msg.what) {
                 case LOAD_DATA:
                     if (msg.arg2 != mCurrentTaskId) return;
-                    List<BQMMGif> stickers = (List<BQMMGif>) msg.obj;
                     if (mCurrentPage == 0) {
-                        mPopupWindow.show(stickers);
+                        mPopupWindow.show((Collection) msg.obj);
                     } else {
-                        mPopupWindow.showMore(stickers);
+                        mPopupWindow.showMore((Collection) msg.obj);
                     }
                     ++mCurrentPage;
                     mIsLoading = false;
@@ -67,14 +70,14 @@ public class BQMMGifManager implements IBQMMGifManager {
         }
     };
 
-    public static BQMMGifManager getInstance(Context context) {
+    public static BQMMGifManager getInstance() {
         if (mInstance == null) {
-            mInstance = new BQMMGifManager(context);
+            mInstance = new BQMMGifManager(BQMM.getInstance().getApplicationContext());
         }
         return mInstance;
     }
 
-    public BQMMGifManager(Context context) {
+    private BQMMGifManager(Context context) {
         mPopupWindow = new BQMMSearchPopupWindow(context, DensityUtils.dip2px(95));
         mPopupWindow.setLoadMoreListener(new BQMMSearchPopupWindow.LoadMoreListener() {
             @Override
@@ -90,10 +93,11 @@ public class BQMMGifManager implements IBQMMGifManager {
         mPopupWindow.getAdapter().setSearchContentClickListener(new BQMMSearchContentAdapter.OnSearchContentClickListener() {
             @Override
             public void onSearchContentClick(BQMMGif bqmmGif) {
+                BQMM.getInstance().reportGifSending(bqmmGif.getSticker_id());
                 mIBqmmSendGifListener.onSendBQMMGif(bqmmGif);
                 // 清空输入框中文字
                 BQMM.getInstance().getEditView().setText("");
-                // 通知关闭popwindow
+                // 通知关闭PopupWindow
                 updateSearchModeAndSearchUIWithStatus(BQMM_SEARCH_MODE_STATUS_GIF_MESSAGE_SENT);
             }
         });
@@ -102,7 +106,9 @@ public class BQMMGifManager implements IBQMMGifManager {
     /**
      * 在输入框实例化后调用，两个监听事件分别是文字清空和输入框距离底部小于40即（键盘关闭的时候），隐藏弹窗。
      */
+    @SuppressLint("ObsoleteSdkInt")
     public void addEditViewListeners() {
+        mDidSearch = false;
         BQMM.getInstance().getEditView().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -122,20 +128,22 @@ public class BQMMGifManager implements IBQMMGifManager {
             public void afterTextChanged(Editable s) {
             }
         });
-        BQMM.getInstance().getEditView().getRootView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (BQMM.getInstance().getEditView() != null) {
-                    int[] position = new int[2];
-                    BQMM.getInstance().getEditView().getLocationOnScreen(position);
-                    int h = position[1];
-                    int i = DensityUtils.getScreenH() - h - BQMM.getInstance().getEditView().getMeasuredHeight();
-                    if (i < 40) {
-                        updateSearchModeAndSearchUIWithStatus(BQMM_SEARCH_MODE_STATUS_KEYBOARD_HIDE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            BQMM.getInstance().getEditView().getRootView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    if (BQMM.getInstance().getEditView() != null) {
+                        int[] position = new int[2];
+                        BQMM.getInstance().getEditView().getLocationOnScreen(position);
+                        int h = position[1];
+                        int i = DensityUtils.getScreenH() - h - BQMM.getInstance().getEditView().getMeasuredHeight();
+                        if (i < 40) {
+                            updateSearchModeAndSearchUIWithStatus(BQMM_SEARCH_MODE_STATUS_KEYBOARD_HIDE);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     public void updateSearchModeAndSearchUIWithStatus(int status) {
@@ -153,13 +161,13 @@ public class BQMMGifManager implements IBQMMGifManager {
                 setSearchUIVisible(false);
                 setSearchModeEnabled(false);
                 break;
-            case BQMM_SEARCH_MODE_STATUS_SHOWTRENDING_TRIGGERED://触发了流行表情
+            case BQMM_SEARCH_MODE_STATUS_SHOW_TRENDING_TRIGGERED://触发了流行表情
                 setSearchUIVisible(true);
                 setSearchModeEnabled(true);
                 break;
-            case BQMM_SEARCH_MODE_STATUS_GIFS_DATA_RECEIVED_WITH_RESULT://搜索到gif数据
+            case BQMM_SEARCH_MODE_STATUS_GIF_DATA_RECEIVED_WITH_RESULT://搜索到gif数据
                 break;
-            case BQMM_SEARCH_MODE_STATUS_GIFS_DATA_RECEIVED_WITH_EMPTY_RESULT://搜索结果为空
+            case BQMM_SEARCH_MODE_STATUS_GIF_DATA_RECEIVED_WITH_EMPTY_RESULT://搜索结果为空
                 break;
             default:
                 break;
@@ -170,6 +178,7 @@ public class BQMMGifManager implements IBQMMGifManager {
     public IBQMMGifManager setSearchModeEnabled(boolean enabled) {
         mSearchEnabled = enabled;
         if (!enabled && mPopupWindow.isShowing()) {
+            mDidSearch = true;
             mainHandler.sendEmptyMessage(DISMISS_POPUP);
         }
         return this;
@@ -179,6 +188,7 @@ public class BQMMGifManager implements IBQMMGifManager {
     public IBQMMGifManager setSearchUIVisible(boolean visible) {
         mUIVisible = visible;
         if (!visible && mPopupWindow.isShowing()) {
+            mDidSearch = true;
             mainHandler.sendEmptyMessage(DISMISS_POPUP);
         }
         return this;
@@ -186,7 +196,7 @@ public class BQMMGifManager implements IBQMMGifManager {
 
     @Override
     public void showTrending() {
-        updateSearchModeAndSearchUIWithStatus(BQMM_SEARCH_MODE_STATUS_SHOWTRENDING_TRIGGERED);
+        updateSearchModeAndSearchUIWithStatus(BQMM_SEARCH_MODE_STATUS_SHOW_TRENDING_TRIGGERED);
         if (mSearchEnabled && mUIVisible) {
             ++mCurrentTaskId;
             mCurrentPage = 0;
@@ -198,7 +208,7 @@ public class BQMMGifManager implements IBQMMGifManager {
 
     @Override
     public void showSearchContent(String keyword) {
-        if (mSearchEnabled && mUIVisible) {
+        if (mSearchEnabled && mUIVisible || !mDidSearch) {
             ++mCurrentTaskId;
             mCurrentPage = 0;
             mPopupWindow.setParentView(BQMM.getInstance().getEditView());
@@ -214,7 +224,7 @@ public class BQMMGifManager implements IBQMMGifManager {
         mIsLoading = true;
         final int currentTaskId = mCurrentTaskId;
         final int currentPage = mCurrentPage + 1;
-        BQMM.trendingGifsAt(currentPage, LOADSIZE, new IBQMMGifCallback<BQMMGif>() {
+        BQMM.trendingGifsAt(currentPage, PAGE_SIZE, new IBQMMGifCallback<BQMMGif>() {
             @Override
             public void onSuccess(List<BQMMGif> result) {
                 Message message = Message.obtain();
@@ -223,7 +233,7 @@ public class BQMMGifManager implements IBQMMGifManager {
                 message.obj = result;
                 mainHandler.sendMessage(message);
                 message.arg2 = currentTaskId;
-                mNeedLoadMore = result.size() >= LOADSIZE;
+                mNeedLoadMore = result.size() >= PAGE_SIZE;
             }
 
             @Override
@@ -236,7 +246,7 @@ public class BQMMGifManager implements IBQMMGifManager {
         mIsLoading = true;
         final int currentTaskId = mCurrentTaskId;
         final int currentPage = mCurrentPage + 1;
-        BQMM.searchGifsWithKey(mSearchKeyword, currentPage, LOADSIZE, new IBQMMGifCallback<BQMMGif>() {
+        BQMM.searchGifsWithKey(mSearchKeyword, currentPage, PAGE_SIZE, new IBQMMGifCallback<BQMMGif>() {
             @Override
             public void onSuccess(List<BQMMGif> result) {
                 Message message = Message.obtain();
@@ -245,7 +255,7 @@ public class BQMMGifManager implements IBQMMGifManager {
                 message.obj = result;
                 mainHandler.sendMessage(message);
                 message.arg2 = currentTaskId;
-                mNeedLoadMore = result.size() >= LOADSIZE;
+                mNeedLoadMore = result.size() >= PAGE_SIZE;
             }
 
             @Override

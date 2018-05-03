@@ -1,6 +1,8 @@
 package com.avoscloud.leanchatlib.bqmmgif;
 
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,9 +11,10 @@ import android.widget.LinearLayout;
 
 import com.melink.baseframe.utils.DensityUtils;
 import com.melink.bqmmsdk.bean.BQMMGif;
-import com.melink.bqmmsdk.resourceutil.BQMMConstant;
-import com.melink.bqmmsdk.widget.BQMMMessageText;
+import com.melink.bqmmsdk.widget.BQMMGifView;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,32 +22,31 @@ import java.util.List;
  */
 
 public class BQMMSearchContentAdapter extends RecyclerView.Adapter<BQMMSearchContentAdapter.ViewHolder> {
-    private List<BQMMGif> mBQMMGifList;
+    private final List<BQMMGif> mBQMMGifList = new ArrayList<>();
     private OnSearchContentClickListener mSearchContentClickListener;
-    private LinearLayout mLayout;
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        mLayout = new LinearLayout(parent.getContext());
-        mLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mLayout.setBackgroundColor(Color.WHITE);
-        mLayout.setPadding(DensityUtils.dip2px(5), DensityUtils.dip2px(7.5f), DensityUtils.dip2px(5), DensityUtils.dip2px(7.5f));
-        BQMMMessageText bqmmMessageText = new BQMMMessageText(parent.getContext());
-        mLayout.addView(bqmmMessageText);
-        ViewHolder viewHolder = new ViewHolder(mLayout, bqmmMessageText);
-        return viewHolder;
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LinearLayout layout = new LinearLayout(parent.getContext());
+        layout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        layout.setBackgroundColor(Color.WHITE);
+        layout.setPadding(DensityUtils.dip2px(5), DensityUtils.dip2px(7.5f), DensityUtils.dip2px(5), DensityUtils.dip2px(7.5f));
+        BQMMGifView bqmmMessageText = new BQMMGifView(parent.getContext());
+        layout.addView(bqmmMessageText);
+        return new ViewHolder(layout, bqmmMessageText);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final BQMMGif item = mBQMMGifList.get(position);
         int pixels = DensityUtils.dip2px(80);
         if (!TextUtils.isEmpty(item.getGif_thumb())) {
-            holder.bqmmMessageTextView.showBQMMGif(item.getSticker_id(), item.getGif_thumb(), pixels, pixels, item.getIs_gif(), BQMMConstant.WEBSTICKER_THUMB_PACKAGE);
+            holder.bqmmMessageTextView.showThumbnail(item.getSticker_id(), item.getGif_thumb(), pixels, pixels, item.getIs_gif() == 1);
         } else if (!TextUtils.isEmpty(item.getThumb())) {
-            holder.bqmmMessageTextView.showBQMMGif(item.getSticker_id(), item.getThumb(), pixels, pixels, 0, BQMMConstant.WEBSTICKER_THUMB_PACKAGE);
+            holder.bqmmMessageTextView.showThumbnail(item.getSticker_id(), item.getThumb(), pixels, pixels, false);
         } else {
-            holder.bqmmMessageTextView.showBQMMGif(item.getSticker_id(), item.getSticker_url(), pixels, pixels, item.getIs_gif(), BQMMConstant.WEBSTICKER_MAIN_PACKAGE);
+            holder.bqmmMessageTextView.showGif(item.getSticker_id(), item.getSticker_url(), pixels, pixels, item.getIs_gif() == 1);
         }
         holder.bqmmMessageTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,21 +67,25 @@ public class BQMMSearchContentAdapter extends RecyclerView.Adapter<BQMMSearchCon
         this.mSearchContentClickListener = listener;
     }
 
-    public void setMMWebStickerList(List<BQMMGif> bqmmGifList) {
-        this.mBQMMGifList = bqmmGifList;
-        notifyDataSetChanged();
+    public void setBQMMGifList(@Nullable Collection bqmmGifList) {
+        mBQMMGifList.clear();
+        addBQMMGifList(bqmmGifList);
     }
 
-    public void addMMWebStickerList(List<BQMMGif> bqmmGifList) {
-        mBQMMGifList.addAll(bqmmGifList);
+    public void addBQMMGifList(@Nullable Collection bqmmGifList) {
+        if (bqmmGifList != null) for (Object object : bqmmGifList) {
+            if (object instanceof BQMMGif) {
+                mBQMMGifList.add((BQMMGif) object);
+            }
+        }
         notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout linearLayout;
-        BQMMMessageText bqmmMessageTextView;
+        BQMMGifView bqmmMessageTextView;
 
-        public ViewHolder(LinearLayout view, BQMMMessageText text) {
+        ViewHolder(LinearLayout view, BQMMGifView text) {
             super(view);
             linearLayout = view;
             bqmmMessageTextView = text;

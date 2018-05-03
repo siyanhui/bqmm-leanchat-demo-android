@@ -16,11 +16,12 @@ import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
-import com.avoscloud.chat.App;
 import com.avoscloud.chat.R;
 import com.avoscloud.chat.event.ConversationMemberClickEvent;
 import com.avoscloud.chat.friends.ContactPersonInfoActivity;
-import com.avoscloud.leanchatlib.utils.ConversationManager;
+import com.avoscloud.chat.model.LeanchatUser;
+import com.avoscloud.chat.util.UserCacheUtils;
+import com.avoscloud.chat.util.UserCacheUtils.CacheUserCallback;
 import com.avoscloud.chat.util.Utils;
 import com.avoscloud.chat.viewholder.ConversationDetailItemHolder;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
@@ -29,16 +30,13 @@ import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationHelper;
 import com.avoscloud.leanchatlib.controller.RoomsTable;
 import com.avoscloud.leanchatlib.model.ConversationType;
-import com.avoscloud.chat.model.LeanchatUser;
-import com.avoscloud.chat.util.UserCacheUtils;
-import com.avoscloud.chat.util.UserCacheUtils.CacheUserCallback;
 import com.avoscloud.leanchatlib.utils.Constants;
+import com.avoscloud.leanchatlib.utils.ConversationManager;
 
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import butterknife.BindView;
 
 /**
  * Created by lzw on 14-10-11.
@@ -47,7 +45,7 @@ public class ConversationDetailActivity extends AVBaseActivity {
   private static final int ADD_MEMBERS = 0;
   private static final int INTENT_NAME = 1;
 
-  @Bind(R.id.activity_conv_detail_rv_list)
+  @BindView(R.id.activity_conv_detail_rv_list)
   RecyclerView recyclerView;
 
   GridLayoutManager layoutManager;

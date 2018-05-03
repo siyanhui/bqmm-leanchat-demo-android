@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         applicationId "com.avoscloud.chat"
         minSdkVersion 15
-        targetSdkVersion 15
+        targetSdkVersion 27
         multiDexEnabled true
     }
 
@@ -32,6 +32,7 @@ android {
 
 dependencies {
     compile project(':leanchatlib')
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'cn.leancloud.android:avoscloud-statistics:v3.4.5@aar'
     compile files('libs/baidumapapi_v3_0_0.jar')
     compile files('libs/locSDK_4.2.jar')
